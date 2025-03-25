@@ -52,11 +52,11 @@
 (defn article
   "Article component for displaying a single article"
   [{:keys [title slug date description]}]
-  [card/card {:as "article"}
-   [card/title {:href (str "/articles/" slug)} title]
-   [card/eyebrow {:as "time" :datetime date :decorate true} date]
-   [card/description description]
-   [card/cta "Read article"]])
+  (card/card {:as :article}
+   (card/title {:href (str "/articles/" slug)} title)
+   (card/eyebrow {:as :time :datetime date :decorate true} date)
+   (card/description description)
+   (card/cta "Read article")))
 
 (defn social-link
   "Social link component for a single social media link"
@@ -153,19 +153,19 @@
   "Photos component displaying a rotating gallery"
   []
   (let [rotations ["rotate-2" "-rotate-2" "rotate-2" "rotate-2" "-rotate-2"]
-        images [{:src "/images/photos/image-3.png"}
-                {:src "/images/photos/bikeraft1.jpg" :class "object-left"}
-                {:src "/images/photos/ol3.png"}
-                {:src "/images/photos/image-2.png" :class "object-top"}
-                {:src "/images/photos/bikeraft2.jpg"}]]
+        images    [{:src "/images/photos/image-3.png"}
+                   {:src "/images/photos/bikeraft1.jpg" :class "object-left"}
+                   {:src "/images/photos/ol3.png"}
+                   {:src "/images/photos/image-2.png" :class "object-top"}
+                   {:src "/images/photos/bikeraft2.jpg"}]]
     [:div {:class "mt-16 sm:mt-20"}
      [:div {:class "-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8"}
       (for [[idx {:keys [src class]}] (map-indexed vector images)
-            :let [rotation (get rotations (mod idx (count rotations)))]]
-        [:div {:key src
+            :let                      [rotation (get rotations (mod idx (count rotations)))]]
+        [:div {:key   src
                :class (str "relative aspect-9/10 w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800 " rotation)}
-         [:img {:src src
-                :alt ""
+         [:img {:src   src
+                :alt   ""
                 :sizes "(min-width: 1024px) 42rem, (min-width: 640px) 18rem, 11rem"
                 :class (str (or class "") " absolute inset-0 h-full w-full object-cover")}]])]]))
 
@@ -205,8 +205,8 @@
    (container {:class "mt-24 md:mt-28"}
               [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}
                [:div {:class "flex flex-col gap-16"}
-                (for [article (take 4 articles)]
-                  (article article))]
+                (for [article-data (take 4 articles)]
+                  (article article-data))]
                [:div {:class "space-y-10 lg:pl-16 xl:pl-24"}
                 (newsletter)
                 (resume)]])))

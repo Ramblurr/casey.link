@@ -15,8 +15,9 @@
 (defn card
   "Card component"
   [{:keys [as class]} & children]
-  (let [element (or as :div)]
-    [element {:class (str "group relative flex flex-col items-start " class)}
+  (let [element (or as :div)
+        element-str (if (keyword? element) (name element) element)]
+    [(keyword element-str) {:class (str "group relative flex flex-col items-start " class)}
      children]))
 
 (defn card-link
@@ -31,8 +32,9 @@
 (defn title
   "Title component for card"
   [{:keys [as href]} & children]
-  (let [element (or as :h2)]
-    [element {:class "text-base font-semibold tracking-tight text-ol-gray dark:text-white"}
+  (let [element (or as :h2)
+        element-str (if (keyword? element) (name element) element)]
+    [(keyword element-str) {:class "text-base font-semibold tracking-tight text-ol-gray dark:text-white"}
      (if href
        (card-link {:href href} children)
        children)]))
@@ -55,8 +57,9 @@
   "Eyebrow component for card - like a subtitle or date"
   [{:keys [as decorate class datetime]} & children]
   (let [element (or as :p)
+        element-str (if (keyword? element) (name element) element)
         decorate-class (if decorate "pl-3.5" "")]
-    [element {:class (str "relative z-10 order-first mb-3 flex items-center text-sm text-ol-light-gray dark:text-ol-light-gray " decorate-class " " class)
+    [(keyword element-str) {:class (str "relative z-10 order-first mb-3 flex items-center text-sm text-ol-light-gray dark:text-ol-light-gray " decorate-class " " class)
               :datetime datetime}
      (when decorate
        [:span {:class "absolute inset-y-0 left-0 flex items-center"
