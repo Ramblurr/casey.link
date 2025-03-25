@@ -22,8 +22,8 @@
                             (shell+ (str "clj-kondo --lint " cp " --copy-configs --skip-lint"))
                             (shell+ (str "clj-kondo --lint " cp "  --dependencies --parallel"))))
 
-         css       (shell "tailwindcss -i ./src/site/input.css -o ./src/output.css")
-         watch-css (shell "tailwindcss -i ./src/site/input.css -o ./src/output.css --watch")
+         css       (shell "tailwindcss -i ./src/site/input.css -o ./src/public/site.css")
+         watch-css (shell "tailwindcss -i ./src/site/input.css -o ./src/public/site.css --watch")
          repl      {:override-builtin true
                     :doc              "Run the dev REPL"
                     :task             (shell "clojure -M:repl/cider:dev")}

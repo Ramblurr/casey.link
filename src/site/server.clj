@@ -15,7 +15,7 @@
             [site.cache :as cache]
             [site.headers :as headers]
             [site.html :as html]
-            [site.pages :as pages]
+            [site.ui :as ui]
             [site.pages.posts :as posts]
             [site.pages.index :as index])
   (:import (java.io File)))
@@ -25,7 +25,7 @@
     {:status  200
      :headers headers/default-headers
      :body    (-> (page-fn req)
-                  pages/shell
+                  ui/shell
                   :content
                   html/->str)}))
 
