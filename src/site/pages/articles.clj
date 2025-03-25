@@ -12,7 +12,8 @@
 (defn article-content
   "Render an article using the ArticleLayout"
   [{:keys [metadata content]}]
-  (let [article (assoc metadata :date (:date metadata))]
+  (let [article (cond-> metadata
+                  (:date metadata) (assoc :date (:date metadata)))]
     (article-layout/article-layout
      {:article           article
       :previous-pathname "/articles"
