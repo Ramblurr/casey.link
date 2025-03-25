@@ -1,0 +1,17 @@
+#+TITLE: Hello World this is a title
+
+* Introduction
+  Hello, and welcome to my Org file!
+
+** Why Org Mode is Great
+   Org mode is a wonderful tool for organizing information, creating documents, and managing tasks.
+
+* Features of Org Mode
+  - Easy text formatting
+  - Support for tables
+  - Task management
+  - Export to various formats
+  - Code block execution
+
+** Advanced Features
+   Org mode also provides advanced features like agenda views and spreadsheet capabilities.

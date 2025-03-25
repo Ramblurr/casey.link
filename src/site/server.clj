@@ -1,5 +1,6 @@
 (ns site.server
   (:require [aero.core :as aero]
+            [site.content :as content]
             [clojure.java.io :as io]
             [donut.system :as ds]
             [org.httpkit.server :as server]
@@ -15,6 +16,7 @@
             [site.headers :as headers]
             [site.html :as html]
             [site.pages :as pages]
+            [site.pages.posts :as posts]
             [site.pages.index :as index])
   (:import (java.io File)))
 
@@ -28,7 +30,8 @@
                   html/->str)}))
 
 (def routes ["" {:middleware [[cache/wrap-cache {}]]}
-             ["/" {:handler (html-response index/index)}]])
+             ["/" {:handler (html-response index/index)}]
+             ["/blog/:slug" {:handler (html-response #(content/content posts/post "posts" %))}]])
 
 (defn find-file ^File [path]
   (when-let [file ^File (io/as-file (io/resource path))]
