@@ -6,7 +6,7 @@
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as md.transform]))
 
-(defn- s2sr [s]
+(defn s2sr [s]
   (-> s (java.io.StringReader.) (java.io.BufferedReader.)))
 
 (defn parse-edn-metadata-headers
@@ -22,24 +22,6 @@
        ;; count the trailing empty line
        (inc (count meta-lines))])
     [nil 0]))
-
-(parse-edn-metadata-headers (line-seq (s2sr "{
-  :title \"wut\"
-  :tags #{:one :two}
-}
-
-# Hello World
-
-
-This is a markdown post with EDN frontmatter
-")))
-;; => [{:title "wut", :tags #{:one :two}} 5]
-
-(parse-edn-metadata-headers (line-seq (s2sr "# Hello World")))
-;; => [nil 0]
-
-(parse-edn-metadata-headers (line-seq (s2sr "")))
-;; => [nil 0]
 
 (defn md->hiccup [string]
   (let [s                     (-> string s2sr line-seq)

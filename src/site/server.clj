@@ -42,7 +42,7 @@
         (when (.exists file)
           file)))))
 
-(def cache-levels #{:no-cache :immutable})
+;; (def cache-levels #{:no-cache :immutable})
 (defn serve-files [dir {:keys [cache-level] :as _opts
                         :or   {cache-level :no-cache}}]
   (fn [req]
@@ -61,7 +61,7 @@
                                   ring.cookies/wrap-cookies
                                   ring.head/wrap-head]}}))
 
-(defn not-found-handler [req]
+(defn not-found-handler [_req]
   {:status 404
    :body   "Not Found"})
 

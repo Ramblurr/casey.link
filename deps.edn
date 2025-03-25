@@ -1,4 +1,4 @@
-{:paths ["src"]
+{:paths ["src" "test"]
  :deps  {org.clojure/clojure            {:mvn/version "1.12.0"}
          org.clojure/data.xml           {:mvn/version "0.0.8"}
          party.donut/system             {:mvn/version "1.0.255"}
@@ -21,6 +21,7 @@
                         ;; ZGenerational will be the default in future
                         ;; so this won't need to be specified
                         "-XX:+ZGenerational"]}
+  :test  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
   :build {:deps       {io.github.clojure/tools.build
                        {:git/tag "v0.10.5" :git/sha "2a21b7a"}}
           :ns-default build}
