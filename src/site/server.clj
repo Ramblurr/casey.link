@@ -1,26 +1,34 @@
 (ns site.server
-  (:import
-   [java.io File])
-  (:require
-   [ring.middleware.cookies :as ring.cookies]
-   [ring.middleware.params :as ring.params]
-   [ring.middleware.head :as ring.head]
-   [ring.middleware.not-modified :as ring.not-modified]
-   [clojure.java.io :as io]
-   [aero.core :as aero]
-   [donut.system :as ds]
-   [ring.util.time :as ring-time]
-   [ring.util.codec :as ring-codec]
-   [ring.util.io :as ring-io]
-   [ring.util.mime-type :as ring-mime]
-   [jsonista.core :as j]
-   [org.httpkit.server :as server]
-   [starfederation.datastar.clojure.api :as d*]
-   [starfederation.datastar.clojure.adapter.http-kit :refer [->sse-response on-open on-close]]
-   [reitit.ring :as rr]
-   [dev.onionpancakes.chassis.core :as h]
-   [clojure.string :as str]
-   [jsonista.core :as json]))
+  (:require [aero.core :as aero]
+            [clojure.java.io :as io]
+            [donut.system :as ds]
+            [org.httpkit.server :as server]
+            [reitit.ring :as rr]
+            [ring.middleware.cookies :as ring.cookies]
+            [ring.middleware.head :as ring.head]
+            [ring.middleware.not-modified :as ring.not-modified]
+            [ring.middleware.params :as ring.params]
+            [ring.util.io :as ring-io]
+            [ring.util.mime-type :as ring-mime]
+            [ring.util.time :as ring-time]
+            [site.cache :as cache]
+            [site.headers :as headers]
+            [site.html :as html]
+            [site.pages :as pages]
+            [site.pages.index :as index])
+  (:import (java.io File)))
+
+(defn html-response [page-fn]
+  (fn [req]
+    {:status  200
+     :headers headers/default-headers
+     :body    (-> (page-fn req)
+                  pages/shell
+                  :content
+                  html/->str)}))
+
+(def routes ["" {:middleware [[cache/wrap-cache {}]]}
+             ["/" {:handler (html-response index/index)}]])
 
 (defn find-file ^File [path]
   (when-let [file ^File (io/as-file (io/resource path))]
@@ -43,11 +51,6 @@
                  "Cache-Control"  (condp = cache-level :immutable "max-age=31536000,immutable,public" :no-cache "no-cache")
                  "Content-Type"   (ring-mime/ext-mime-type (.getName file))}}
       nil)))
-
-(def routes ["" {}
-             ["/" {:handler (fn [req]
-                              {:status 200
-                               :body   "Hello, World3!"})}]])
 
 (def router
   (rr/router routes
