@@ -28,24 +28,26 @@
 
         (str "© 2009–" (.getValue (java.time.Year/now)) " Casey Link | Outskirts Labs e.U. All rights reserved.")]]]]]])
 
-(defn layout [children]
+(defn layout [{:keys [uri content] :as page}]
   (list
-   [:div {:classname "fixed inset-0 flex justify-center sm:px-8"}
-    [:div {:classname "flex w-full max-w-7xl lg:px-8"}
-     [:div {:classname "w-full bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20"}]]]
-   [:div {:classname "relative flex w-full flex-col"}
-    (header/header)
-    [:main {:classname "flex-auto"} children]
+   [:div {:class "fixed inset-0 flex justify-center sm:px-8"}
+    [:div {:class "flex w-full max-w-7xl lg:px-8"}
+     [:div {:class "w-full bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20"}]]]
+   [:div {:class "relative flex w-full flex-col"}
+    (header/header {:path uri})
+    [:main {:class "flex-auto"} content]
     (footer)]))
 
-(defn shell [page]
+(defn shell [{:keys [uri content] :as page}]
   (assoc page :content
          [html/doctype-html5
           [:html {:lang "en" :class "h-full antialiased"}
            [:head
             [:meta {:http-equiv "content-type" :content "text/html;charset=UTF-8"}]
+            [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             [:title (:title page)]]
            [:body {:class "flex h-full bg-white dark:bg-ol-gray-dark"}
             [:div {:class "flex w-full"}
-             (layout (:content page))]]]]))
+             (layout page)]
+            [:script {:src "/js/navigation.js"}]]]]))
