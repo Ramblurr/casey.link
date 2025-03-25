@@ -24,6 +24,4 @@
   :build {:deps       {io.github.clojure/tools.build
                        {:git/tag "v0.10.5" :git/sha "2a21b7a"}}
           :ns-default build}
-  :serve {:deps      {org.babashka/http-server {:mvn/version "0.1.12"}}
-          :main-opts ["-m" "babashka.http-server"]
-          :exec-fn   babashka.http-server/exec}}}
+  :run-m {:main-opts ["-m" "site.server"]}}}
