@@ -29,9 +29,10 @@
                   :content
                   html/->str)}))
 
-(def routes ["" {:middleware [[cache/wrap-cache {}]]}
-             ["/" {:handler (html-response index/index)}]
-             ["/blog/:slug" {:handler (html-response #(content/content posts/post "posts" %))}]])
+(defn routes [{:keys [dev?]}]
+  ["" {:middleware [[cache/wrap-cache {:dev? dev?}]]}
+   ["/" {:handler (html-response index/index)}]
+   ["/blog/:slug" {:handler (html-response #(content/content posts/post "posts" %))}]])
 
 (defn find-file ^File [path]
   (when-let [file ^File (io/as-file (io/resource path))]
@@ -55,8 +56,8 @@
                  "Content-Type"   (ring-mime/ext-mime-type (.getName file))}}
       nil)))
 
-(def router
-  (rr/router routes
+(defn router [opts]
+  (rr/router (routes opts)
              {:data {:middleware [ring.params/wrap-params
                                   ring.cookies/wrap-cookies
                                   ring.head/wrap-head]}}))
@@ -73,11 +74,12 @@
   {::ds/defs
    {:env {}
     :site
-    {:handler #::ds{:start (fn [_]
-                             (rr/ring-handler router
-                                              (rr/routes
-                                               (create-asset-handler "public" {:cache-level :immutable})
-                                               (rr/create-default-handler {:not-found not-found-handler}))))}
+    {:handler #::ds{:start  (fn [{config ::ds/config}]
+                              (rr/ring-handler (router config)
+                                               (rr/routes
+                                                (create-asset-handler "public" {:cache-level :immutable})
+                                                (rr/create-default-handler {:not-found not-found-handler}))))
+                    :config {:dev? (ds/ref [:env :dev?])}}
      :server  #::ds{:start  (fn [{config ::ds/config}]
                               (let [instance (server/run-server (:handler config)
                                                                 {:port                 (:port config)
