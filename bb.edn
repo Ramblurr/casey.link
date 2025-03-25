@@ -1,0 +1,34 @@
+{:paths []
+ :deps  {io.aviso/pretty {:mvn/version "1.3"}}
+ :tasks {:requires      ([clojure.string :as str]
+                         [io.aviso.ansi :as ansi]
+                         [babashka.tasks :refer [shell]])
+         :init          (do
+                          (def lib (first *command-line-args*))
+                          (defn classpath-test-dev []
+                            (-> (shell {:out :string} "clj" "-A:test:dev" "-Spath") :out str/trim))
+                          (defn clj [& args]
+                            (println (str
+                                      ansi/bold-font "+ clojure " (str/join " " args)
+                                      ansi/reset-font))
+                            (apply clojure args))
+                          (defn shell+ [& args]
+                            (println (str
+                                      ansi/bold-font "+ " (str/join " " args)
+                                      ansi/reset-font))
+                            (apply shell args)))
+         sync-clj-kondo (do
+                          (let [cp (classpath-test-dev)]
+                            (shell+ (str "clj-kondo --lint " cp " --copy-configs --skip-lint"))
+                            (shell+ (str "clj-kondo --lint " cp "  --dependencies --parallel"))))
+
+         css (shell "tailwindcss -i ./src/site/input.css -o ./src/output.css")
+         watch-css (shell "tailwindcss -i ./src/site/input.css -o ./src/output.css --watch")
+         repl      {:override-builtin true
+                    :doc              "Run the dev REPL"
+                    :task             (shell "clojure -M:repl/cider:dev")}
+         fmt       (shell "cljfmt check")
+         fmt:fix   (shell "cljfmt fix .")
+         lint      (shell+ (str "clj-kondo --lint src" " --fail-level error"))
+         test      (shell+ "poly test :dev")
+         deps-tree (shell+ "clj -X:deps tree :aliases '[:dev]'")}}
