@@ -4,7 +4,9 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [nextjournal.markdown :as md]
-   [nextjournal.markdown.transform :as md.transform]))
+   [nextjournal.markdown.transform :as md.transform])
+  (:import (java.time.format DateTimeFormatter)
+           (java.time LocalDate ZoneOffset)))
 
 (defn s2sr [s]
   (-> s (java.io.StringReader.) (java.io.BufferedReader.)))
@@ -43,7 +45,31 @@
   (page-fn
    (parse (str dir "/" (-> req :path-params :slug)))))
 
+(defn format-date
+  "Format date in US format (e.g., January 12, 2023)"
+  [date-str]
+  (let [date (LocalDate/parse date-str)]
+    (.format date
+             (DateTimeFormatter/ofPattern "MMMM d, yyyy"))))
+
+(defn get-articles
+  "Get all articles sorted by date (most recent first)"
+  []
+  (let [article-dirs (filter #(.isDirectory %)
+                             (file-seq (io/file "content/posts")))]
+    (->> article-dirs
+         (filter #(.exists (io/file (str (.getPath %) "/index.md"))))
+         (map (fn [dir]
+                (let [slug (.getName dir)
+                      {:keys [metadata]} (parse (str "posts/" slug))]
+                  (assoc metadata
+                         :slug slug
+                         :date (:date metadata)))))
+         (sort-by :date #(compare %2 %1)))))
+
 (comment
   (parse "posts/hello")
+  (format-date "2023-01-12")
+  (get-articles)
   ;; rcf
   )
