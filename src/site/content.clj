@@ -32,7 +32,9 @@
      (->> (drop meta-lines s)
           (str/join "\n")
           md/parse
-          md.transform/->hiccup)]))
+          (md.transform/->hiccup
+           (assoc md.transform/default-hiccup-renderers
+                  :plain (partial md.transform/into-markup [:span]))))]))
 
 (defn parse [path]
   (let [file               (io/file (str "content/" path "/index.md"))
@@ -68,7 +70,8 @@
          (sort-by :date #(compare %2 %1)))))
 
 (comment
-  (parse "posts/hello")
+  (:content
+   (parse "posts/mobile-security-field-workers"))
   (format-date "2023-01-12")
   (get-articles)
   ;; rcf
