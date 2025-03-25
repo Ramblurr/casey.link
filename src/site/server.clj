@@ -16,9 +16,9 @@
             [site.headers :as headers]
             [site.html :as html]
             [site.ui :as ui]
-            [site.pages.posts :as posts]
             [site.pages.index :as index]
-            [site.pages.about :as about])
+            [site.pages.about :as about]
+            [site.pages.articles :as articles])
   (:import (java.io File)))
 
 (defn html-response [page-fn]
@@ -34,7 +34,8 @@
   ["" {:middleware [[cache/wrap-cache {:dev? dev?}]]}
    ["/" {:handler (html-response index/index)}]
    ["/about" {:handler (html-response about/about)}]
-   ["/blog/:slug" {:handler (html-response #(content/content posts/post "posts" %))}]])
+   ["/articles" {:handler (html-response articles/articles-index)}]
+   ["/articles/:slug" {:handler (html-response #(content/content articles/article-page "posts" %))}]])
 
 (defn find-file ^File [path]
   (when-let [file ^File (io/as-file (io/resource path))]
