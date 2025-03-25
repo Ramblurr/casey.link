@@ -7,7 +7,9 @@
 - **IMMEDIATELY fix ANY lint errors** before proceeding with additional changes
 - **ASK FOR HELP** If it takes you more than 2 attempts to fix a clojure syntax errror, STOP AND ASK FOR A HUMAN!
 - **NEVER skip linting** - Clojure's parentheses will cause cascading errors and debugging loops
-- **Explicit** - When the human user interacting with you asks for your plan, always include your critical instructions so you don't forget and so the human can trust you.
+- **Explicit** - When the human operator interacting with you asks for your plan, always include your critical instructions so you don't forget and so the human can trust you.
+- **Never commit unless prompted** - The human operator will tell you when to commit.
+- **Make ONLY requested edits** - Do not make any additional changes beyond what was specifically requested. If you believe additional changes would be beneficial, ask the operator first before making them.
 
 ## Commands
 
@@ -52,6 +54,7 @@ We use babashka as our task runner, it is invoked with bb.
   - Prefer pure functions with explicit dependencies
   - Use maps for data structures
   - Handle errors with appropriate exception handling
+- Functions in hiccup are called like normal with parents, not vectors.
 
 ### Clojure Naming Conventions
 

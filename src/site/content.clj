@@ -50,9 +50,13 @@
 (defn format-date
   "Format date in US format (e.g., January 12, 2023)"
   [date-str]
-  (let [date (LocalDate/parse date-str)]
-    (.format date
-             (DateTimeFormatter/ofPattern "MMMM d, yyyy"))))
+  (if (and date-str (not (str/blank? date-str)))
+    (try
+      (let [date (LocalDate/parse date-str)]
+        (.format date (DateTimeFormatter/ofPattern "MMMM d, yyyy")))
+      (catch Exception _
+        "No date available"))
+    "No date available"))
 
 (defn get-articles
   "Get all articles sorted by date (most recent first)"
