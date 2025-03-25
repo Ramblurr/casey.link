@@ -2,6 +2,9 @@
   (:import
    [java.io File])
   (:require
+   [ring.middleware.cookies :as ring.cookies]
+   [ring.middleware.params :as ring.params]
+   [ring.middleware.head :as ring.head]
    [ring.middleware.not-modified :as ring.not-modified]
    [clojure.java.io :as io]
    [aero.core :as aero]
@@ -47,7 +50,10 @@
                                :body   "Hello, World3!"})}]])
 
 (def router
-  (rr/router routes))
+  (rr/router routes
+             {:data {:middleware [ring.params/wrap-params
+                                  ring.cookies/wrap-cookies
+                                  ring.head/wrap-head]}}))
 
 (defn not-found-handler [req]
   {:status 404
