@@ -1,1 +1,56 @@
 @import "tailwindcss";
+@import "./prism.css" layer(components);
+@plugin '@tailwindcss/typography';
+@config '../../typography.ts';
+@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  /* Outskirts Labs brand colors */
+  --color-dark-liver: #524b47;
+  --color-dark-orange: #b54726;
+  --color-ol-orange: #e76227;
+  --color-turquoise: #21b899;
+  --color-ol-gray: #201e1d;
+  --color-ol-light-gray: #88837c;
+  --color-ol-brown: #3f1f10;
+  --color-gutentag: #d9564a;
+
+  /* Dark mode brand colors */
+  --color-dark-liver-dark: #6c655e;
+  --color-dark-orange-dark: #d8532d;
+  --color-ol-orange-dark: #ff7a42;
+  --color-turquoise-dark: #30d2b0;
+  --color-ol-gray-dark: #201e1d;
+  --color-ol-light-gray-dark: #a59f99;
+  --color-ol-brown-dark: #5a2b17;
+  --color-gutentag-dark: #e86a5e;
+
+  --font-sans: "Verb", ui-sans-serif, system-ui, sans-serif;
+
+  /* Text sizing */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.5rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.5rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.75rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 2rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2rem;
+  --text-4xl--line-height: 2.5rem;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 3.5rem;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+  --text-7xl: 4.5rem;
+  --text-7xl--line-height: 1;
+  --text-8xl: 6rem;
+  --text-8xl--line-height: 1;
+  --text-9xl: 8rem;
+  --text-9xl--line-height: 1;
+}
