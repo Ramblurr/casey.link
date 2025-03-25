@@ -61,11 +61,13 @@
           (prn "HIT!" cache-key)
           (ring.not-modified/not-modified-response response request))))))
 
-(defn wrap-cache [handler {:keys [exclude?]
+(defn wrap-cache [handler {:keys [exclude? dev?]
                            :or   {exclude? (constantly false)}
                            :as   opts}]
   (let [!cache (volatile! {})]
     (fn [request]
-      (if (exclude? request)
+      (if dev?
         (handler request)
-        (cache-get !cache handler request opts)))))
+        (if (exclude? request)
+          (handler request)
+          (cache-get !cache handler request opts))))))
