@@ -17,7 +17,8 @@
             [site.html :as html]
             [site.ui :as ui]
             [site.pages.posts :as posts]
-            [site.pages.index :as index])
+            [site.pages.index :as index]
+            [site.pages.about :as about])
   (:import (java.io File)))
 
 (defn html-response [page-fn]
@@ -32,6 +33,7 @@
 (defn routes [{:keys [dev?]}]
   ["" {:middleware [[cache/wrap-cache {:dev? dev?}]]}
    ["/" {:handler (html-response index/index)}]
+   ["/about" {:handler (html-response about/about)}]
    ["/blog/:slug" {:handler (html-response #(content/content posts/post "posts" %))}]])
 
 (defn find-file ^File [path]
