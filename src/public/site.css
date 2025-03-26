@@ -2,6 +2,7 @@
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
+    --color-red-400: oklch(0.704 0.191 22.216);
     --color-teal-50: oklch(0.984 0.014 180.72);
     --color-teal-300: oklch(0.855 0.138 181.071);
     --color-teal-400: oklch(0.777 0.152 181.912);
@@ -9,6 +10,7 @@
     --color-teal-600: oklch(0.6 0.118 184.704);
     --color-sky-200: oklch(0.901 0.058 230.902);
     --color-pink-400: oklch(0.718 0.202 349.761);
+    --color-zinc-50: oklch(0.985 0 0);
     --color-zinc-100: oklch(0.967 0.001 286.375);
     --color-zinc-200: oklch(0.92 0.004 286.32);
     --color-zinc-300: oklch(0.871 0.006 286.286);
@@ -18,6 +20,7 @@
     --color-zinc-700: oklch(0.37 0.013 285.805);
     --color-zinc-800: oklch(0.274 0.006 286.033);
     --color-zinc-900: oklch(0.21 0.006 285.885);
+    --color-stone-50: oklch(0.985 0.001 106.423);
     --color-stone-100: oklch(0.97 0.001 106.424);
     --color-stone-200: oklch(0.923 0.003 48.717);
     --color-stone-300: oklch(0.869 0.005 56.366);
@@ -968,6 +971,9 @@
   .bg-ol-orange {
     background-color: var(--color-ol-orange);
   }
+  .bg-stone-50 {
+    background-color: var(--color-stone-50);
+  }
   .bg-stone-100 {
     background-color: var(--color-stone-100);
   }
@@ -985,6 +991,9 @@
   }
   .bg-white\/90 {
     background-color: color-mix(in oklab, var(--color-white) 90%, transparent);
+  }
+  .bg-zinc-50 {
+    background-color: var(--color-zinc-50);
   }
   .bg-zinc-100 {
     background-color: var(--color-zinc-100);
@@ -1875,9 +1884,19 @@
       background-color: var(--color-ol-orange-dark);
     }
   }
+  .dark\:bg-red-400 {
+    &:where(.dark, .dark *) {
+      background-color: var(--color-red-400);
+    }
+  }
   .dark\:bg-stone-800 {
     &:where(.dark, .dark *) {
       background-color: var(--color-stone-800);
+    }
+  }
+  .dark\:bg-stone-800\/50 {
+    &:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-stone-800) 50%, transparent);
     }
   }
   .dark\:bg-stone-800\/90 {
@@ -1888,6 +1907,11 @@
   .dark\:bg-stone-900 {
     &:where(.dark, .dark *) {
       background-color: var(--color-stone-900);
+    }
+  }
+  .dark\:bg-stone-900\/50 {
+    &:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-stone-900) 50%, transparent);
     }
   }
   .dark\:bg-turquoise-dark {
@@ -1903,6 +1927,11 @@
   .dark\:bg-zinc-800 {
     &:where(.dark, .dark *) {
       background-color: var(--color-zinc-800);
+    }
+  }
+  .dark\:bg-zinc-800\/50 {
+    &:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-zinc-800) 50%, transparent);
     }
   }
   .dark\:from-ol-orange\/0 {

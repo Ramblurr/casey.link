@@ -54,8 +54,8 @@
   "Article component for displaying a single article"
   [{:keys [title slug date description]}]
   (card/card {:as :article}
-             (card/title {:href (str "/articles/" slug)} title)
-             (card/eyebrow {:as :time :datetime date :decorate true} date)
+             (card/title {:-href (str "/articles/" slug)} title)
+             (card/eyebrow {:-as :time :-datetime date :-decorate? true} date)
              (card/description description)
              (card/cta "Read article")))
 
