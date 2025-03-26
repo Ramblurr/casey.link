@@ -8,7 +8,7 @@
   (list
    [:div {:class "fixed inset-0 flex justify-center sm:px-8"}
     [:div {:class "flex w-full max-w-7xl lg:px-8"}
-     [:div {:class "w-full bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20"}]]]
+     [:div {:class "w-full bg-white ring-1 ring-zinc-100 dark:bg-stone-800 dark:ring-zinc-300/20"}]]]
    [:div {:class "relative flex w-full flex-col"}
     (header/header {:path uri})
     [:main {:class "flex-auto"} content]
@@ -23,7 +23,7 @@
             [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             [:title (:title page)]]
-           [:body {:class "flex h-full bg-white dark:bg-ol-gray-dark"}
+           [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}
             [:div {:class "flex w-full"}
              (layout page)]
             [:script {:src "/js/navigation.js"}]]]]))

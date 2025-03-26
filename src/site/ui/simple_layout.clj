@@ -3,6 +3,7 @@
 
 (defn simple-layout [{:keys [title intro children]}]
   (container/container
+   {:class "mt-16 sm:mt-32"}
    (list
     [:header {:class "max-w-2xl"}
      [:h1 {:class "text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100"}
@@ -11,5 +12,4 @@
       intro]]
     (when children
       [:div {:class "mt-16 sm:mt-20"}
-       children]))
-   "mt-16 sm:mt-32"))
+       children]))))

@@ -1,5 +1,6 @@
 (ns site.ui.home
   (:require
+   [site.ui.container :as container]
    [site.ui.home.card :as card]
    [site.ui.home.button :as button]
    [site.ui.home.social-icons :as social-icons])
@@ -53,10 +54,10 @@
   "Article component for displaying a single article"
   [{:keys [title slug date description]}]
   (card/card {:as :article}
-   (card/title {:href (str "/articles/" slug)} title)
-   (card/eyebrow {:as :time :datetime date :decorate true} date)
-   (card/description description)
-   (card/cta "Read article")))
+             (card/title {:href (str "/articles/" slug)} title)
+             (card/eyebrow {:as :time :datetime date :decorate true} date)
+             (card/description description)
+             (card/cta "Read article")))
 
 (defn social-link
   "Social link component for a single social media link"
@@ -70,41 +71,41 @@
   "Newsletter signup component"
   []
   [:form {:action "/thank-you"
-          :class "rounded-2xl border border-ol-light-gray/10 p-6 dark:border-ol-light-gray/20"}
+          :class  "rounded-2xl border border-ol-light-gray/10 p-6 dark:border-ol-light-gray/20"}
    [:h2 {:class "flex text-sm font-semibold text-ol-gray dark:text-white"}
     (mail-icon {:class "h-6 w-6 flex-none"})
     [:span {:class "ml-3"} "Stay up to date"]]
-   [:p {:class "mt-2 text-sm text-dark-liver dark:text-ol-light-gray"}
+   [:p {:class "mt-2 text-sm text-stone-800 dark:text-stone-100"}
     "Get notified when I publish new articles, project insights, or technical resources."]
    [:div {:class "mt-6 flex"}
-    [:input {:type "email"
+    [:input {:type        "email"
              :placeholder "Email address"
-             :aria-label "Email address"
-             :required true
-             :class "min-w-0 flex-auto appearance-none rounded-md border border-ol-gray/10 bg-white px-3 py-[calc(--spacing(2)-1px)] shadow-md shadow-ol-gray/5 placeholder:text-ol-light-gray focus:border-ol-orange focus:ring-4 focus:ring-ol-orange/10 focus:outline-hidden sm:text-sm dark:border-ol-light-gray/20 dark:bg-ol-gray-dark/[0.25] dark:text-white dark:placeholder:text-ol-light-gray-dark dark:focus:border-ol-orange-dark dark:focus:ring-ol-orange-dark/10"}]
+             :aria-label  "Email address"
+             :required    true
+             :class       "min-w-0 flex-auto appearance-none rounded-md border border-ol-gray/10 bg-white px-3 py-[calc(--spacing(2)-1px)] shadow-md shadow-ol-gray/5 placeholder:text-stone-100 focus:border-ol-orange focus:ring-4 focus:ring-ol-orange/10 focus:outline-hidden sm:text-sm dark:border-ol-light-gray/20 dark:bg-ol-gray-dark/[0.25] dark:text-white dark:placeholder:text-stone-100-dark dark:focus:border-ol-orange-dark dark:focus:ring-ol-orange-dark/10"}]
     (button/button {:type "submit" :class "ml-4 flex-none"} "Join")]])
 
 (defn role
   "Role component for a single job/position"
   [{:keys [company title logo start end]}]
   (let [start-label (if (string? start) start (:label start))
-        start-date (if (string? start) start (:datetime start))
-        end-label (if (string? end) end (:label end))
-        end-date (if (string? end) end (:datetime end))]
+        start-date  (if (string? start) start (:datetime start))
+        end-label   (if (string? end) end (:label end))
+        end-date    (if (string? end) end (:datetime end))]
     [:li {:class "flex gap-4"}
      [:div {:class "relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md ring-1 shadow-ol-gray/5 ring-ol-gray/5 dark:border dark:border-ol-light-gray/20 dark:bg-ol-gray dark:ring-0"}
-      [:img {:src logo
-             :alt ""
+      [:img {:src   logo
+             :alt   ""
              :class "h-7 w-7"}]]
      [:dl {:class "flex flex-auto flex-wrap gap-x-2"}
       [:dt {:class "sr-only"} "Company"]
       [:dd {:class "w-full flex-none text-sm font-medium text-ol-gray dark:text-white"}
        company]
       [:dt {:class "sr-only"} "Role"]
-      [:dd {:class "text-xs text-ol-light-gray dark:text-ol-light-gray"}
+      [:dd {:class "text-xs text-stone-100 dark:text-stone-100"}
        title]
       [:dt {:class "sr-only"} "Date"]
-      [:dd {:class "ml-auto text-xs text-ol-light-gray dark:text-ol-light-gray"
+      [:dd {:class      "ml-auto text-xs text-stone-100 dark:text-stone-100"
             :aria-label (str start-label " until " end-label)}
        [:time {:datetime start-date} start-label]
        " — "
@@ -163,7 +164,7 @@
       (for [[idx {:keys [src class]}] (map-indexed vector images)
             :let                      [rotation (get rotations (mod idx (count rotations)))]]
         [:div {:key   src
-               :class (str "relative aspect-9/10 w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800 " rotation)}
+               :class (str "relative aspect-9/10 w-44 flex-none overflow-hidden rounded-xl bg-stone-100 sm:w-72 sm:rounded-2xl dark:bg-stone-800 " rotation)}
          [:img {:src   src
                 :alt   ""
                 :sizes "(min-width: 1024px) 42rem, (min-width: 640px) 18rem, 11rem"
@@ -178,35 +179,29 @@
            :alt   "Outskirts Labs Background"
            :class "absolute inset-0 h-full w-full object-cover"}]]])
 
-(defn container
-  "Container component for sections"
-  [{:keys [class]} & children]
-  [:div {:class (str "mx-auto max-w-7xl px-4 sm:px-8 lg:px-12 " class)}
-   children])
-
 (defn home
   "Main home page component"
   [{:keys [articles]}]
   (list
-   (container {:class "mt-9"}
-              [:div {:class "max-w-2xl"}
-               [:h1 {:class "text-4xl font-bold tracking-tight text-ol-gray sm:text-5xl dark:text-white"}
-                "Developer, Technical Strategist, and NGO Specialist"]
-               [:p {:class "mt-6 text-base text-dark-liver dark:text-ol-light-gray"}
-                "I'm Casey Link, founder of Outskirts Labs, specializing in software development and data engineering for NGOs and non-profit organizations. I create technical solutions that make a positive impact while solving complex challenges."]
-               [:div {:class "mt-6 flex gap-6"}
-                (social-link {:href       "https://github.com/Ramblurr"
-                              :aria-label "Follow on GitHub"
-                              :icon       social-icons/github-icon})
-                (social-link {:href       "https://linkedin.com/in/kaseylink"
-                              :aria-label "Follow on LinkedIn"
-                              :icon       social-icons/linkedin-icon})]])
+   (container/container {:class "mt-9"}
+                        [:div {:class "max-w-2xl"}
+                         [:h1 {:class "text-4xl font-bold tracking-tight text-stone-800 sm:text-5xl dark:text-stone-100"}
+                          "Developer, Technical Strategist, and NGO Specialist"]
+                         [:p {:class "mt-6 text-base text-stone-800 dark:text-stone-100"}
+                          "I'm Casey Link, founder of Outskirts Labs, specializing in software development and data engineering for NGOs and non-profit organizations. I create technical solutions that make a positive impact while solving complex challenges."]
+                         [:div {:class "mt-6 flex gap-6"}
+                          (social-link {:href       "https://github.com/Ramblurr"
+                                        :aria-label "Follow on GitHub"
+                                        :icon       social-icons/github-icon})
+                          (social-link {:href       "https://linkedin.com/in/kaseylink"
+                                        :aria-label "Follow on LinkedIn"
+                                        :icon       social-icons/linkedin-icon})]])
    (photos)
-   (container {:class "mt-24 md:mt-28"}
-              [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}
-               [:div {:class "flex flex-col gap-16"}
-                (for [article-data (take 4 articles)]
-                  (article article-data))]
-               [:div {:class "space-y-10 lg:pl-16 xl:pl-24"}
-                (newsletter)
-                (resume)]])))
+   (container/container {:class "mt-24 md:mt-28"}
+                        [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}
+                         [:div {:class "flex flex-col gap-16"}
+                          (for [article-data (take 4 articles)]
+                            (article article-data))]
+                         [:div {:class "space-y-10 lg:pl-16 xl:pl-24"}
+                          (newsletter)
+                          (resume)]])))
