@@ -127,11 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const downDelay = avatarRef ? avatarRef.offsetTop : 0;
         const fromScale = 1;
-        const toScale = 36 / 64;
+        const toScale = 36 / 88;
         const fromX = 0;
         const toX = 2 / 16;
-        const translateFromX = 0;
-        const translateToX = 2 * 0.25;
+        const translateFromY = 0;
+        const translateToY = -0.3;
 
         const scrollY = downDelay - window.scrollY;
 
@@ -141,10 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
         let x = (scrollY * (fromX - toX)) / downDelay + toX;
         x = clamp(x, fromX, toX);
 
-        let translateX =
-            (scrollY * (translateFromX - translateToX)) / downDelay +
-            translateToX;
-        translateX = clamp(translateX, translateFromX, translateToX);
+        let translateY =
+            (scrollY * (translateFromY - translateToY)) / downDelay +
+            translateToY;
+        translateY = clamp(translateY, translateFromY, translateToY);
 
         const borderScale = 1 / (toScale / scale);
         const borderX = (-toX + x) * borderScale;
@@ -157,9 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setProperty("--avatar-border-transform", borderTransform);
         setProperty("--avatar-border-opacity", scale === toScale ? "1" : "0");
-        if (document.getElementById("logo-wide")?.checkVisibility()) {
-            setProperty("--avatar-translate", `${translateX}rem 0.25rem`);
-        }
+        setProperty("--avatar-translate", `0 ${translateY}rem`);
     }
 
     function updateStyles() {
