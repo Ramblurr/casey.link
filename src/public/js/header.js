@@ -1,57 +1,5 @@
-// Header and navigation functionality
 document.addEventListener("DOMContentLoaded", () => {
-    // Mobile navigation handling
-    const navButton = document.querySelector('[data-js="mobile-nav-button"]');
-    const navPanel = document.querySelector('[data-js="mobile-nav-panel"]');
-    const closeButton = document.querySelector('[data-js="mobile-nav-close"]');
-    const themeToggle = document.querySelector('[data-js="theme-toggle"]');
-
-    if (navButton && navPanel) {
-        navButton.addEventListener("click", () => {
-            navPanel.classList.toggle("hidden");
-            navButton.setAttribute(
-                "aria-expanded",
-                navPanel.classList.contains("hidden") ? "false" : "true",
-            );
-        });
-    }
-
-    if (closeButton && navPanel) {
-        closeButton.addEventListener("click", () => {
-            navPanel.classList.add("hidden");
-            if (navButton) {
-                navButton.setAttribute("aria-expanded", "false");
-            }
-        });
-    }
-
-    // Theme toggle functionality
-    if (themeToggle) {
-        themeToggle.addEventListener("click", () => {
-            const html = document.documentElement;
-            if (html.classList.contains("dark")) {
-                html.classList.remove("dark");
-                localStorage.theme = "light";
-            } else {
-                html.classList.add("dark");
-                localStorage.theme = "dark";
-            }
-        });
-    }
-
-    // Set initial theme based on local storage or system preference
-    if (
-        localStorage.theme === "dark" ||
-        (!("theme" in localStorage) &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-        document.documentElement.classList.add("dark");
-    } else {
-        document.documentElement.classList.remove("dark");
-    }
-
     // Header scroll animation functionality
-    // Get references to DOM elements similar to React refs
     const header = document.getElementById("main-header");
     const headerRef = document.getElementById("header-ref");
     const avatarRef = document.getElementById("avatar-ref");
@@ -166,10 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
         isInitial = false;
     }
 
-    // Initialize styles
     updateStyles();
-
-    // Add event listeners
     window.addEventListener("scroll", updateStyles, { passive: true });
     window.addEventListener("resize", updateStyles);
 });
