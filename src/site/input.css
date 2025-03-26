@@ -14,6 +14,21 @@
   --color-ol-brown: #3f1f10;
   --color-gutentag: #d9564a;
 
+  /*
+  --color-ol-brown: oklch(27.997% 0.05557 44.884);
+  --color-ol-brown-50: oklch(86.982% 0.04431 46.717);
+  --color-ol-brown-100: oklch(83.744% 0.05606 45.117);
+  --color-ol-brown-200: oklch(77.693% 0.08007 46.454);
+  --color-ol-brown-300: oklch(71.507% 0.10374 45.646);
+  --color-ol-brown-400: oklch(65.662% 0.1291 44.868);
+  --color-ol-brown-500: oklch(59.583% 0.13915 43.97);
+  --color-ol-brown-600: oklch(52.252% 0.1203 43.865);
+  --color-ol-brown-700: oklch(44.502% 0.09948 43.993);
+  --color-ol-brown-800: oklch(36.55% 0.07917 44.475);
+  --color-ol-brown-900: oklch(27.997% 0.05557 44.884);
+  --color-ol-brown-950: oklch(21.857% 0.03907 45.571);
+  */
+
   /* Dark mode brand colors */
   --color-dark-liver-dark: #6c655e;
   --color-dark-orange-dark: #d8532d;
@@ -53,4 +68,43 @@
   --text-8xl--line-height: 1;
   --text-9xl: 8rem;
   --text-9xl--line-height: 1;
+}
+
+.ol-logo {
+  color: #201e1d;
+  .flask,
+  .cactus {
+    fill: currentColor;
+  }
+
+  .bubble {
+    fill: #e76227;
+  }
+  .logo-text {
+    fill: #e76227;
+    stroke: black;
+  }
+}
+
+html.dark .ol-logo {
+  color: white;
+}
+
+@media (prefers-color-scheme: light) {
+  .ol-logo {
+    color: #201e1d;
+  }
+  html.dark .ol-logo {
+    color: white;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .ol-logo {
+    color: white;
+  }
+
+  html:not(.dark) .ol-logo {
+    color: #201e1d;
+  }
 }

@@ -1,8 +1,9 @@
 (ns site.ui.prose
-  (:require [clojure.string :as str]))
+  (:require
+   [site.ui.core :as uic]))
 
 (defn prose
-  ([children] (prose children nil))
-  ([children class-name]
-   [:div {:class (str/join " " ["prose dark:prose-invert" class-name])}
-    children]))
+  [& args]
+  (let [[_ attrs children] (uic/extract args)]
+    [:div (uic/merge-attrs attrs :class "prose dark:prose-invert")
+     children]))
