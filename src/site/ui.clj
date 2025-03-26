@@ -17,13 +17,18 @@
 (defn shell [{:keys [uri content] :as page}]
   (assoc page :content
          [html/doctype-html5
-          [:html {:lang "en" :class "h-full antialiased"}
+          [:html (array-map :lang                  "en"
+                            :class "h-full antialiased"
+                            :data-signals-darkmode "window.matchMedia(\"(prefers-color-scheme: dark)\").matches"
+                            :data-persist          "darkmode"
+                            :data-class-dark       "$darkmode")
            [:head
             [:meta {:http-equiv "content-type" :content "text/html;charset=UTF-8"}]
             [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
+            [:script {:type "module", :src "/js/datastar@1.0.0-beta.10.js"}]
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             [:title (:title page)]]
            [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}
             [:div {:class "flex w-full"}
              (layout page)]
-            [:script {:src "/js/navigation.js"}]]]]))
+            [:script {:src "/js/header.js"}]]]]))
