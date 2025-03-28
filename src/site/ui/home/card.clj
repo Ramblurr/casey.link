@@ -43,7 +43,7 @@
   [:div {:aria-hidden "true"
          :class       "relative z-10 mt-4 flex items-center text-sm font-medium text-ol-orange dark:text-ol-orange"}
    children
-   (icon/chevron-right {:class "ml-1 h-4 w-4 stroke-current"})])
+   (icon/chevron-right {:class "ml-1 h-4 w-4"})])
 
 (defn eyebrow
   "Eyebrow component for card - like a subtitle or date"
