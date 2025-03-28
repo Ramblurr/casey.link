@@ -9,6 +9,7 @@ const SVG_SIZE = 100; // SVG viewport size (100x100)
 const BUBBLE_SPAWN_INTERVAL_MIN = 300; // Min time between bubbles (ms)
 const BUBBLE_SPAWN_INTERVAL_MAX = 1000; // Max time between bubbles (ms)
 const BUBBLE_DEFORM_FACTOR = 0.1; // Lower values = less deformation (range: 0.1-1.0)
+const MAX_BUBBLES = 50; // Maximum number of bubbles to keep
 
 // Bubble size configuration - easily adjust size ranges and probabilities
 const BUBBLE_SIZE = {
@@ -37,10 +38,12 @@ const FLASK_BOUNDARIES = [
 
 // State management
 let isAnimating = false;
-let bubbleAnimations = new Map();
+let bubbleAnimations = new Map(); // Maps bubble element to animation frame ID
+let bubblePositions = new Map(); // Maps bubble element to {x, y, size, created}
 let spawnInterval = null;
 let svgElement = null;
 let bubblesContainer = null;
+let initialized = false;
 
 /**
  * Gets boundary constraints at a specific y position
@@ -68,9 +71,8 @@ function getBoundaryAt(y) {
     }
 
     // If at or beyond our defined boundaries, use the last available
-    if (!lowerBound) lowerBound = FLASK_BOUNDARIES[0] - 2;
-    if (!upperBound)
-        upperBound = FLASK_BOUNDARIES[FLASK_BOUNDARIES.length - 1] - 2;
+    if (!lowerBound) lowerBound = FLASK_BOUNDARIES[0];
+    if (!upperBound) upperBound = FLASK_BOUNDARIES[FLASK_BOUNDARIES.length - 1];
 
     // If at an exact boundary point, return it
     if (lowerBound[0] === y)
@@ -136,7 +138,7 @@ function animateBubble(bubble, startX, startY, bubbleSize) {
     let x = startX;
     let y = startY;
 
-    // Save original position for reference (needed for original bubbles)
+    // Get original position from DOM for transform calculations
     const originalX = startX;
     const originalY = startY;
 
@@ -220,33 +222,29 @@ function animateBubble(bubble, startX, startY, bubbleSize) {
             speedY -= 0.007;
         }
 
-        // Update the bubble's stored position for all bubbles
-        bubble.setAttribute("data-position", `${x},${y},${bubbleSize}`);
+        // Store the updated position
+        bubblePositions.set(bubble, {
+            x,
+            y,
+            size: bubbleSize,
+            created: bubblePositions.get(bubble)?.created || Date.now(),
+        });
 
-        // Apply bubble deformation
+        // Update bubble shape for deformation
         updateBubbleShape(bubble, x, y, bubbleSize, deformPhase, deformAmount);
 
-        // For the original bubbles (using transform)
-        if (
-            bubble.hasAttribute("transform") ||
-            !bubble.hasAttribute("data-dynamic")
-        ) {
-            bubble.style.transform = `translate(${x - originalX}px, ${y - originalY}px)`;
-        }
+        // Apply transform to move bubble
+        bubble.style.transform = `translate(${x - originalX}px, ${y - originalY}px)`;
 
         // Remove bubble if it's out of the viewport
         if (y < -20) {
-            if (
-                bubble.hasAttribute("data-dynamic") &&
-                bubblesContainer.contains(bubble)
-            ) {
-                // Remove from DOM and clean up attributes
-                bubble.removeAttribute("data-position");
+            if (bubblesContainer.contains(bubble)) {
                 bubblesContainer.removeChild(bubble);
             } else {
                 bubble.style.display = "none";
             }
             bubbleAnimations.delete(bubble);
+            bubblePositions.delete(bubble);
             return;
         }
 
@@ -264,8 +262,8 @@ function animateBubble(bubble, startX, startY, bubbleSize) {
  * Updates bubble shape to create deformation effect
  */
 function updateBubbleShape(bubble, x, y, baseSize, phase, amount) {
-    // For dynamic bubbles only, update the path
-    if (bubble.hasAttribute("data-dynamic")) {
+    // Only update the shape of bubbles that weren't in the original SVG
+    if (!bubblePositions.get(bubble)?.isOriginal) {
         // Create a slightly irregular circle path with phase-based deformation
         let path = "";
         const pointCount = 8;
@@ -306,68 +304,63 @@ function updateBubbleShape(bubble, x, y, baseSize, phase, amount) {
 }
 
 /**
- * Spawns new bubbles at random intervals
- */
-function startBubbleSpawner() {
-    if (spawnInterval) clearInterval(spawnInterval);
-
-    const scheduleNextBubble = () => {
-        const delay = randomBetween(
-            BUBBLE_SPAWN_INTERVAL_MIN,
-            BUBBLE_SPAWN_INTERVAL_MAX,
-        );
-        spawnInterval = setTimeout(() => {
-            if (isAnimating) {
-                spawnBubble();
-                scheduleNextBubble();
-            }
-        }, delay);
-    };
-
-    // Start the cycle
-    scheduleNextBubble();
-}
-
-/**
- * Checks if a new bubble would overlap with existing bubbles
- * @param {number} x - X position of new bubble
- * @param {number} y - Y position of new bubble
- * @param {number} size - Radius of new bubble
- * @returns {boolean} - True if there's an overlap
+ * Check if a bubble would overlap with existing bubbles
  */
 function checkBubbleOverlap(x, y, size) {
-    // Get all existing bubbles that have data-position attribute
-    const existingBubbles = document.querySelectorAll("[data-position]");
     const padding = 1.5; // Minimum gap between bubbles
 
-    for (const bubble of existingBubbles) {
-        // Get bubble position and size from data attributes
-        const posData = bubble.getAttribute("data-position").split(",");
-        if (posData.length < 3) continue;
+    for (const [bubble, pos] of bubblePositions.entries()) {
+        // Skip bubbles that aren't in the DOM anymore
+        if (!bubblesContainer.contains(bubble)) continue;
 
-        const bubbleX = parseFloat(posData[0]);
-        const bubbleY = parseFloat(posData[1]);
-        const bubbleSize = parseFloat(posData[2]);
-
-        // Calculate distance between centers
         const distance = Math.sqrt(
-            Math.pow(x - bubbleX, 2) + Math.pow(y - bubbleY, 2),
+            Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2),
         );
 
-        // Check if bubbles overlap (with padding)
-        if (distance < size + bubbleSize + padding) {
+        if (distance < size + pos.size + padding) {
             return true; // Overlap detected
         }
     }
 
-    return false; // No overlap
+    return false;
 }
 
 /**
- * Creates and animates a new bubble
+ * Cleans up excess bubbles when we have too many
+ */
+function cleanupExcessBubbles() {
+    // If we have too many bubbles, remove oldest ones
+    const currentBubbles = Array.from(bubblePositions.entries()).filter(
+        ([bubble]) => !bubble.hasAttribute("original-bubble"),
+    );
+
+    if (currentBubbles.length > MAX_BUBBLES) {
+        // Sort by creation time (oldest first)
+        currentBubbles.sort((a, b) => a[1].created - b[1].created);
+
+        // Remove oldest bubbles
+        const countToRemove = currentBubbles.length - MAX_BUBBLES;
+        for (let i = 0; i < countToRemove; i++) {
+            const [bubble] = currentBubbles[i];
+            if (bubblesContainer.contains(bubble)) {
+                bubbleAnimations.delete(bubble);
+                bubblePositions.delete(bubble);
+                bubblesContainer.removeChild(bubble);
+            }
+        }
+    }
+}
+
+/**
+ * Spawns a new bubble
  */
 function spawnBubble() {
-    // Random size using configurable size ranges and probabilities
+    if (!isAnimating) return;
+
+    // Clean up excess bubbles
+    cleanupExcessBubbles();
+
+    // Random size based on configured probabilities
     let size;
     const sizeRoll = Math.random();
     const smallProb = BUBBLE_SIZE.SMALL.PROBABILITY;
@@ -385,7 +378,7 @@ function spawnBubble() {
     }
 
     // Try to find a suitable spawn location without overlaps
-    const maxAttempts = 8; // Maximum number of attempts to find a valid position
+    const maxAttempts = 8;
     let xPos, yPos;
     let foundValidPosition = false;
 
@@ -396,7 +389,6 @@ function spawnBubble() {
         const padding = 5; // Keep away from walls
         xPos = randomBetween(boundary.left + padding, boundary.right - padding);
 
-        // Check if this position overlaps with existing bubbles
         if (!checkBubbleOverlap(xPos, yPos, size)) {
             foundValidPosition = true;
             break;
@@ -404,71 +396,104 @@ function spawnBubble() {
     }
 
     // Skip spawning if we couldn't find a valid position
-    if (!foundValidPosition) {
-        return;
-    }
+    if (!foundValidPosition) return;
 
-    // Create the bubble and add it to the SVG
+    // Create and add the bubble
     const bubble = createBubble(xPos, yPos, size);
-    bubble.setAttribute("data-dynamic", "true"); // Mark as dynamically created
-    bubble.setAttribute("data-position", `${xPos},${yPos},${size}`); // Store position and size
     bubblesContainer.appendChild(bubble);
 
-    // Start animating the bubble
+    // Store initial position
+    bubblePositions.set(bubble, {
+        x: xPos,
+        y: yPos,
+        size: size,
+        created: Date.now(),
+        isOriginal: false,
+    });
+
+    // Start animation
     animateBubble(bubble, xPos, yPos, size);
 }
 
 /**
- * Animates existing bubbles in the SVG
+ * Starts the bubble spawner
  */
-function animateExistingBubbles() {
-    // Select only original bubbles within the current SVG (not dynamically created)
-    const existingBubbles = document.querySelectorAll("#logo-square .bubble:not([data-dynamic])");
+function startBubbleSpawner() {
+    if (spawnInterval) clearTimeout(spawnInterval);
+
+    const scheduleNextBubble = () => {
+        const delay = randomBetween(
+            BUBBLE_SPAWN_INTERVAL_MIN,
+            BUBBLE_SPAWN_INTERVAL_MAX,
+        );
+
+        spawnInterval = setTimeout(() => {
+            if (isAnimating) {
+                spawnBubble();
+                scheduleNextBubble();
+            }
+        }, delay);
+    };
+
+    // Start the cycle
+    scheduleNextBubble();
+}
+
+/**
+ * Initializes bubbles by capturing original bubbles' positions
+ */
+function initializeAllBubbles() {
+    if (initialized) return;
+    initialized = true;
+
+    // Select all bubbles within the SVG
+    const existingBubbles = document.querySelectorAll("#logo-square .bubble");
 
     existingBubbles.forEach((bubble) => {
-        // If this bubble already has an animation in progress, skip it
-        if (bubbleAnimations.has(bubble)) {
-            return;
-        }
-        
-        // Check if this bubble already has a stored position (was animated before)
-        if (bubble.hasAttribute("data-position")) {
-            const posData = bubble.getAttribute("data-position").split(",");
-            if (posData.length >= 3) {
-                const x = parseFloat(posData[0]);
-                const y = parseFloat(posData[1]);
-                const size = parseFloat(posData[2]);
-                
-                // Resume animation from the stored position
-                animateBubble(bubble, x, y, size);
-                return;
-            }
-        }
-        
-        // First time animating this bubble
+        // Mark as original
+        bubble.setAttribute("original-bubble", "true");
+
+        // Get initial positions in SVG coordinate space
         const bbox = bubble.getBoundingClientRect();
         const svgBox = svgElement.getBoundingClientRect();
 
-        // Convert to SVG coordinate space (0-100)
-        const x = ((bbox.x + bbox.width / 2 - svgBox.x) / svgBox.width) * SVG_SIZE;
-        const y = ((bbox.y + bbox.height / 2 - svgBox.y) / svgBox.height) * SVG_SIZE;
-
-        // Estimate bubble size
+        const x =
+            ((bbox.x + bbox.width / 2 - svgBox.x) / svgBox.width) * SVG_SIZE;
+        const y =
+            ((bbox.y + bbox.height / 2 - svgBox.y) / svgBox.height) * SVG_SIZE;
         const size = ((bbox.width / svgBox.width) * SVG_SIZE) / 2;
-        
-        // Store the current position for future reference
-        bubble.setAttribute("data-position", `${x},${y},${size}`);
 
-        // Start animation
-        animateBubble(bubble, x, y, size);
+        // Store initial position
+        bubblePositions.set(bubble, {
+            x,
+            y,
+            size,
+            created: Date.now(),
+            isOriginal: true,
+        });
     });
 }
 
 /**
- * Stops the animation
- * @param {string} mode - "freeze" to keep bubbles in place, "reset" to return to original, "clean" to remove dynamic
+ * Animates all bubbles based on their current position
  */
-function stopAnimation(mode = "freeze") {
+function animateAllBubbles() {
+    for (const [bubble, position] of bubblePositions.entries()) {
+        // Skip if already animating
+        if (bubbleAnimations.has(bubble)) continue;
+
+        // Skip if not in DOM
+        if (!bubblesContainer.contains(bubble)) continue;
+
+        // Start animation from current position
+        animateBubble(bubble, position.x, position.y, position.size);
+    }
+}
+
+/**
+ * Stops all animations
+ */
+function stopAnimation() {
     isAnimating = false;
 
     // Clear spawn interval
@@ -480,57 +505,41 @@ function stopAnimation(mode = "freeze") {
     // Cancel all animation frames
     bubbleAnimations.forEach((frameId, bubble) => {
         cancelAnimationFrame(frameId);
-
-        if (mode === "reset" || mode === "clean") {
-            // Reset original bubbles to original position
-            if (!bubble.hasAttribute("data-dynamic")) {
-                bubble.style.transform = "";
-                bubble.style.display = "";
-            }
-
-            // Remove dynamically created bubbles (if clean mode)
-            if (mode === "clean" && bubble.hasAttribute("data-dynamic")) {
-                if (bubblesContainer && bubblesContainer.contains(bubble)) {
-                    bubblesContainer.removeChild(bubble);
-                }
-            }
-        }
-        // If mode is "freeze", do nothing - leave bubbles where they are
     });
 
     bubbleAnimations.clear();
 }
 
-// Set up event listeners
+// Set up mouse event listeners
 document.addEventListener("DOMContentLoaded", () => {
     const logoSquare = document.getElementById("logo-square");
     if (!logoSquare) return;
 
+    // Get SVG elements
+    svgElement = logoSquare;
+    bubblesContainer = logoSquare.querySelector(".bubbles");
+
+    if (!svgElement || !bubblesContainer) {
+        console.error("Could not find SVG elements");
+        return;
+    }
+
+    // Mouse enter - start animation
     logoSquare.addEventListener("mouseenter", () => {
         isAnimating = true;
-        svgElement = document.getElementById("logo-square");
-        bubblesContainer = document.querySelector("#logo-square .bubbles");
 
-        // Make sure SVG elements were found
-        if (!svgElement || !bubblesContainer) {
-            console.error("Could not find SVG elements");
-            return;
-        }
+        // Initialize positions for all bubbles on first hover
+        initializeAllBubbles();
 
-        // Animate existing bubbles
-        animateExistingBubbles();
+        // Animate all bubbles from their current positions
+        animateAllBubbles();
 
         // Start spawning new bubbles
         startBubbleSpawner();
     });
-});
 
-// Clean up animations when mouse leaves
-document.addEventListener("DOMContentLoaded", () => {
-    const logoSquare = document.getElementById("logo-square");
-    if (!logoSquare) return;
-
+    // Mouse leave - freeze animation
     logoSquare.addEventListener("mouseleave", () => {
-        stopAnimation("freeze");
+        stopAnimation();
     });
 });
