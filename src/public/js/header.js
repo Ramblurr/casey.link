@@ -118,3 +118,64 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", updateStyles, { passive: true });
     window.addEventListener("resize", updateStyles);
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    function animateSidenote(sidenote) {
+        sidenote.classList.remove("animate-sidenote");
+        requestAnimationFrame(() => sidenote.classList.add("animate-sidenote"));
+    }
+    function isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <=
+                (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <=
+                (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    function updateTargetedSidenote() {
+        // Remove targeted class from all sidenotes
+        document.querySelectorAll(".sidenote-targeted").forEach((note) => {
+            note.classList.remove("sidenote-targeted");
+        });
+
+        // If there's a hash, apply targeted class to that sidenote
+        if (window.location.hash) {
+            const targetId = window.location.hash.substring(1);
+            const sidenote = document.getElementById(targetId);
+
+            if (sidenote && sidenote.classList.contains("sidenote")) {
+                sidenote.classList.add("sidenote-targeted");
+            }
+        }
+    }
+
+    document.querySelectorAll(".sidenote-ref").forEach((ref) => {
+        ref.addEventListener("click", function (e) {
+            const targetId = this.getAttribute("href").substring(1);
+            const sidenote = document.getElementById(targetId);
+            if (sidenote) {
+                if (isInViewport(sidenote)) {
+                    e.preventDefault();
+                    history.pushState(null, null, "#" + targetId);
+                }
+                updateTargetedSidenote();
+                animateSidenote(sidenote);
+            }
+        });
+    });
+    if (window.location.hash) {
+        updateTargetedSidenote();
+        setTimeout(() => {
+            const targetId = window.location.hash.substring(1);
+            const sidenote = document.getElementById(targetId);
+
+            if (sidenote && sidenote.classList.contains("sidenote")) {
+                animateSidenote(sidenote);
+            }
+        }, 500);
+    }
+});

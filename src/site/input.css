@@ -133,3 +133,147 @@ html.dark .ol-logo {
     color: #201e1d;
   }
 }
+
+/* --------------------------------------------------------------- */
+/* Sidenotes */
+
+@utility sidenote-ref-hover {
+  @apply bg-stone-200 dark:bg-stone-800 rounded-xs;
+  --sidenote-ref-hover-bg: var(--color-stone-200);
+  @variant dark {
+    --sidenote-ref-hover-bg: var(--color-stone-400);
+  }
+  box-shadow: 0 0 0 2px var(--sidenote-ref-hover-bg);
+}
+@utility sidenote-hover {
+  @apply bg-stone-200 dark:bg-stone-800 rounded-xs;
+  --sidenote-hover-bg: var(--color-stone-200);
+  @variant dark {
+    --sidenote-hover-bg: var(--color-stone-400);
+  }
+  box-shadow: 0 0 0 2px var(--sidenote-hover-bg);
+}
+
+.sidenote-targeted {
+  @apply sidenote-hover;
+}
+
+.sidenote-ref {
+  @apply px-1 w-auto h-auto inline-block border-0 bg-transparent m-0 decoration-inherit dark:text-inherit text-inherit dark:text-inherit;
+  transition: box-shadow 0.15s ease 0.05s;
+
+  &:hover {
+    @apply sidenote-ref-hover;
+  }
+  sup {
+    @apply align-super text-xs font-bold leading-3 lining-nums text-inherit dark:text-inherit top-[0];
+  }
+}
+
+.sidenote {
+  @apply block font-sans text-xs mt-4 bg-stone-100 dark:bg-stone-800 p-2 font-normal w-full;
+  transition: box-shadow 0.15s ease 0.05s;
+
+  &:hover {
+    @apply sidenote-hover;
+  }
+
+  @variant lg {
+    @apply w-fit bg-transparent dark:bg-transparent p-1;
+  }
+  sup {
+    @apply top-[0] mr-1;
+  }
+}
+.sidenote-container:has(.sidenote-ref:hover) .sidenote {
+  @variant lg {
+    @apply sidenote-hover;
+  }
+}
+
+.sidenote-container:has(.sidenote:hover) .sidenote-ref {
+  @variant lg {
+    @apply sidenote-ref-hover;
+  }
+}
+
+.sidenote-container {
+  @apply mb-4;
+
+  @variant lg {
+    @apply mb-0 relative flex justify-between;
+  }
+}
+.sidenote-container > *:not(.sidenote-column) {
+  @variant lg {
+    margin-right: 40px;
+  }
+}
+.sidenote-main-col *:last-child {
+  @apply mb-0;
+}
+.sidenote-main-col {
+  @apply w-full;
+}
+.sidenote-main-col > ul > li:first-child,
+.sidenote-main-col > ol > li:first-child {
+  @apply mt-0;
+}
+
+.sidenote .sidenote-number {
+  @apply font-bold text-xs;
+  @variant lg {
+    @apply inline-block mr-1;
+  }
+}
+.sidenote-column {
+  @variant lg {
+    @apply flex-shrink-0;
+    --col-w: 512px;
+    --col-p: 80px;
+    width: var(--col-w);
+    margin-right: calc(-1 * (var(--col-w) + var(--col-p)));
+    margin-top: calc(var(--spacing) * 7); /* must match p in typograph.js */
+  }
+}
+.sidenote:first-child {
+  @variant lg {
+    @apply mt-1;
+  }
+}
+.sidenotes-layout .markdown-viewer {
+  @variant lg {
+    @apply pr-[241px];
+  }
+}
+.sidenote:last-of-type {
+  @variant lg {
+  }
+}
+.sidenotes-layout h1 {
+  @variant lg {
+    @apply w-[756px];
+  }
+}
+@keyframes sidenote-pulse {
+  0% {
+    box-shadow: 0 0 0 15px var(--sidenote-hover-bg);
+  }
+  100% {
+    box-shadow: 0 0 0 2px var(--sidenote-hover-bg);
+  }
+}
+
+.animate-sidenote {
+  animation: sidenote-pulse 0.6s ease-out forwards;
+}
+
+.prose {
+  a:has(img) {
+    @apply whitespace-nowrap;
+  }
+
+  a:has(img) img.inline {
+    @apply mr-1;
+  }
+}
