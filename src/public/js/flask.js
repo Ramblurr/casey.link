@@ -220,10 +220,8 @@ function animateBubble(bubble, startX, startY, bubbleSize) {
             speedY -= 0.007;
         }
 
-        // Update the bubble's stored position
-        if (bubble.hasAttribute("data-dynamic")) {
-            bubble.setAttribute("data-position", `${x},${y},${bubbleSize}`);
-        }
+        // Update the bubble's stored position for all bubbles
+        bubble.setAttribute("data-position", `${x},${y},${bubbleSize}`);
 
         // Apply bubble deformation
         updateBubbleShape(bubble, x, y, bubbleSize, deformPhase, deformAmount);
@@ -424,22 +422,42 @@ function spawnBubble() {
  * Animates existing bubbles in the SVG
  */
 function animateExistingBubbles() {
-    // Select only bubbles within the current SVG
-    const existingBubbles = document.querySelectorAll("#logo-square .bubble");
+    // Select only original bubbles within the current SVG (not dynamically created)
+    const existingBubbles = document.querySelectorAll("#logo-square .bubble:not([data-dynamic])");
 
     existingBubbles.forEach((bubble) => {
-        // Get bubble position
+        // If this bubble already has an animation in progress, skip it
+        if (bubbleAnimations.has(bubble)) {
+            return;
+        }
+        
+        // Check if this bubble already has a stored position (was animated before)
+        if (bubble.hasAttribute("data-position")) {
+            const posData = bubble.getAttribute("data-position").split(",");
+            if (posData.length >= 3) {
+                const x = parseFloat(posData[0]);
+                const y = parseFloat(posData[1]);
+                const size = parseFloat(posData[2]);
+                
+                // Resume animation from the stored position
+                animateBubble(bubble, x, y, size);
+                return;
+            }
+        }
+        
+        // First time animating this bubble
         const bbox = bubble.getBoundingClientRect();
         const svgBox = svgElement.getBoundingClientRect();
 
         // Convert to SVG coordinate space (0-100)
-        const x =
-            ((bbox.x + bbox.width / 2 - svgBox.x) / svgBox.width) * SVG_SIZE;
-        const y =
-            ((bbox.y + bbox.height / 2 - svgBox.y) / svgBox.height) * SVG_SIZE;
+        const x = ((bbox.x + bbox.width / 2 - svgBox.x) / svgBox.width) * SVG_SIZE;
+        const y = ((bbox.y + bbox.height / 2 - svgBox.y) / svgBox.height) * SVG_SIZE;
 
         // Estimate bubble size
         const size = ((bbox.width / svgBox.width) * SVG_SIZE) / 2;
+        
+        // Store the current position for future reference
+        bubble.setAttribute("data-position", `${x},${y},${size}`);
 
         // Start animation
         animateBubble(bubble, x, y, size);
