@@ -1,52 +1,21 @@
 (ns site.ui.home
   (:require
+   [site.ui.icons :as icon]
    [site.ui.container :as container]
    [site.ui.home.card :as card]
-   [site.ui.home.button :as button]
-   [site.ui.home.social-icons :as social-icons])
+   [site.ui.home.button :as button])
   (:import (java.time Year)))
-
-;; SVG Icon Components
-(defn mail-icon
-  "Mail icon SVG component"
-  [{:keys [class]}]
-  [:svg {:viewBox         "0 0 24 24"
-         :fill            "none"
-         :stroke-width    "1.5"
-         :stroke-linecap  "round"
-         :stroke-linejoin "round"
-         :aria-hidden     "true"
-         :class           class}
-   [:path {:d     "M2.75 7.75a3 3 0 0 1 3-3h12.5a3 3 0 0 1 3 3v8.5a3 3 0 0 1-3 3H5.75a3 3 0 0 1-3-3v-8.5Z"
-           :class "fill-white/80 stroke-ol-light-gray dark:fill-white/5 dark:stroke-ol-light-gray"}]
-   [:path {:d     "m4 6 6.024 5.479a2.915 2.915 0 0 0 3.952 0L20 6"
-           :class "stroke-ol-light-gray dark:stroke-ol-light-gray"}]])
-
-(defn briefcase-icon
-  "Briefcase icon SVG component"
-  [{:keys [class]}]
-  [:svg {:viewBox "0 0 24 24"
-         :fill "none"
-         :stroke-width "1.5"
-         :stroke-linecap "round"
-         :stroke-linejoin "round"
-         :aria-hidden "true"
-         :class class}
-   [:path {:d "M2.75 9.75a3 3 0 0 1 3-3h12.5a3 3 0 0 1 3 3v8.5a3 3 0 0 1-3 3H5.75a3 3 0 0 1-3-3v-8.5Z"
-           :class "fill-white/80 stroke-ol-light-gray dark:fill-white/5 dark:stroke-ol-light-gray"}]
-   [:path {:d "M3 14.25h6.249c.484 0 .952-.002 1.316.319l.777.682a.996.996 0 0 0 1.316 0l.777-.682c.364-.32.832-.319 1.316-.319H21M8.75 6.5V4.75a2 2 0 0 1 2-2h2.5a2 2 0 0 1 2 2V6.5"
-           :class "stroke-ol-light-gray dark:stroke-ol-light-gray"}]])
 
 (defn arrow-down-icon
   "Arrow down icon SVG component"
   [{:keys [class]}]
-  [:svg {:viewBox "0 0 16 16"
-         :fill "none"
+  [:svg {:viewBox     "0 0 16 16"
+         :fill        "none"
          :aria-hidden "true"
-         :class class}
-   [:path {:d "M4.75 8.75 8 12.25m0 0 3.25-3.5M8 12.25v-8.5"
-           :stroke-width "1.5"
-           :stroke-linecap "round"
+         :class       class}
+   [:path {:d               "M4.75 8.75 8 12.25m0 0 3.25-3.5M8 12.25v-8.5"
+           :stroke-width    "1.5"
+           :stroke-linecap  "round"
            :stroke-linejoin "round"}]])
 
 ;; Main Component Functions
@@ -65,7 +34,9 @@
   [:a {:href       href
        :aria-label aria-label
        :class      "group -m-1 p-1"}
-   (icon {:class "h-6 w-6 fill-ol-light-gray transition group-hover:fill-ol-orange dark:fill-ol-light-gray dark:group-hover:fill-ol-orange"})])
+   (icon {:class "h-6 w-6 transition fill-stone-400 group-hover:fill-ol-orange-600 dark:fill-stone-400 dark:group-hover:fill-ol-orange-500
+text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hover:text-ol-orange-500
+"})])
 
 (defn newsletter
   "Newsletter signup component"
@@ -73,7 +44,7 @@
   [:form {:action "/thank-you"
           :class  "rounded-2xl border border-ol-light-gray/10 p-6 dark:border-ol-light-gray/20"}
    [:h2 {:class "flex text-sm font-semibold text-ol-gray dark:text-white"}
-    (mail-icon {:class "h-6 w-6 flex-none"})
+    (icon/envelope {:class "h-6 w-6 flex-none text-stone-400 dark:text-stone-500"})
     [:span {:class "ml-3"} "Stay up to date"]]
    [:p {:class "mt-2 text-sm text-stone-800 dark:text-stone-100"}
     "Get notified when I publish new articles, project insights, or technical resources."]
@@ -87,68 +58,74 @@
 
 (defn role
   "Role component for a single job/position"
-  [{:keys [company title logo start end]}]
+  [{:keys [company title icon start end link]}]
   (let [start-label (if (string? start) start (:label start))
         start-date  (if (string? start) start (:datetime start))
         end-label   (if (string? end) end (:label end))
         end-date    (if (string? end) end (:datetime end))]
     [:li {:class "flex gap-4"}
-     [:div {:class "relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md ring-1 shadow-ol-gray/5 ring-ol-gray/5 dark:border dark:border-ol-light-gray/20 dark:bg-ol-gray dark:ring-0"}
-      [:img {:src   logo
-             :alt   ""
-             :class "h-7 w-7"}]]
+     [(if link :a :div) {:href link :class "relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md ring-1 shadow-ol-gray/5 ring-ol-gray/5 dark:border dark:border-ol-light-gray/20 dark:bg-ol-gray dark:ring-0"}
+      (icon {:class "size-7" :alt (str "Logo for " company) :role "img"})]
      [:dl {:class "flex flex-auto flex-wrap gap-x-2"}
       [:dt {:class "sr-only"} "Company"]
       [:dd {:class "w-full flex-none text-sm font-medium text-ol-gray dark:text-white"}
-       company]
+       (if link
+         [:a {:href link :class "hover:bg-stone-100 dark:hover:bg-stone-900/50"} company]
+         company)]
       [:dt {:class "sr-only"} "Role"]
-      [:dd {:class "text-xs text-stone-100 dark:text-stone-100"}
+      [:dd {:class "text-xs text-stone-600 dark:text-stone-100"}
        title]
       [:dt {:class "sr-only"} "Date"]
-      [:dd {:class      "ml-auto text-xs text-stone-100 dark:text-stone-100"
+      [:dd {:class      "ml-auto text-xs text-stone-600 dark:text-stone-100"
             :aria-label (str start-label " until " end-label)}
-       [:time {:datetime start-date} start-label]
-       " — "
-       [:time {:datetime end-date} end-label]]]]))
+       [:time {:datetime start-date} start-label] "–" [:time {:datetime end-date} end-label]]]]))
 
 (defn resume
   "Resume component showing work experience"
   []
   (let [current-year (.getValue (Year/now))
         resume-data  [{:company "Outskirts Labs"
-                       :title   "Founder & Lead Developer"
-                       :logo    "/images/logos/planetaria.svg"
-                       :start   "2019"
+                       :link    "https://outskirtslabs.com"
+                       :title   "Principal Consultant"
+                       :icon    icon/flask
+                       :start   "2017"
                        :end     {:label    "Present"
                                  :datetime (str current-year)}}
-                      {:company "Airbnb"
-                       :title   "Lead Technical Architect"
-                       :logo    "/images/logos/airbnb.svg"
-                       :start   "2015"
-                       :end     "2019"}
                       {:company "Cropster GmbH"
                        :title   "Software Engineer"
-                       :logo    "/images/logos/facebook.svg"
+                       :link    "https://cropster.com"
+                       :icon    icon/cropster
+                       :start   "2015"
+                       :end     "2017"}
+                      {:company "Outskirts Labs"
+                       :title   "Freelancer"
+                       :link    "https://outskirtslabs.com"
+                       :icon    icon/flask
                        :start   "2012"
                        :end     "2015"}
-                      {:company "KDE Community"
-                       :title   "Open Source Contributor"
-                       :logo    "/images/logos/starbucks.svg"
-                       :start   "2008"
-                       :end     {:label    "Present"
-                                 :datetime (str current-year)}}]]
+                      {:company "KDAB"
+                       :title   "Software Engineer"
+                       :link    "https://kdab.com"
+                       :icon    icon/kdab
+                       :start   "2010"
+                       :end     "2012"}
+                      {:company "KDE"
+                       :title   "Sponsored Developer"
+                       :icon    icon/kde
+                       :start   "2006"
+                       :end     "2011"}]]
     [:div {:class "rounded-2xl border border-ol-light-gray/10 p-6 dark:border-ol-light-gray/20"}
      [:h2 {:class "flex text-sm font-semibold text-ol-gray dark:text-white"}
-      (briefcase-icon {:class "h-6 w-6 flex-none"})
-      [:span {:class "ml-3"} "Experience"]]
+      (icon/briefcase {:class "h-6 w-6 flex-none text-stone-400 dark:text-stone-500"})
+      [:span {:class "ml-3"} "Work"]]
      [:ol {:class "mt-6 space-y-4"}
       (for [role-data resume-data]
         (role role-data))]
-     (button/button {:href    "#"
-                     :variant "secondary"
-                     :class   "group mt-6 w-full"}
-                    "Download CV"
-                    (arrow-down-icon {:class "h-4 w-4 stroke-ol-light-gray transition group-active:stroke-ol-gray dark:group-hover:stroke-white dark:group-active:stroke-white"}))]))
+     #_(button/button {:href    "#"
+                       :variant "secondary"
+                       :class   "group mt-6 w-full"}
+                      "Download CV"
+                      (arrow-down-icon {:class "h-4 w-4 stroke-ol-light-gray transition group-active:stroke-ol-gray dark:group-hover:stroke-white dark:group-active:stroke-white"}))]))
 
 (defn photos
   "Photos component displaying a rotating gallery"
@@ -183,19 +160,24 @@
   "Main home page component"
   [{:keys [articles]}]
   (list
-   (container/container {:class "mt-9"}
+   (container/container {:class "mt-18"}
                         [:div {:class "max-w-2xl"}
                          [:h1 {:class "text-4xl font-bold tracking-tight text-stone-800 sm:text-5xl dark:text-stone-100"}
-                          "Developer, Technical Strategist, and NGO Specialist"]
+                          "Casey Link" [:span {:class "text-xl ml-2 text-stone-500 dark:text-stone-400"} "@Ramblurr"]]
                          [:p {:class "mt-6 text-base text-stone-800 dark:text-stone-100"}
-                          "I'm Casey Link, founder of Outskirts Labs, specializing in software development and data engineering for NGOs and non-profit organizations. I create technical solutions that make a positive impact while solving complex challenges."]
+                          "I'm Casey Link, Principal at "
+                          [:a {:href  "https://outskirtslabs.com"
+                               :class "text-ol-orange-600 transition-colors rounded hover:bg-stone-100 dark:hover:bg-stone-900/50"}
+                           "Outskirts Labs"]
+                          ", specializing in custom design and software engineering for NGOs and social enterprises. I create technical solutions that make a positive impact while solving complex challenges."]
+
                          [:div {:class "mt-6 flex gap-6"}
                           (social-link {:href       "https://github.com/Ramblurr"
                                         :aria-label "Follow on GitHub"
-                                        :icon       social-icons/github-icon})
-                          (social-link {:href       "https://linkedin.com/in/kaseylink"
-                                        :aria-label "Follow on LinkedIn"
-                                        :icon       social-icons/linkedin-icon})]])
+                                        :icon       icon/github})
+                          (social-link {:href     "https://twitter.com/ramblurr"
+                                        :icon     icon/the-social-network-formerly-known-as-twitter-fill
+                                        :children "Follow on X"})]])
    (photos)
    (container/container {:class "mt-24 md:mt-28"}
                         [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}

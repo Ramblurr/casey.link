@@ -9,10 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let isInitial = true;
 
     // Utility functions
-    function clamp(number, a, b) {
+    function clamp(value, a, b) {
         const min = Math.min(a, b);
         const max = Math.max(a, b);
-        return Math.min(Math.max(number, min), max);
+        return Math.max(min, Math.min(max, value));
+    }
+    function lerp(start, end, t) {
+        return start + (end - start) * t;
     }
 
     function setProperty(property, value) {
@@ -80,19 +83,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const toX = 2 / 16;
         const translateFromY = 0;
         const translateToY = -0.3;
+        const translateFromX = -1;
+        const translateToX = 0;
 
         const scrollY = downDelay - window.scrollY;
-
-        let scale = (scrollY * (fromScale - toScale)) / downDelay + toScale;
-        scale = clamp(scale, toScale, fromScale);
-
-        let x = (scrollY * (fromX - toX)) / downDelay + toX;
-        x = clamp(x, fromX, toX);
-
-        let translateY =
-            (scrollY * (translateFromY - translateToY)) / downDelay +
-            translateToY;
-        translateY = clamp(translateY, translateFromY, translateToY);
+        const t = clamp(scrollY / downDelay, 0, 1);
+        const scale = lerp(toScale, fromScale, t);
+        const x = lerp(toX, fromX, t);
+        const translateY = lerp(translateToY, translateFromY, t);
+        const translateX = lerp(translateToX, translateFromX, t);
 
         const borderScale = 1 / (toScale / scale);
         const borderX = (-toX + x) * borderScale;
@@ -105,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setProperty("--avatar-border-transform", borderTransform);
         setProperty("--avatar-border-opacity", scale === toScale ? "1" : "0");
-        setProperty("--avatar-translate", `0 ${translateY}rem`);
+        setProperty("--avatar-translate", `${translateX}rem ${translateY}rem`);
     }
 
     function updateStyles() {

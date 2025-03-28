@@ -17,6 +17,7 @@
      (container/container-inner
       [:div {:class "flex flex-col items-center justify-between gap-6 md:flex-row"}
        [:div {:class "flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium text-ol-gray dark:text-white"}
+        (nav-link {:href "/"} "/")
         (nav-link {:href "/about"} "About")
         (nav-link {:href "/articles"} "Articles")
         (nav-link {:href "/projects"} "Projects")
