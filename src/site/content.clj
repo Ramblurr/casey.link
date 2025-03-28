@@ -3,8 +3,10 @@
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
+   [nextjournal.markdown.utils :as md.util]
    [nextjournal.markdown :as md]
-   [nextjournal.markdown.transform :as md.transform])
+   [nextjournal.markdown.transform :as md.transform]
+   [site.ui.icons :as icon])
   (:import (java.time.format DateTimeFormatter)
            (java.time LocalDate ZoneOffset)))
 
@@ -25,22 +27,55 @@
        (inc (count meta-lines))])
     [nil 0]))
 
-(defn md->hiccup [string]
+(defn parse [string]
   (let [s                     (-> string s2sr line-seq)
         [metadata meta-lines] (parse-edn-metadata-headers s)]
     [metadata
      (->> (drop meta-lines s)
           (str/join "\n")
           md/parse
-          (md.transform/->hiccup
-           (assoc md.transform/default-hiccup-renderers
-                  :code (fn [ctx {:keys [text info] :as node}]
-                          (prn "GOT" node)
-                          (let [class (when info (str "language-" info))]
-                            [:pre [:code {:class class} (or text (md.transform/->text node))]]))
-                  :plain (partial md.transform/into-markup [:span]))))]))
+          md.util/insert-sidenote-containers)]))
 
-(defn parse [path]
+(defn md->hiccup [string]
+  (let [[metadata {:keys [footnotes] :as md-ast}] (parse string)]
+    [metadata
+     (md.transform/->hiccup
+      (assoc md.transform/default-hiccup-renderers
+             :image_ (fn [{:as ctx ::keys [parent]} {:as node :keys [attrs]}]
+                       (if (= :paragraph (:type parent))
+                         [:img.inline attrs]
+                         [:figure.image [:img attrs] (md.transform/into-markup [:figcaption] ctx node)]))
+             :image (fn [{:as _ctx ::md.transform/keys [parent]} {:as node :keys [attrs]}]
+                      (prn parent)
+                      (if (= :doc (:type parent))
+                        [:figure.image
+                         [:img (assoc attrs :alt (md.transform/->text node))]
+                         [:figcaption.text-center.mt-1 (md.transform/->text node)]]
+                        [:img.inline (assoc attrs :alt (md.transform/->text node))]))
+             :sidenote-ref (fn [_ {:keys [ref label]}]
+                             (let [fn (str (inc ref))]
+                               [:a.sidenote-ref {:id (str "fn" fn) :href (str "#fnref" fn) :role "doc-noteref"} [:sup {:data-label label} fn]]))
+             :sidenote (fn [ctx {:as node :keys [ref text]}]
+                         (let [fn (str (inc ref))]
+                           [:span.sidenote {:role "doc-footnote" :id (str "fnref" fn)}
+                            [:sup.sidenote-number (str fn ".")]
+                            (or text (md.transform/->text node))
+                            [:a {:role "doc-backlink" :href (str "#fn" fn) :class "text-inherit"}
+                             (icon/arrow-u-up-left {:class "size-4 inline ml-1 text-inherit border-b"})]]))
+             :code (fn [ctx {:keys [text info] :as node}]
+                     (let [class (when info (str "language-" info))]
+                       [:pre [:code {:class class} (or text (md.transform/->text node))]]))
+             :plain (partial md.transform/into-markup [:span])) md-ast)]))
+
+(comment
+  (md->hiccup "_hello_ what and foo[^note1] and
+And what.
+[^note1]: the _what_
+")
+;;
+  )
+
+(defn parse-post [path]
   (let [file               (io/file (str "content/" path "/index.md"))
         [metadata content] (-> file slurp md->hiccup)]
     {:metadata metadata
@@ -49,7 +84,7 @@
 
 (defn content [page-fn dir req]
   (page-fn
-   (parse (str dir "/" (-> req :path-params :slug)))))
+   (parse-post (str dir "/" (-> req :path-params :slug)))))
 
 (defn format-date
   "Format date in US format (e.g., January 12, 2023)"
@@ -68,6 +103,12 @@
        (seq)
        (filter #(.isDirectory %))))
 
+(defn get-about []
+  (->
+   (io/file "content/about.md")
+   (slurp)
+   (md->hiccup)))
+
 (defn get-articles
   "Get all articles sorted by date (most recent first)"
   []
@@ -75,7 +116,7 @@
        (filter #(.exists (io/file (str (.getPath %) "/index.md"))))
        (map (fn [dir]
               (let [slug               (.getName dir)
-                    {:keys [metadata]} (parse (str "posts/" slug))]
+                    {:keys [metadata]} (parse-post (str "posts/" slug))]
                 (assoc metadata
                        :slug slug
                        :date (:date metadata)))))
@@ -83,7 +124,7 @@
 
 (comment
   (:content
-   (parse "posts/mobile-security-field-workers"))
+   (parse-post "posts/mobile-security-field-workers"))
   (format-date "2023-01-12")
   (get-articles)
   ;; rcf

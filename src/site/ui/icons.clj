@@ -147,3 +147,7 @@
 (deficon the-social-network-formerly-known-as-twitter (ico :x-logo))
 
 (deficon envelope (ico :envelope))
+
+(deficon arrow-u-up-left (ico :arrow-u-up-left))
+
+(deficon at (ico :at))

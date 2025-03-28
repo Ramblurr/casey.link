@@ -7,6 +7,7 @@ let
   packages = [
     #pkgs.tailwindcss_4
     pkgs.zsh
+    pkgs.vips
     pkgs.caddy
     pkgs.flyctl
   ];
