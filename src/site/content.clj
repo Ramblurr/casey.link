@@ -34,6 +34,10 @@
           md/parse
           (md.transform/->hiccup
            (assoc md.transform/default-hiccup-renderers
+                  :code (fn [ctx {:keys [text info] :as node}]
+                          (prn "GOT" node)
+                          (let [class (when info (str "language-" info))]
+                            [:pre [:code {:class class} (or text (md.transform/->text node))]]))
                   :plain (partial md.transform/into-markup [:span]))))]))
 
 (defn parse [path]
@@ -58,20 +62,24 @@
         "No date available"))
     "No date available"))
 
+(defn article-dirs []
+  (->> (io/file "content/posts")
+       (.listFiles)
+       (seq)
+       (filter #(.isDirectory %))))
+
 (defn get-articles
   "Get all articles sorted by date (most recent first)"
   []
-  (let [article-dirs (filter #(.isDirectory %)
-                             (file-seq (io/file "content/posts")))]
-    (->> article-dirs
-         (filter #(.exists (io/file (str (.getPath %) "/index.md"))))
-         (map (fn [dir]
-                (let [slug (.getName dir)
-                      {:keys [metadata]} (parse (str "posts/" slug))]
-                  (assoc metadata
-                         :slug slug
-                         :date (:date metadata)))))
-         (sort-by :date #(compare %2 %1)))))
+  (->> (article-dirs)
+       (filter #(.exists (io/file (str (.getPath %) "/index.md"))))
+       (map (fn [dir]
+              (let [slug               (.getName dir)
+                    {:keys [metadata]} (parse (str "posts/" slug))]
+                (assoc metadata
+                       :slug slug
+                       :date (:date metadata)))))
+       (sort-by :date #(compare %2 %1))))
 
 (comment
   (:content

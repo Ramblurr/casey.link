@@ -34,10 +34,10 @@ export default {
                 css: {
                     "--tw-prose-body": theme("colors.stone.600"),
                     "--tw-prose-headings": theme("colors.stone.900"),
-                    "--tw-prose-links": theme("colors.teal.500"),
-                    "--tw-prose-links-hover": theme("colors.teal.600"),
-                    "--tw-prose-underline": theme("colors.teal.500 / 0.2"),
-                    "--tw-prose-underline-hover": theme("colors.teal.500"),
+                    "--tw-prose-links": theme("colors.ol-orange.600"),
+                    "--tw-prose-links-hover": theme("colors.ol-orange.700"),
+                    "--tw-prose-underline": theme("colors.ol-orange.500 / 0.2"),
+                    "--tw-prose-underline-hover": theme("colors.ol-orange.500"),
                     "--tw-prose-bold": theme("colors.stone.900"),
                     "--tw-prose-counters": theme("colors.stone.900"),
                     "--tw-prose-bullets": theme("colors.stone.900"),
@@ -54,13 +54,16 @@ export default {
 
                     "--tw-prose-invert-body": theme("colors.stone.200"),
                     "--tw-prose-invert-headings": theme("colors.stone.200"),
-                    "--tw-prose-invert-links": theme("colors.teal.400"),
-                    "--tw-prose-invert-links-hover": theme("colors.teal.400"),
-                    "--tw-prose-invert-underline": theme(
-                        "colors.teal.400 / 0.3",
+                    "--tw-prose-invert-links": theme("colors.ol-orange.500"),
+                    "--tw-prose-invert-links-hover": theme(
+                        "colors.ol-orange.400",
                     ),
-                    "--tw-prose-invert-underline-hover":
-                        theme("colors.teal.400"),
+                    "--tw-prose-invert-underline": theme(
+                        "colors.ol-orange.400 / 0.3",
+                    ),
+                    "--tw-prose-invert-underline-hover": theme(
+                        "colors.ol-orange.400",
+                    ),
                     "--tw-prose-invert-bold": theme("colors.stone.200"),
                     "--tw-prose-invert-counters": theme("colors.stone.200"),
                     "--tw-prose-invert-bullets": theme("colors.stone.200"),
@@ -185,9 +188,9 @@ export default {
                         paddingLeft: theme("spacing.6"),
                     },
                     li: {
-                        marginTop: theme("spacing.6"),
-                        marginBottom: theme("spacing.6"),
-                        paddingLeft: theme("spacing[3.5]"),
+                        marginTop: theme("spacing.2"),
+                        marginBottom: theme("spacing.2"),
+                        paddingLeft: theme("spacing.1"),
                     },
                     "li::marker": {
                         fontSize: theme("fontSize.sm")[0],
@@ -215,7 +218,7 @@ export default {
                         fontWeight: theme("fontWeight.medium"),
                         backgroundColor: "var(--tw-prose-pre-bg)",
                         borderRadius: theme("borderRadius.3xl"),
-                        padding: theme("spacing.8"),
+                        padding: theme("spacing.4"),
                         overflowX: "auto",
                         border: "1px solid",
                         borderColor: "var(--tw-prose-pre-border)",

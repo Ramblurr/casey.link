@@ -26,6 +26,7 @@
             [:meta {:http-equiv "content-type" :content "text/html;charset=UTF-8"}]
             [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
             [:script {:type "module", :src "/js/datastar@1.0.0-beta.10.js"}]
+            [:script {:src "/js/prism.js"}]
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             [:title (:title page)]]
            [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}

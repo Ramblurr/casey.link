@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./prism.css" layer(components);
+@import "./inter.css";
 @plugin '@tailwindcss/typography';
 @config '../../typography.js';
 @custom-variant dark (&:where(.dark, .dark *));
@@ -13,6 +14,28 @@
   --color-ol-light-gray: #88837c;
   --color-ol-brown: #3f1f10;
   --color-gutentag: #d9564a;
+  --color-ol-turquoise-50: oklch(97.4% 0.019 184.93);
+  --color-ol-turquoise-100: oklch(94.92% 0.037 182.07);
+  --color-ol-turquoise-200: oklch(90.68% 0.069 181.32);
+  --color-ol-turquoise-300: oklch(86.56% 0.102 179.02);
+  --color-ol-turquoise-400: oklch(83.12% 0.124 177.57);
+  --color-ol-turquoise-500: oklch(79.76% 0.141 175.15);
+  --color-ol-turquoise-600: oklch(70.13% 0.127 174.17); /* original */
+  --color-ol-turquoise-700: oklch(56.86% 0.101 175.42);
+  --color-ol-turquoise-800: oklch(42.36% 0.074 175.41);
+  --color-ol-turquoise-900: oklch(27.97% 0.045 176.26);
+  --color-ol-turquoise-950: oklch(18.26% 0.027 177.49);
+  --color-ol-orange-50: oklch(96.84% 0.014 46.23);
+  --color-ol-orange-100: oklch(93.48% 0.029 45.03);
+  --color-ol-orange-200: oklch(87.1% 0.059 43.61);
+  --color-ol-orange-300: oklch(80.91% 0.091 43.72);
+  --color-ol-orange-400: oklch(75.79% 0.118 43.92);
+  --color-ol-orange-500: oklch(70.29% 0.151 43.1);
+  --color-ol-orange-600: oklch(65.56% 0.179 41.56); /* original */
+  --color-ol-orange-700: oklch(54.21% 0.159 40.03);
+  --color-ol-orange-800: oklch(39.93% 0.112 40.91);
+  --color-ol-orange-900: oklch(25.78% 0.064 42.52);
+  --color-ol-orange-950: oklch(18.32% 0.039 45.07);
 
   /*
   --color-ol-brown: oklch(27.997% 0.05557 44.884);
@@ -39,7 +62,9 @@
   --color-ol-brown-dark: #5a2b17;
   --color-gutentag-dark: #e86a5e;
 
-  --font-sans: "Verb", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
 
   /* Text sizing */
   --text-xs: 0.8125rem;
