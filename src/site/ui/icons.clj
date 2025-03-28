@@ -8,7 +8,7 @@
        (-> c slurp read-string)
        (throw (ex-info (format "No icon set %s found" fname) {:name name}))))))
 
-(def ^:dynamic *default-iconset* "heroicons-24-outline")
+(def ^:dynamic *default-iconset* "phosphor-regular")
 
 (defn ico
   ([name]
@@ -134,28 +134,16 @@
                                :stroke-linecap  "round"
                                :stroke-linejoin "round"}]])
 
-(deficon chevron-down [:svg {:viewBox     "0 0 8 6"
-                             :aria-hidden "true"}
-                       [:path {:d               "M1.75 1.75 4 4.25l2.25-2.5"
-                               :fill            "none"
-                               :stroke          "currentColor"
-                               :stroke-width    "1.5"
-                               :stroke-linecap  "round"
-                               :stroke-linejoin "round"}]])
+(deficon chevron-down (ico :caret-down-bold "phosphor-bold"))
 
-(deficon close [:svg {:viewBox     "0 0 24 24"
-                      :aria-hidden "true"}
-                [:path {:d               "m17.25 6.75-10.5 10.5M6.75 6.75l10.5 10.5"
-                        :fill            "none"
-                        :stroke          "currentColor"
-                        :stroke-width    "1.5"
-                        :stroke-linecap  "round"
-                        :stroke-linejoin "round"}]])
+(deficon close (ico :x-bold "phosphor-bold"))
 
-(deficon chevron-right [:svg {:viewBox     "0 0 16 16"
-                              :fill        "none"
-                              :aria-hidden "true"}
-                        [:path {:d               "M6.75 5.75 9.25 8l-2.5 2.25"
-                                :stroke-width    "1.5"
-                                :stroke-linecap  "round"
-                                :stroke-linejoin "round"}]])
+(deficon chevron-right (ico :caret-right-bold "phosphor-bold"))
+
+(deficon matrix  (ico :matrix-logo))
+
+(deficon github (ico :github-logo))
+
+(deficon the-social-network-formerly-known-as-twitter (ico :x-logo))
+
+(deficon envelope (ico :envelope))

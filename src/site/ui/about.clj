@@ -1,15 +1,14 @@
 (ns site.ui.about
   (:require [site.ui.container :as container]
-            [site.ui.home.social-icons :refer [github-icon instagram-icon linkedin-icon x-icon]]
-            [site.ui.about.mail-icon :refer [mail-icon]]
-            [site.ui.about.social-link :refer [social-link]]))
+            [site.ui.about.social-link :refer [social-link]]
+            [site.ui.icons :as icon]))
 
 (defn about []
   (container/container  {:class "mt-16 sm:mt-32"}
                         [:div {:class "grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12"}
                          [:div {:class "lg:pl-20"}
                           [:div {:class "max-w-xs px-2.5 lg:max-w-none"}
-                           [:img {:src   "/public/images/portrait.jpg"
+                           [:img {:src   "/images/photos/portrait.jpg"
                                   :alt   ""
                                   :class "aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"}]]]
                          [:div {:class "lg:order-first lg:row-span-2"}
@@ -22,21 +21,17 @@
                          [:div {:class "lg:pl-20"}
                           [:ul {:role "list"}
                            (social-link {:href     "https://twitter.com/ramblurr"
-                                         :icon     x-icon
+                                         :icon     icon/the-social-network-formerly-known-as-twitter
                                          :children "Follow on X"})
-                           (social-link {:href       "https://instagram.com/ramblurr"
-                                         :icon       instagram-icon
-                                         :class-name "mt-4"
-                                         :children   "Follow on Instagram"})
                            (social-link {:href       "https://github.com/ramblurr"
-                                         :icon       github-icon
+                                         :icon       icon/github
                                          :class-name "mt-4"
                                          :children   "Follow on GitHub"})
-                           (social-link {:href       "https://linkedin.com/in/ramblurr"
-                                         :icon       linkedin-icon
+                           (social-link {:href       "https://matrix.to/#/@ramblurr:outskirtslabs.com"
+                                         :icon       icon/matrix
                                          :class-name "mt-4"
-                                         :children   "Follow on LinkedIn"})
-                           (social-link {:href       "mailto:casey@caseylink.com"
-                                         :icon       mail-icon
+                                         :children   "Chat on Matrix"})
+                           (social-link {:href       "mailto:casey@outskirtslabs.com"
+                                         :icon       icon/envelope
                                          :class-name "mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
-                                         :children   "casey@caseylink.com"})]]]))
+                                         :children   "casey@outskirtslabs.com"})]]]))
