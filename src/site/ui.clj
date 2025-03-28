@@ -32,4 +32,5 @@
            [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}
             [:div {:class "flex w-full"}
              (layout page)]
-            [:script {:src "/js/header.js"}]]]]))
+            [:script {:src "/js/header.js"}]
+            [:script {:src "/js/flask.js"}]]]]))

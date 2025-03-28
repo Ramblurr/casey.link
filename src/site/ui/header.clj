@@ -88,7 +88,7 @@
                          :class      "pointer-events-auto")
      (icon/flask {:id    "logo-square"
                   :class (uic/cs
-                          "rounded-full object-cover"
+                          "rounded-full object-cover overflow-visible"
                           (if large? "h-22 w-22 " "h-9 w-9"))
                   :alt   alt})]))
 
