@@ -795,6 +795,9 @@
   .flex-shrink {
     flex-shrink: 1;
   }
+  .shrink {
+    flex-shrink: 1;
+  }
   .flex-grow {
     flex-grow: 1;
   }
@@ -1163,6 +1166,12 @@
   }
   .text-center {
     text-align: center;
+  }
+  .align-text-bottom {
+    vertical-align: text-bottom;
+  }
+  .align-text-top {
+    vertical-align: text-top;
   }
   .text-2xl {
     font-size: var(--text-2xl);

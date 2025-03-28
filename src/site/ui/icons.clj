@@ -83,7 +83,7 @@
 (deficon flask
   [:svg
    {:xmlns   "http://www.w3.org/2000/svg",
-    :class   "ol-logo"
+    :class   "ol-logo ol-logo-flask"
     :viewBox "0 0 100 100"}
    [:path
     {:d
@@ -186,3 +186,5 @@
 (deficon at (ico :at))
 
 (deficon briefcase (ico :briefcase))
+
+(deficon house (ico :house))

@@ -33,4 +33,4 @@
             [:div {:class "flex w-full"}
              (layout page)]
             [:script {:src "/js/header.js"}]
-            [:script {:src "/js/flask.js"}]]]]))
+            [:script {:type "module" :src "/js/flask.js"}]]]]))
