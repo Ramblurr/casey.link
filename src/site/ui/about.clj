@@ -49,10 +49,14 @@
                                (icon/at {:class "h-6 w-6 flex-none fill-stone-500 transition group-hover:fill-ol-turquoise-500"}) "Ramblurr"
                                [:small {:class "ml-1 transition"}
                                 "(is my handle all over the web)"]]]
-                             (social-link {:href       "https://twitter.com/ramblurr"
-                                           :icon       icon/the-social-network-formerly-known-as-twitter
+                             #_(social-link {:href       "https://twitter.com/ramblurr"
+                                             :icon       icon/the-social-network-formerly-known-as-twitter
+                                             :class-name "mt-4"
+                                             :children   "Follow on X"})
+                             (social-link {:href       "https://bsky.app/profile/ramblurr.bsky.social"
+                                           :icon       icon/bluesky-outline
                                            :class-name "mt-4"
-                                           :children   "Follow on X"})
+                                           :children   "Follow on Bluesky"})
                              (social-link {:href       "https://github.com/ramblurr"
                                            :icon       icon/github
                                            :class-name "mt-4"
