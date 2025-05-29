@@ -53,17 +53,23 @@ This is a markdown post with EDN frontmatter
 (deftest test-markdown-parsing
   (testing "Images"
     (are [markdown expected] (= [nil [:div expected]]  (sut/md->hiccup markdown))
-      "sanity-check"                      [:p "sanity-check"]
-      "![](./image.png)"                  [:figure.image [:img {:src "./image.png" :title nil :alt ""}] nil]
-      "![alt](./image.png)"               [:figure.image [:img {:src "./image.png" :title nil :alt "alt"}] nil]
-      "![alt](./image.png)\nCaption"      [:figure.image [:img {:src "./image.png" :title nil :alt "alt"}]
-                                           [:figcaption.text-center.mt-1 "Caption"]]
-      "foo[^note1] bar\n[^note1]: a note" [:div.sidenote-container
-                                           [:p
-                                            "foo"
-                                            [:a.sidenote-ref
-                                             {:id "fn1", :href "#fnref1", :role "doc-noteref"}
-                                             [:sup {:data-label "note1"} "1"]]
-                                            " bar"]
-                                           (sidenote-hiccup "a note")]
-      "```clojure\n(+ 1 1)\n```"          [:pre [:code {:class "language-clojure"} "(+ 1 1)\n"]])))
+      "sanity-check"                             [:p "sanity-check"]
+      "![](./image.png)"                         [:figure.image [:img {:src "./image.png" :title nil :alt ""}] nil]
+      "![](./image.png \"A title\")"             [:figure.image [:img {:src "./image.png" :title "A title" :alt ""}] nil]
+      "![alt](./image.png)"                      [:figure.image [:img {:src "./image.png" :title nil :alt "alt"}] nil]
+      "![alt](./image.png \"A title\")"          [:figure.image [:img {:src "./image.png" :title "A title" :alt "alt"}] nil]
+      "![alt](./image.png)\nCaption"             [:figure.image [:img {:src "./image.png" :title nil :alt "alt"}]
+                                                  [:figcaption.text-center.mt-1 "Caption"]]
+      "![alt](./image.png \"A title\")\nCaption" [:figure.image [:img {:src "./image.png" :title "A title" :alt "alt"}]
+                                                  [:figcaption.text-center.mt-1 "Caption"]]
+      "![alt](./image.png \"A title\")\nCaption" [:figure.image [:img {:src "./image.png" :title "A title" :alt "alt"}]
+                                                  [:figcaption.text-center.mt-1 "Caption"]]
+      "foo[^note1] bar\n[^note1]: a note"        [:div.sidenote-container
+                                                  [:p
+                                                   "foo"
+                                                   [:a.sidenote-ref
+                                                    {:id "fn1", :href "#fnref1", :role "doc-noteref"}
+                                                    [:sup {:data-label "note1"} "1"]]
+                                                   " bar"]
+                                                  (sidenote-hiccup "a note")]
+      "```clojure\n(+ 1 1)\n```"                 [:pre [:code {:class "language-clojure"} "(+ 1 1)\n"]])))
