@@ -13,7 +13,7 @@
 (defn s2sr [s]
   (-> s (java.io.StringReader.) (java.io.BufferedReader.)))
 
-(defn parse-edn-metadata-headers
+(defn parse-edn-frontmatter
   [lines-seq]
   (if (re-matches #"\{.*" (or (first lines-seq) ""))
     ;; take sequences until you hit an empty line
@@ -29,7 +29,7 @@
 
 (defn parse [string]
   (let [s                     (-> string s2sr line-seq)
-        [metadata meta-lines] (parse-edn-metadata-headers s)]
+        [metadata meta-lines] (parse-edn-frontmatter s)]
     [metadata
      (->> (drop meta-lines s)
           (str/join "\n")
@@ -61,7 +61,9 @@
            (and (= :paragraph type)
                 (= 1 (count content))
                 (= :image (:type (first content))))
-           (first content)
+           (let [image-node (first content)]
+             (doto
+                 (assoc-in image-node [:content 0 :type] :alt) prn))
 
            :else node)) md-nodes))
 
@@ -111,25 +113,18 @@ And what.
 
 [^note1]: the _what_
 ")
-  (md->hiccup "_hello_ what
-And what.
-
+  (md->hiccup "
 ![This is an alt text](./fairybox2.jpg)
-
-")
-  ;; => [nil [:div [:p [:em "hello"] " what" " " "And what."] [:p [:img {:src "./fairybox2.jpg", :title nil, :alt ""}]]]]
-
-  ;; => [nil [:div [:p [:em "hello"] " what" " " "And what."] [:p [:img {:src "./fairybox2.jpg", :title nil, :alt ""}]]]]
-
-  (md->hiccup "Wut
-
-Wut
-{class=\"foo bar\" id=\"baz\"}
-
-
-And wut
 ")
   ;; rcf
+
+  ;; => [nil [:div [:p [:em "hello"] " what" " " "And what."] [:p [:img {:src "./fairybox2.jpg", :title nil, :alt ""}]]]]
+
+  ;; => [nil [:div [:p [:em "hello"] " what" " " "And what."] [:p [:img {:src "./fairybox2.jpg", :title nil, :alt ""}]]]]
+
+  (md->hiccup "# Hello {class=wow}
+much nice")
+
   ;;
   )
 
