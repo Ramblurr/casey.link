@@ -28,7 +28,9 @@
   "Generate reitit routes for all articles"
   [resp-fn]
   (into []
-        (map (fn build-article-routes [{:keys [slug dir]}]
+        (map (fn build-article-routes [{:keys [slug dir modified]}]
                [(str "/" slug "/")
-                (resp-fn (fn [_req] (content/content article-page "articles" slug)))])
+                {:handler               (resp-fn (fn [_req] (content/content article-page "articles" slug)))
+                 :sitemap/last-modified modified}])
              (content/article-index-data))))
+

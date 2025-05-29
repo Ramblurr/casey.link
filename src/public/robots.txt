@@ -1,4 +1,4 @@
-# Sitemap: https://caseylink.com/sitemap.xml
+Sitemap: https://casey.link/sitemap.xml
 
 # Source https://github.com/samber/the-great-gpt-firewall
 # OpenAI’s web crawler: GPT3.5, GPT4, ChatGPT
