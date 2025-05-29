@@ -93,6 +93,18 @@
   --text-8xl--line-height: 1;
   --text-9xl: 8rem;
   --text-9xl--line-height: 1;
+
+  --base-unit: 1.5rem;
+  --text-width: 22rlh;
+  --footnote-width: 15rlh;
+  /* Overridden by media queries */
+  --figure-wide-overlap: 0;
+  --heading-protrude: 0;
+
+  --expand-size: calc(
+    var(--base-unit) + var(--figure-wide-overlap) + var(--text-width) +
+      var(--base-unit) + var(--footnote-width) + var(--base-unit)
+  );
 }
 
 .ol-logo {
@@ -135,7 +147,45 @@ html.dark .ol-logo {
 }
 
 /* --------------------------------------------------------------- */
-/* Sidenotes */
+/* Articles + Sidenotes */
+
+#article-container {
+  @apply mx-auto w-full max-w-7xl relative;
+  display: grid;
+
+  --left-gutter: calc(var(--spacing) * 2);
+  --right-gutter: calc(var(--spacing) * 2);
+  --left-gutter-max: 1fr;
+  --content-width: calc(100% - var(--left-gutter) - var(--right-gutter));
+
+  grid-template-columns:
+    minmax(var(--left-gutter), var(--left-gutter-max))
+    [content-start] minmax(0, var(--content-width)) [content-end]
+    minmax(var(--right-gutter), 1fr);
+
+  @variant sm {
+    --left-gutter: calc(var(--spacing) * 4);
+    --right-gutter: calc(var(--spacing) * 8);
+    --content-width: var(--container-2xl);
+  }
+
+  @variant lg {
+    @apply px-8;
+    --left-gutter: calc(var(--spacing) * 16);
+    --right-gutter: calc(var(--spacing) * 8);
+    --right-gutter-width: calc(var(--spacing) * 8);
+
+    &:has(.sidenote-column, .aside) {
+      /* Extra large gutter for sidenotes */
+      --right-gutter: calc(var(--spacing) * 64 + 1rlh);
+      --right-gutter-width: calc(var(--spacing) * 64 + 1rlh);
+      --left-gutter-max: var(--left-gutter);
+    }
+  }
+  article {
+    grid-column: content-start / content-end;
+  }
+}
 
 @utility sidenote-ref-hover {
   @apply bg-stone-200 dark:bg-stone-800 rounded-xs;
@@ -204,11 +254,6 @@ html.dark .ol-logo {
     @apply mb-0 relative flex justify-between;
   }
 }
-.sidenote-container > *:not(.sidenote-column) {
-  @variant lg {
-    margin-right: 40px;
-  }
-}
 .sidenote-main-col *:last-child {
   @apply mb-0;
 }
@@ -226,16 +271,33 @@ html.dark .ol-logo {
     @apply inline-block mr-1;
   }
 }
+
+@variant lg {
+  .sidenote-gutter-lg {
+    --right-gutter-width: calc((var(--container-5xl) / 2) - var(--spacing) * 8);
+  }
+}
+
 .sidenote-column {
   @variant lg {
     @apply flex-shrink-0;
-    --col-w: 512px;
-    --col-p: 80px;
-    width: var(--col-w);
-    margin-right: calc(-1 * (var(--col-w) + var(--col-p)));
-    margin-top: calc(var(--spacing) * 7); /* must match p in typograph.js */
+    --sidenote-boost: 0;
+    --sidenote-width: calc(
+      var(--right-gutter-width) - 2px + var(--spacing) * var(--sidenote-boost)
+    );
+    --sidenote-max-width: calc(
+      var(--right-gutter-width) - 2px + var(--spacing) * var(--sidenote-boost)
+    );
+    width: var(--sidenote-width);
+    margin-right: calc(-1 * var(--sidenote-max-width));
+    margin-top: calc(var(--spacing) * 7);
+  }
+  @variant xl {
+    --sidenote-boost: 16;
+    padding-left: calc(var(--spacing) * var(--sidenote-boost));
   }
 }
+
 .sidenote:first-child {
   @variant lg {
     @apply mt-1;
@@ -275,5 +337,10 @@ html.dark .ol-logo {
 
   a:has(img) img.inline {
     @apply mr-1;
+  }
+  code {
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
   }
 }
