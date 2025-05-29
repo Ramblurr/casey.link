@@ -1,6 +1,6 @@
 (ns site.server
   (:require [aero.core :as aero]
-            [site.content :as content]
+            [site.sitemap :as sitemap]
             [clojure.java.io :as io]
             [donut.system :as ds]
             [org.httpkit.server :as server]
@@ -30,10 +30,12 @@
                   :content
                   html/->str)}))
 
-(defn routes [{:keys [dev?]}]
-  ["" {:middleware [[cache/wrap-cache {:dev? dev?}]]}
+(defn routes [config]
+  ["" {:middleware [[cache/wrap-cache config]]}
    ["/" {:handler (html-response index/index)}]
    ["/about" {:handler (html-response about/about)}]
+   ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
+                    :sitemap/exclude? true}]
    ["/articles"
     ["" {:handler (html-response articles/articles-index)}]
     (articles/article-routes html-response)]])
@@ -87,7 +89,8 @@
                                                 (create-asset-handler "public" {:cache-level :immutable})
                                                 folder-redirects-handler
                                                 (rr/create-default-handler {:not-found not-found-handler}))))
-                    :config {:dev? (ds/ref [:env :dev?])}}
+                    :config {:dev?     (ds/ref [:env :dev?])
+                             :base-url (ds/ref [:env :base-url])}}
      :server  #::ds{:start  (fn [{config ::ds/config}]
                               (let [instance (server/run-server (:handler config)
                                                                 {:port                 (:port config)
