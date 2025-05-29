@@ -34,8 +34,8 @@
   ["" {:middleware [[cache/wrap-cache {:dev? dev?}]]}
    ["/" {:handler (html-response index/index)}]
    ["/about" {:handler (html-response about/about)}]
-   ["/articles" {:handler (html-response articles/articles-index)}]
-   ["/articles/:slug" {:handler (html-response #(content/content articles/article-page "posts" %))}]])
+   ["/articles" {:handler (html-response articles/articles-index)}
+    (articles/article-routes html-response)]])
 
 (defn find-file ^File [path]
   (when-let [file ^File (io/as-file (io/resource path))]

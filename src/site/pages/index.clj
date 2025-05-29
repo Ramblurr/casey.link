@@ -6,4 +6,4 @@
 (defn index [_]
   {:title   "Casey Link | Developer, Technical Strategist & NGO Specialist"
    :uri     "/"
-   :content (home/home {:articles (content/get-articles)})})
+   :content (home/home {:articles (content/article-index-data)})})

@@ -7,7 +7,7 @@
 (defn articles-index [_]
   {:title   "Articles - Casey Link"
    :uri     "/articles"
-   :content (articles/articles-index (content/get-articles))})
+   :content (articles/articles-index (content/article-index-data))})
 
 (defn article-content
   "Render an article using the ArticleLayout"
@@ -23,3 +23,12 @@
   {:title   title
    :uri     uri
    :content (article-content data)})
+
+(defn article-routes
+  "Generate reitit routes for all articles"
+  [resp-fn]
+  (into []
+        (map (fn build-article-routes [{:keys [slug dir]}]
+               [(str "/" slug)
+                (resp-fn (fn [_req] (content/content article-page "posts" slug)))])
+             (content/article-index-data))))

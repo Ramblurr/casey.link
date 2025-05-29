@@ -135,9 +135,9 @@ much nice")
      :title    (:title metadata)
      :content  content}))
 
-(defn content [page-fn dir req]
+(defn content [page-fn dir slug]
   (page-fn
-   (parse-post (str dir "/" (-> req :path-params :slug)))))
+   (parse-post (str dir "/" slug))))
 
 (defn format-date
   "Format date in US format (e.g., January 12, 2023)"
@@ -162,7 +162,7 @@ much nice")
    (slurp)
    (md->hiccup)))
 
-(defn get-articles
+(defn article-index-data
   "Get all articles sorted by date (most recent first)"
   []
   (->> (article-dirs)
@@ -172,6 +172,7 @@ much nice")
                     {:keys [metadata]} (parse-post (str "posts/" slug))]
                 (assoc metadata
                        :slug slug
+                       :dir dir
                        :date (:date metadata)))))
        (sort-by :date #(compare %2 %1))))
 
@@ -179,4 +180,7 @@ much nice")
   (:content
    (parse-post "posts/mobile-security-field-workers"))
   (format-date "2023-01-12")
-  (get-articles))
+  (article-index-data)
+  (article-route-data)
+  ;; rcf
+  )
