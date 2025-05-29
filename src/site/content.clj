@@ -63,7 +63,7 @@
                 (= :image (:type (first content))))
            (let [image-node (first content)]
              (doto
-                 (assoc-in image-node [:content 0 :type] :alt) prn))
+              (assoc-in image-node [:content 0 :type] :alt) prn))
 
            :else node)) md-nodes))
 
@@ -129,7 +129,7 @@ much nice")
   )
 
 (defn parse-post [path]
-  (let [file               (io/file (str "content/" path "/index.md"))
+  (let [file               (io/as-file (io/resource  (str "public/" path "/index.md")))
         [metadata content] (-> file slurp md->hiccup)]
     {:metadata metadata
      :title    (:title metadata)
@@ -151,14 +151,14 @@ much nice")
     "No date available"))
 
 (defn article-dirs []
-  (->> (io/file "content/posts")
+  (->> (io/as-file (io/resource "public/articles"))
        (.listFiles)
        (seq)
        (filter #(.isDirectory %))))
 
 (defn get-about []
   (->
-   (io/file "content/about.md")
+   (io/as-file (io/resource "public/about.md"))
    (slurp)
    (md->hiccup)))
 
@@ -169,7 +169,7 @@ much nice")
        (filter #(.exists (io/file (str (.getPath %) "/index.md"))))
        (map (fn [dir]
               (let [slug               (.getName dir)
-                    {:keys [metadata]} (parse-post (str "posts/" slug))]
+                    {:keys [metadata]} (parse-post (str "articles/" slug))]
                 (assoc metadata
                        :slug slug
                        :dir dir
@@ -178,7 +178,7 @@ much nice")
 
 (comment
   (:content
-   (parse-post "posts/mobile-security-field-workers"))
+   (parse-post "articles/mobile-security-field-workers"))
   (format-date "2023-01-12")
   (article-index-data)
   (article-route-data)

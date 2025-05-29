@@ -34,7 +34,8 @@
   ["" {:middleware [[cache/wrap-cache {:dev? dev?}]]}
    ["/" {:handler (html-response index/index)}]
    ["/about" {:handler (html-response about/about)}]
-   ["/articles" {:handler (html-response articles/articles-index)}
+   ["/articles"
+    ["" {:handler (html-response articles/articles-index)}]
     (articles/article-routes html-response)]])
 
 (defn find-file ^File [path]
@@ -50,7 +51,7 @@
 (defn serve-files [dir {:keys [cache-level] :as _opts
                         :or   {cache-level :no-cache}}]
   (fn [req]
-    (if-some [file (find-file (str dir "/" (:uri req)))]
+    (if-some [file (find-file (str dir (:uri req)))]
       {:status  200
        :body    file
        :headers {"Content-Length" (.length file)
@@ -58,12 +59,6 @@
                  "Cache-Control"  (condp = cache-level :immutable "max-age=31536000,immutable,public" :no-cache "no-cache")
                  "Content-Type"   (ring-mime/ext-mime-type (.getName file))}}
       nil)))
-
-(defn router [opts]
-  (rr/router (routes opts)
-             {:data {:middleware [ring.params/wrap-params
-                                  ring.cookies/wrap-cookies
-                                  ring.head/wrap-head]}}))
 
 (defn not-found-handler [_req]
   {:status 404
@@ -73,14 +68,24 @@
   (let [handler (serve-files dir opts)]
     (ring.not-modified/wrap-not-modified handler)))
 
+(defn folder-redirects-handler [{:keys [uri] :as req}]
+  (when (re-matches #"(/articles/[^/]+|/projects/[^/]+)" uri)
+    {:status  301
+     :headers {"Location" (str uri "/")}}))
+
 (def base-system
   {::ds/defs
    {:env {}
     :site
     {:handler #::ds{:start  (fn [{config ::ds/config}]
-                              (rr/ring-handler (router config)
+                              (rr/ring-handler (rr/router (routes config)
+                                                          {:data {:middleware [ring.params/wrap-params
+                                                                               ring.cookies/wrap-cookies
+                                                                               ring.head/wrap-head]}})
                                                (rr/routes
+                                                ;; (create-asset-handler "content" {:cache-level :immutable})
                                                 (create-asset-handler "public" {:cache-level :immutable})
+                                                folder-redirects-handler
                                                 (rr/create-default-handler {:not-found not-found-handler}))))
                     :config {:dev? (ds/ref [:env :dev?])}}
      :server  #::ds{:start  (fn [{config ::ds/config}]

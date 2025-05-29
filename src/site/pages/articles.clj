@@ -29,6 +29,6 @@
   [resp-fn]
   (into []
         (map (fn build-article-routes [{:keys [slug dir]}]
-               [(str "/" slug)
-                (resp-fn (fn [_req] (content/content article-page "posts" slug)))])
+               [(str "/" slug "/")
+                (resp-fn (fn [_req] (content/content article-page "articles" slug)))])
              (content/article-index-data))))
