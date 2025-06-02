@@ -27,8 +27,8 @@
   "Articles index page component"
   [articles]
   (simple-layout/simple-layout
-   {:title "Writing on software design, security, and humanitarian technology."
-    :intro "All of my long-form thoughts on programming, security, humanitarianism, and more, collected in chronological order."
+   {:title "The Outskirts Journal"
+    :intro "Notes on code, open-source, security, and tech in the social sector."
     :children
     [:div {:class "md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40"}
      [:div {:class "flex max-w-3xl flex-col space-y-16"}

@@ -1,6 +1,7 @@
 (ns site.ui.about
   (:require [site.ui.container :as container]
             [site.ui.icons :as icon]
+            [site.ui.home.card :as card]
             [site.ui.core :as uic]
             [site.content :as content]))
 
@@ -26,7 +27,12 @@
                              title]
                             [:div {:class "mt-6 space-y-7 text-base text-stone-600 dark:text-stone-400"}
                              [:div {:class "prose dark:prose-invert"}
-                              content]]]
+                              content]
+                             [:div
+                              (card/card {:class "md:col-span-3"}
+                                         (card/title {:-href "/articles"} "Still Interested?")
+                                         (card/description "Check out my articles where I write about software, consultancy, and occasionally the intersection of tech and real life.")
+                                         (card/cta "To the articles"))]]]
                            [:div {:class "lg:pl-20"}
                             [:ul {:role "list"}
                              [:li {:class ""}

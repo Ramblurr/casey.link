@@ -21,9 +21,7 @@
         (nav-link {:href "/"} (icon/house {:class "inline text-inherit size-4 align-text-bottom"}))
         (nav-link {:href "/about"} "About")
         (nav-link {:href "/articles"} "Articles")
-        (nav-link {:href "/projects"} "Projects")
-        (nav-link {:href "/speaking"} "Speaking")
-        (nav-link {:href "/uses"} "Uses")]
+        (nav-link {:href "/projects"} "Projects")]
        [:p {:class "text-sm text-ol-light-gray dark:text-ol-light-gray"}
 
         (str "© 2009–" (.getValue (java.time.Year/now)) " Casey Link | Outskirts Labs e.U. All rights reserved.")]])])])
