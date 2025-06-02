@@ -814,61 +814,27 @@ function initFlaskAnimations() {
 
     flaskSvgs.forEach((flask) => {
         // Skip if this flask already has listeners attached
-        if (flask.getAttribute("data-flask-initialized") === "true") {
+        if (flask.getAttribute("data-flask-initialized")) {
             return;
         }
 
-        // Mark this flask as initialized (for idempotence)
+        if (flask.getAttribute("data-flask-autostart") === "true") {
+            startFlaskAnimation(flask);
+        }
+
         flask.setAttribute("data-flask-initialized", "true");
 
         // Set up mouse enter listener
         flask.addEventListener("mouseenter", () => {
-            const flaskData = getFlaskState(flask);
-
-            // Make sure bubbles container was found
-            if (!flaskData.bubblesContainer) {
-                console.error("Could not find bubbles container in flask SVG");
-                return;
-            }
-
-            // Make sure the SVG's overflow is set to visible so bubbles can float beyond its boundaries
-            flask.style.overflow = "visible";
-
-            // Also set parent containers to have overflow visible
-            // This is needed to allow bubbles to float all the way to the top of the window
-            let parent = flask.parentElement;
-            while (parent && parent !== document.body) {
-                const style = window.getComputedStyle(parent);
-                if (
-                    style.overflow === "hidden" ||
-                    style.overflowY === "hidden"
-                ) {
-                    parent.style.overflow = "visible";
-                }
-                parent = parent.parentElement;
-            }
-
-            // Set this flask as active and enable animation
-            activeFlask = flask;
-            flaskData.isAnimating = true;
-
-            // Initialize and measure existing bubbles
-            initializeBubbles(flask);
-
-            // Animate all bubbles for this flask
-            flaskData.bubbleState.forEach((state, bubble) => {
-                if (!flaskData.bubbleAnimations.has(bubble)) {
-                    animateBubble(flask, bubble);
-                }
-            });
-
-            // Start spawning new bubbles
-            startBubbleSpawner(flask);
+            startFlaskAnimation(flask);
         });
 
         // Set up mouse leave listener
         flask.addEventListener("mouseleave", () => {
-            stopAnimation(flask, "freeze");
+            // Don't stop animation if auto-start is enabled
+            if (flask.getAttribute("data-flask-autostart") !== "true") {
+                stopAnimation(flask, "freeze");
+            }
         });
     });
 }
@@ -881,6 +847,11 @@ const originalBubbles = new Map();
  * @param {SVGElement|string} flaskElement - Flask SVG element or selector
  */
 function startFlaskAnimation(flaskElement) {
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+        return;
+    }
     // Handle both element and selector string
     const flask =
         typeof flaskElement === "string"
@@ -892,50 +863,39 @@ function startFlaskAnimation(flaskElement) {
         return;
     }
 
-    // Make sure flask is initialized
-    if (!flask.getAttribute("data-flask-initialized")) {
-        initFlaskAnimations();
-    }
-
     const flaskData = getFlaskState(flask);
 
-    // Make sure the SVG's overflow is set to visible
+    // Make sure bubbles container was found
+    if (!flaskData.bubblesContainer) {
+        console.error("Could not find bubbles container in flask SVG");
+        return;
+    }
+
+    // Make sure the SVG's overflow is set to visible so bubbles can float beyond its boundaries
     flask.style.overflow = "visible";
 
-    // Fix parent containers' overflow
+    // Also set parent containers to have overflow visible
+    // This is needed to allow bubbles to float all the way to the top of the window
     let parent = flask.parentElement;
     while (parent && parent !== document.body) {
         const style = window.getComputedStyle(parent);
-        if (style.overflow === "hidden" || style.overflowY === "hidden") {
+        if (
+            style.overflow === "hidden" ||
+            style.overflowY === "hidden"
+        ) {
             parent.style.overflow = "visible";
         }
         parent = parent.parentElement;
     }
 
-    // Set as active and enable animation
+    // Set this flask as active and enable animation
     activeFlask = flask;
     flaskData.isAnimating = true;
 
     // Initialize and measure existing bubbles
     initializeBubbles(flask);
 
-    // Store original bubbles if not already stored
-    if (!originalBubbles.has(flask)) {
-        const bubbleConfigs = new Map();
-        flaskData.bubbleState.forEach((state, bubble) => {
-            if (!state.isDynamic) {
-                bubbleConfigs.set(bubble, {
-                    x: state.x,
-                    y: state.y,
-                    size: state.size,
-                    element: bubble.cloneNode(true),
-                });
-            }
-        });
-        originalBubbles.set(flask, bubbleConfigs);
-    }
-
-    // Animate all bubbles
+    // Animate all bubbles for this flask
     flaskData.bubbleState.forEach((state, bubble) => {
         if (!flaskData.bubbleAnimations.has(bubble)) {
             animateBubble(flask, bubble);
