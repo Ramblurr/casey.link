@@ -175,9 +175,12 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
                           (social-link {:href       "https://github.com/Ramblurr"
                                         :aria-label "Follow on GitHub"
                                         :icon       icon/github})
-                          (social-link {:href     "https://twitter.com/ramblurr"
-                                        :icon     icon/the-social-network-formerly-known-as-twitter-fill
-                                        :children "Follow on X"})]])
+                          #_(social-link {:href     "https://twitter.com/ramblurr"
+                                          :icon     icon/the-social-network-formerly-known-as-twitter-fill
+                                          :children "Follow on X"})
+                          (social-link {:href     "https://bsky.app/profile/ramblurr.bsky.social"
+                                        :icon     icon/bluesky-outline
+                                        :children "Follow on Bluesky"})]])
    (photos)
    (container/container {:class "mt-24 md:mt-28"}
                         [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}
