@@ -80,19 +80,24 @@
               :width w
               :height h) children])))
 
-(defn polish-element [page element]
+(defn polish-element [{:keys [base-url]} page element]
   (or
    (when-some [[tag attrs children] (norm element)]
      (cond
        (= tag :img)
        (polish-img page [tag attrs children])
 
+       (and (= :a tag) (:href attrs))
+       (when (and (str/starts-with? (:href attrs) "http")
+                  (not (str/starts-with? (:href attrs) base-url)))
+         [tag (assoc attrs :target "_blank")  children])
+
        :else nil))
 
    element))
 
-(defn hiccup [page]
+(defn hiccup [page config]
   (update page :content
           (fn [form]
             (prn "polish:" form)
-            (walk/postwalk #(polish-element page %) form))))
+            (walk/postwalk #(polish-element config page %) form))))
