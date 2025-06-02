@@ -38,23 +38,23 @@
 text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hover:text-ol-orange-500
 "})])
 
-(defn newsletter
-  "Newsletter signup component"
-  []
-  [:form {:action "/thank-you"
-          :class  "rounded-2xl border border-ol-light-gray/10 p-6 dark:border-ol-light-gray/20"}
-   [:h2 {:class "flex text-sm font-semibold text-ol-gray dark:text-white"}
-    (icon/envelope {:class "h-6 w-6 flex-none text-stone-400 dark:text-stone-500"})
-    [:span {:class "ml-3"} "Stay up to date"]]
-   [:p {:class "mt-2 text-sm text-stone-800 dark:text-stone-100"}
-    "Get notified when I publish new articles, project insights, or technical resources."]
-   [:div {:class "mt-6 flex"}
-    [:input {:type        "email"
-             :placeholder "Email address"
-             :aria-label  "Email address"
-             :required    true
-             :class       "min-w-0 flex-auto appearance-none rounded-md border border-ol-gray/10 bg-white px-3 py-[calc(--spacing(2)-1px)] shadow-md shadow-ol-gray/5 placeholder:text-stone-100 focus:border-ol-orange focus:ring-4 focus:ring-ol-orange/10 focus:outline-hidden sm:text-sm dark:border-ol-light-gray/20 dark:bg-ol-gray-dark/[0.25] dark:text-white dark:placeholder:text-stone-100-dark dark:focus:border-ol-orange-dark dark:focus:ring-ol-orange-dark/10"}]
-    (button/button {:type "submit" :class "ml-4 flex-none"} "Join")]])
+#_(defn newsletter
+    "Newsletter signup component"
+    []
+    [:form {:action "/thank-you"
+            :class  "rounded-2xl border border-ol-light-gray/10 p-6 dark:border-ol-light-gray/20"}
+     [:h2 {:class "flex text-sm font-semibold text-ol-gray dark:text-white"}
+      (icon/envelope {:class "h-6 w-6 flex-none text-stone-400 dark:text-stone-500"})
+      [:span {:class "ml-3"} "Stay up to date"]]
+     [:p {:class "mt-2 text-sm text-stone-800 dark:text-stone-100"}
+      "Get notified when I publish new articles, project insights, or technical resources."]
+     [:div {:class "mt-6 flex"}
+      [:input {:type        "email"
+               :placeholder "Email address"
+               :aria-label  "Email address"
+               :required    true
+               :class       "min-w-0 flex-auto appearance-none rounded-md border border-ol-gray/10 bg-white px-3 py-[calc(--spacing(2)-1px)] shadow-md shadow-ol-gray/5 placeholder:text-stone-100 focus:border-ol-orange focus:ring-4 focus:ring-ol-orange/10 focus:outline-hidden sm:text-sm dark:border-ol-light-gray/20 dark:bg-ol-gray-dark/[0.25] dark:text-white dark:placeholder:text-stone-100-dark dark:focus:border-ol-orange-dark dark:focus:ring-ol-orange-dark/10"}]
+      (button/button {:type "submit" :class "ml-4 flex-none"} "Join")]])
 
 (defn role
   "Role component for a single job/position"
@@ -188,5 +188,5 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
                           (for [article-data (take 4 articles)]
                             (article article-data))]
                          [:div {:class "space-y-10 lg:pl-16 xl:pl-24"}
-                          (newsletter)
+                          #_(newsletter)
                           (resume)]])))
