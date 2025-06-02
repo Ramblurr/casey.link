@@ -343,6 +343,8 @@ html.dark .ol-logo {
     word-break: break-word;
     white-space: pre-wrap;
   }
+
+  /*
   p:has(img.inline) {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -365,8 +367,6 @@ html.dark .ol-logo {
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   }
-
-  /* For better mobile experience */
   @variant sm {
     p:has(img.inline) {
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -374,6 +374,7 @@ html.dark .ol-logo {
       padding: 0.75rem;
     }
   }
+  */
 
   figure {
     text-align: center;
