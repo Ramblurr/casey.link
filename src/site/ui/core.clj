@@ -54,18 +54,14 @@
             (remove nil?)
             unwrapped-children)])))
 
-(defn easy-extract [comp args class]
-  (let [[opts attrs children] (extract comp args)]
-    [opts
-     (merge-attrs attrs :class class) children]))
-
 (defn norm
   "Normalizes the hiccup element to a vector of [tag attrs & children]"
   [hiccup]
-  (let [[tag & [attrs & _ch :as children]] hiccup]
-    (if (map? attrs)
-      hiccup
-      [tag nil children])))
+  (let [[tag & rest]     hiccup
+        [attrs children] (if (map? (first rest))
+                           [(first rest) (next rest)]
+                           [nil rest])]
+    [tag attrs children]))
 
 (defn merge-attrs*
   ^clojure.lang.IPersistentMap [orig-map & {:as extra}]

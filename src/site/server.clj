@@ -22,25 +22,25 @@
             [site.pages.articles :as articles])
   (:import (java.io File)))
 
-(defn html-response [page-fn]
+(defn html-response [config page-fn]
   (fn [req]
     {:status  200
      :headers headers/default-headers
      :body    (-> (page-fn req)
                   ui/shell
-                  polish/hiccup
+                  (polish/hiccup config)
                   :content
                   html/->str)}))
 
 (defn routes [config]
   ["" {:middleware [[cache/wrap-cache config]]}
-   ["/" {:handler (html-response index/index)}]
-   ["/about" {:handler (html-response about/about)}]
+   ["/" {:handler (html-response config index/index)}]
+   ["/about" {:handler (html-response config about/about)}]
    ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
                     :sitemap/exclude? true}]
    ["/articles"
-    ["" {:handler (html-response articles/articles-index)}]
-    (articles/article-routes html-response)]])
+    ["" {:handler (html-response config articles/articles-index)}]
+    (articles/article-routes (partial html-response config))]])
 
 (defn find-file ^File [path]
   (when-let [file ^File (io/as-file (io/resource path))]
