@@ -434,13 +434,13 @@
     :where(h2):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
       font-size: 1.25rem;
       line-height: 1.75rem;
-      margin-top: 5rem;
+      margin-top: 2.5rem;
       margin-bottom: 1rem;
     }
     :where(h3):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
       font-size: 1rem;
       line-height: 1.75rem;
-      margin-top: 4rem;
+      margin-top: 1rem;
       margin-bottom: 1rem;
     }
     :where(:is(h2, h3) + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
@@ -3103,31 +3103,6 @@ html.dark .ol-logo {
     word-wrap: break-word;
     word-break: break-word;
     white-space: pre-wrap;
-  }
-  p:has(img.inline) {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    padding: 1rem;
-    margin: 2rem 0;
-  }
-  p img.inline {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  p img.inline:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  }
-  @media (width >= 40rem) {
-    p:has(img.inline) {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.75rem;
-      padding: 0.75rem;
-    }
   }
   figure {
     text-align: center;
