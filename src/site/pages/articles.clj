@@ -19,9 +19,11 @@
       :previous-pathname "/articles"
       :children          content})))
 
-(defn article-page [{:keys [metadata title content uri] :as data}]
+(defn article-page [{:keys [metadata title content uri path] :as data}]
+  (prn "ARTICLE PAGE:" uri)
   {:title   title
    :uri     uri
+   :path    path
    :content (article-content data)})
 
 (defn article-routes

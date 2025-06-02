@@ -132,6 +132,8 @@ much nice")
   (let [file               (io/as-file (io/resource  (str "public/" path "/index.md")))
         [metadata content] (-> file slurp md->hiccup)]
     {:metadata metadata
+     :uri      (str "/" path)
+     :path     (str "public/" path)
      :title    (:title metadata)
      :content  content}))
 

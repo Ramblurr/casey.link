@@ -5,11 +5,12 @@
 let
 
   packages = [
-    #pkgs.tailwindcss_4
+    pkgs.tailwindcss_4
     pkgs.zsh
     pkgs.vips
     pkgs.caddy
     pkgs.flyctl
+    pkgs.vips
   ];
 
   LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
