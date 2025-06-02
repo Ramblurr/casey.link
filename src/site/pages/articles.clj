@@ -31,7 +31,9 @@
   (into []
         (map (fn build-article-routes [{:keys [slug dir modified]}]
                [(str "/" slug "/")
-                {:handler               (resp-fn (fn [_req] (content/content article-page "articles" slug)))
+                {:handler               (resp-fn (fn [_req]
+                                                   (article-page
+                                                    (content/parse-post (str "articles/" slug)))))
                  :sitemap/last-modified modified}])
              (content/article-index-data))))
 

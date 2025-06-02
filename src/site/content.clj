@@ -137,10 +137,6 @@ much nice")
      :title    (:title metadata)
      :content  content}))
 
-(defn content [page-fn dir slug]
-  (page-fn
-   (parse-post (str dir "/" slug))))
-
 (defn format-date
   "Format date in US format (e.g., January 12, 2023)"
   [date-str]
