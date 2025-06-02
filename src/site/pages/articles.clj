@@ -20,7 +20,6 @@
       :children          content})))
 
 (defn article-page [{:keys [metadata title content uri path] :as data}]
-  (prn "ARTICLE PAGE:" uri)
   {:title   title
    :uri     uri
    :path    path

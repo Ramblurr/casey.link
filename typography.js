@@ -41,7 +41,7 @@ export default {
                     "--tw-prose-bold": theme("colors.stone.900"),
                     "--tw-prose-counters": theme("colors.stone.900"),
                     "--tw-prose-bullets": theme("colors.stone.900"),
-                    "--tw-prose-hr": theme("colors.stone.100"),
+                    "--tw-prose-hr": theme("colors.stone.300"),
                     "--tw-prose-quote-borders": theme("colors.stone.200"),
                     "--tw-prose-captions": theme("colors.stone.400"),
                     "--tw-prose-code": theme("colors.stone.700"),
@@ -67,7 +67,7 @@ export default {
                     "--tw-prose-invert-bold": theme("colors.stone.200"),
                     "--tw-prose-invert-counters": theme("colors.stone.200"),
                     "--tw-prose-invert-bullets": theme("colors.stone.200"),
-                    "--tw-prose-invert-hr": theme("colors.stone.700 / 0.4"),
+                    "--tw-prose-invert-hr": theme("colors.stone.700 / 0.8"),
                     "--tw-prose-invert-quote-borders":
                         theme("colors.stone.500"),
                     "--tw-prose-invert-captions": theme("colors.stone.500"),
@@ -235,8 +235,8 @@ export default {
 
                     // Horizontal rules
                     hr: {
-                        marginTop: theme("spacing.20"),
-                        marginBottom: theme("spacing.20"),
+                        marginTop: theme("spacing.8"),
+                        marginBottom: theme("spacing.8"),
                         borderTopWidth: "1px",
                         borderColor: "var(--tw-prose-hr)",
                         "@screen lg": {

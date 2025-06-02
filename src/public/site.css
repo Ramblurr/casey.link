@@ -360,9 +360,6 @@
   .order-last {
     order: 9999;
   }
-  .col-start-3 {
-    grid-column-start: 3;
-  }
   .container {
     width: 100%;
     @media (width >= 40rem) {
@@ -391,7 +388,7 @@
     --tw-prose-bold: oklch(21.6% 0.006 56.043);
     --tw-prose-counters: oklch(21.6% 0.006 56.043);
     --tw-prose-bullets: oklch(21.6% 0.006 56.043);
-    --tw-prose-hr: oklch(97% 0.001 106.424);
+    --tw-prose-hr: oklch(86.9% 0.005 56.366);
     --tw-prose-quote-borders: oklch(92.3% 0.003 48.717);
     --tw-prose-captions: oklch(70.9% 0.01 56.259);
     --tw-prose-code: oklch(37.4% 0.01 67.558);
@@ -410,7 +407,7 @@
     --tw-prose-invert-bold: oklch(92.3% 0.003 48.717);
     --tw-prose-invert-counters: oklch(92.3% 0.003 48.717);
     --tw-prose-invert-bullets: oklch(92.3% 0.003 48.717);
-    --tw-prose-invert-hr: color-mix(in oklab, oklch(37.4% 0.01 67.558) 40%, transparent);
+    --tw-prose-invert-hr: color-mix(in oklab, oklch(37.4% 0.01 67.558) 80%, transparent);
     --tw-prose-invert-quote-borders: oklch(55.3% 0.013 58.071);
     --tw-prose-invert-captions: oklch(55.3% 0.013 58.071);
     --tw-prose-invert-code: oklch(86.9% 0.005 56.366);
@@ -553,8 +550,8 @@
       padding: 0;
     }
     :where(hr):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      margin-top: 5rem;
-      margin-bottom: 5rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
       border-top-width: 1px;
       border-color: var(--tw-prose-hr);
       @screen lg {
@@ -3106,6 +3103,37 @@ html.dark .ol-logo {
     word-wrap: break-word;
     word-break: break-word;
     white-space: pre-wrap;
+  }
+  p:has(img.inline) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    margin: 2rem 0;
+  }
+  p img.inline {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  p img.inline:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  }
+  @media (width >= 40rem) {
+    p:has(img.inline) {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+      padding: 0.75rem;
+    }
+  }
+  figure {
+    text-align: center;
+    img {
+      display: inline-block;
+    }
   }
 }
 @property --tw-scale-x {
