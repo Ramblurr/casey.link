@@ -3,9 +3,16 @@
                                  :unresolved-namespace {:level :off}
                                  :unused-referred-var  {:level :off}}}}
   (:require
+   [portal.api :as p]
    [site.server :as server]
    [donut.system.repl :as dsr]
    [clj-reload.core :as clj-reload]))
+
+(defonce portal
+  (do
+    (let [portal (p/open {:theme :portal.colors/gruvbox})]
+      (add-tap #'p/submit)
+      portal)))
 
 (defn start []
   (dsr/start ::server/dev))
@@ -28,6 +35,7 @@
                   :unload-hook 'stop
                   :reload-hook 'start})
 (comment
+
   ;; Start your system
   (start)
   ;; Stop the system (if it is started)
