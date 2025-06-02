@@ -82,11 +82,12 @@
                          :href       "/"
                          :aria-label "Home"
                          :class      "pointer-events-auto")
-     (icon/flask {:id    "logo-square"
-                  :class (uic/cs
-                          "rounded-full object-cover overflow-visible"
-                          (if large? "h-22 w-22 " "h-9 w-9"))
-                  :alt   alt})]))
+     (icon/flask {:id                   "logo-square"
+                  :data-flask-autostart "true"
+                  :class                (uic/cs
+                                         "rounded-full object-cover overflow-visible"
+                                         (if large? "h-22 w-22 " "h-9 w-9"))
+                  :alt                  alt})]))
 
 (defn logo-background
   "Avatar container component"
