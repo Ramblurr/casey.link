@@ -15,7 +15,7 @@
    :form-action     [self]
    :default-src     [none]
    :media-src       [self "https: data:"]
-   :script-src      [self unsafe-eval]
+   :script-src      [self unsafe-eval "'sha256-BP34lJXTeOsH+EiTxSXNkA6VgmcWT5BrcJYrz/5gqtU='" "'sha256-azbXrmMNM3r7AQYITy4uGJ1+wQ3JVANjvyLuLT6N1Sg='"]
    :img-src         [self "https: data:"]
    :font-src        [self]
    :connect-src     [self]
