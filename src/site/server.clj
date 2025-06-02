@@ -16,6 +16,7 @@
             [site.headers :as headers]
             [site.html :as html]
             [site.ui :as ui]
+            [site.polish :as polish]
             [site.pages.index :as index]
             [site.pages.about :as about]
             [site.pages.articles :as articles])
@@ -27,6 +28,7 @@
      :headers headers/default-headers
      :body    (-> (page-fn req)
                   ui/shell
+                  polish/hiccup
                   :content
                   html/->str)}))
 

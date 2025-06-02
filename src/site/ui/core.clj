@@ -58,3 +58,25 @@
   (let [[opts attrs children] (extract comp args)]
     [opts
      (merge-attrs attrs :class class) children]))
+
+(defn norm
+  "Normalizes the hiccup element to a vector of [tag attrs & children]"
+  [hiccup]
+  (let [[tag & [attrs & _ch :as children]] hiccup]
+    (if (map? attrs)
+      hiccup
+      [tag nil children])))
+
+(defn merge-attrs*
+  ^clojure.lang.IPersistentMap [orig-map & {:as extra}]
+  (reduce (fn [acc [k v]]
+            (case k
+              :class (update acc :class #(str v " " %))
+              (assoc acc k v))) orig-map extra))
+
+(defn assoc-attr
+  "Assoc attributes to the hiccup element"
+  [hiccup & {:as args}]
+  (update-in (norm hiccup) [1]
+             merge-attrs*
+             args))
