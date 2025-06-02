@@ -2,19 +2,22 @@
  :deps  {org.clojure/clojure            {:mvn/version "1.12.0"}
          org.clojure/data.xml           {:mvn/version "0.0.8"}
          party.donut/system             {:mvn/version "1.0.255"}
-         io.github.nextjournal/markdown {:mvn/version "0.6.157"}
+         io.github.nextjournal/markdown {;; :mvn/version "0.6.157"
+                                         :git/url "https://github.com/nextjournal/markdown"
+                                         :git/sha "5829ec101331b1702841094f4dc897ee46f0ddcd"}
          aero/aero                      {:mvn/version "1.1.6"}
          datastar/sdk                   {:git/url   "https://github.com/starfederation/datastar/"
-                                         :git/sha   "d7fba2787e70967e194ac74de69512a2a446294e"
+                                         :git/sha   "04857cbd09bca12e3582c42124c16a29c16c89c5"
                                          :deps/root "sdk/clojure/sdk"}
          datastar/adapter-http-kit      {:git/url   "https://github.com/starfederation/datastar/"
-                                         :git/sha   "d7fba2787e70967e194ac74de69512a2a446294e"
+                                         :git/sha   "04857cbd09bca12e3582c42124c16a29c16c89c5"
                                          :deps/root "sdk/clojure/adapter-http-kit"}
-         metosin/reitit                 {:mvn/version "0.7.2"}
+         metosin/reitit                 {:mvn/version "0.9.1"}
          metosin/jsonista               {:mvn/version "0.3.13"}
          dev.onionpancakes/chassis      {:mvn/version "1.0.365"}}
  :aliases
- {:dev   {:extra-deps  {io.github.tonsky/clj-reload {:mvn/version "0.9.4"}}
+ {:dev   {:extra-deps  {djblue/portal               {:mvn/version "0.59.1"}
+                        io.github.tonsky/clj-reload {:mvn/version "0.9.7"}}
           :extra-paths ["dev"]
           :jvm-opts    ["-Duser.timezone=UTC"
                         "-XX:+UseZGC"
@@ -23,6 +26,6 @@
                         "-XX:+ZGenerational"]}
   :test  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
   :build {:deps       {io.github.clojure/tools.build
-                       {:git/tag "v0.10.5" :git/sha "2a21b7a"}}
+                       {:git/tag "v0.10.9" :git/sha "e405aac"}}
           :ns-default build}
   :run-m {:main-opts ["-m" "site.server"]}}}
