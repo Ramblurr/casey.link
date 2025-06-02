@@ -17,6 +17,7 @@
             [site.html :as html]
             [site.ui :as ui]
             [site.polish :as polish]
+            [site.dev :as dev]
             [site.pages.index :as index]
             [site.pages.about :as about]
             [site.pages.articles :as articles])
@@ -35,6 +36,8 @@
 (defn routes [config]
   ["" {:middleware [[cache/wrap-cache config]]}
    ["/" {:handler (html-response config index/index)}]
+   (when (:dev? config)
+     (dev/routes config))
    ["/about" {:handler (html-response config about/about)}]
    ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
                     :sitemap/exclude? true}]
@@ -105,7 +108,18 @@
                                 (server/server-stop! server)))
                     :config {:handler (ds/local-ref [:handler])
                              :host    (ds/ref [:env :host])
-                             :port    (ds/ref [:env :port])}}}}})
+                             :port    (ds/ref [:env :port])}}
+     :watcher #::ds{:start  (fn [{config ::ds/config}]
+                              (when (:dev? config)
+                                (let [watcher (dev/start-watcher config)]
+                                  (println "Watching for changes.")
+                                  watcher)))
+                    :stop   (fn [{watcher ::ds/instance}]
+                              (when watcher
+                                (dev/stop-watcher watcher)))
+                    :config {:dev?        (ds/ref [:env :dev?])
+                             :watch-paths (ds/ref [:env :watch-paths])
+                             :base-url    (ds/ref [:env :base-url])}}}}})
 
 (defn env-config [& [profile]]
   (aero/read-config (io/resource "site/env.edn")

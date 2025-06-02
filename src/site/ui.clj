@@ -1,5 +1,6 @@
 (ns site.ui
   (:require
+   [jsonista.core :as json]
    [site.ui.footer :as footer]
    [site.ui.header :as header]
    [site.html :as html]))
@@ -25,12 +26,16 @@
            [:head
             [:meta {:http-equiv "content-type" :content "text/html;charset=UTF-8"}]
             [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
-            [:script {:type "module", :src "/js/datastar@1.0.0-beta.10.js"}]
-            [:script {:src "/js/prism.js"}]
+            #_[:script {:type "importmap"}
+               (html/raw
+                (json/write-value-as-string {:imports {"datastar" "/js/datastar@1.0.0-RC.11.js"}}))]
+            [:script {:defer true :type "module" :src "/js/datastar@1.0.0-RC.11.js"}]
+            [:script {:defer true :src "/js/prism.js"}]
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             [:title (:title page)]]
            [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}
+            [:div {:data-on-load "@post('/dev')"}]
             [:div {:class "flex w-full"}
              (layout page)]
-            [:script {:src "/js/header.js"}]
-            [:script {:type "module" :src "/js/flask.js"}]]]]))
+            [:script {:defer true :src "/js/header.js"}]
+            [:script {:defer true :type "module" :src "/js/flask.js"}]]]]))
