@@ -23,5 +23,7 @@
         (nav-link {:href "/articles"} "Articles")
         (nav-link {:href "/projects"} "Projects")]
        [:p {:class "text-sm text-ol-light-gray dark:text-ol-light-gray"}
-
-        (str "© 2009–" (.getValue (java.time.Year/now)) " Casey Link | Outskirts Labs e.U. All rights reserved.")]])])])
+        "Thank you for visiting this personal website."
+        [:br]
+        [:span {:class "text-xs"}
+         (str "© 2009–" (.getValue (java.time.Year/now)) " Casey Link")]]])])])

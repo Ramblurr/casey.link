@@ -19,9 +19,15 @@
     name)))
 
 (defn icon->fn [svg]
-  (fn [{:keys [class] :or {class ""} :as opts}]
+  (fn [{:keys [class role] :or {class ""} :as opts}]
     (-> svg
         (update-in [1] #(merge % (dissoc opts :class)))
+        (update-in [1 :role]
+                   (fn [existing new]
+                     (if new
+                       new
+                       "img")) role)
+
         (update-in [1 :class]
                    (fn [existing new]
                      (str new " " existing)) class))))
@@ -196,4 +202,13 @@
 
 (deficon briefcase (ico :briefcase))
 
+(deficon link (ico :link))
+
+(deficon rocket (ico :rocket))
+
+(deficon tag (ico :tag))
+
+(deficon stack (ico :stack))
+
 (deficon house (ico :house))
+
