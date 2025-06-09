@@ -76,13 +76,14 @@
 
 (defn blog-routes
   "Generate reitit routes for all articles"
+  ;; It is important to maintain the trailing slash after the link pages
+  ;; so that post-specific assets can be properly relatively included
   [resp-fn]
   (into []
         (map (fn build-article-routes [{:keys [slug dir modified]}]
                [(str "/" slug "/")
                 {:handler               (resp-fn (fn [_req]
                                                    (blog-page
-                                                    (content/parse-post (url-for :url/blog-pist slug)))))
+                                                    (content/parse-post (str "blog/" slug "/")))))
                  :sitemap/last-modified modified}])
              (content/article-index-data))))
-
