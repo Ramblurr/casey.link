@@ -20,7 +20,7 @@
        [:div {:class "flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium text-ol-gray dark:text-white"}
         (nav-link {:href "/"} (icon/house {:class "inline text-inherit size-4 align-text-bottom"}))
         (nav-link {:href "/about"} "About")
-        (nav-link {:href "/articles"} "Articles")
+        (nav-link {:href "/blog"} "Articles")
         (nav-link {:href "/projects"} "Projects")]
        [:p {:class "text-sm text-ol-light-gray dark:text-ol-light-gray"}
         "Thank you for visiting this personal website."

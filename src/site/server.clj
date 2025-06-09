@@ -21,7 +21,7 @@
             [site.pages.index :as index]
             [site.pages.about :as about]
             [site.pages.projects :as projects]
-            [site.pages.articles :as articles])
+            [site.pages.blog :as blog])
   (:import (java.io File)))
 
 (defn html-response [config page-fn]
@@ -43,9 +43,9 @@
    ["/projects" {:handler (html-response config projects/projects)}]
    ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
                     :sitemap/exclude? true}]
-   ["/articles"
-    ["" {:handler (html-response config articles/articles-index)}]
-    (articles/article-routes (partial html-response config))]])
+   ["/blog"
+    ["" {:handler (html-response config blog/blog-index-page)}]
+    (blog/blog-routes (partial html-response config))]])
 
 (defn find-file ^File [path]
   (when-let [file ^File (io/as-file (io/resource path))]
@@ -78,7 +78,7 @@
     (ring.not-modified/wrap-not-modified handler)))
 
 (defn folder-redirects-handler [{:keys [uri] :as req}]
-  (when (re-matches #"(/articles/[^/]+|/projects/[^/]+)" uri)
+  (when (re-matches #"(/blog/[^/]+|/projects/[^/]+)" uri)
     {:status  301
      :headers {"Location" (str uri "/")}}))
 
