@@ -6,7 +6,7 @@
    :url/about         "/about"
    :url/project-index "/projects"
    :url/blog-index    "/blog"
-   :url/blog-post     "/blog/%s"})
+   :url/blog-post     "/blog/%s/"})
 
 (defn url-for
   [path & args]
