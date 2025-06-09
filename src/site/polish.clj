@@ -58,7 +58,7 @@
   (when-not (str/starts-with? uri "http")
     (let [file-path (str (:path page "public") "/" uri)
           file      (io/as-file (io/resource file-path))]
-      (when (.exists file)
+      (when (and file (.exists file))
         file))))
 
 (defn timestamp-url [url file]
