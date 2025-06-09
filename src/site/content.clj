@@ -1,6 +1,5 @@
 (ns site.content
   (:require
-   [taipei-404.html :refer [html->hiccup]]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
@@ -9,16 +8,13 @@
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as md.transform]
    [site.ui.icons :as icon]
-   [site.ui.alert :as ui-alert])
+   [site.ui.alert :as alert])
   (:import (java.time.format DateTimeFormatter)
            (java.time LocalDate ZoneOffset)))
 
-(def markdown-components
-  {:ui-Alert ::ui-alert/Alert})
-
 (def outdated-alert
-  [::ui-alert/Alert {:_title "This post is over 5 years old."
-                     :_type  "warning"}
+  [alert/Alert {:alert/title "This post is over 5 years old."
+                :alert/type  "warning"}
    [:p "Information may be outdated or no longer relevant."]])
 
 (defn s2sr [s]
@@ -82,6 +78,14 @@
   (-> md-ast
       (update :content lift-block-images)))
 
+(defn embed-hiccup [{:keys [info content] :as node}]
+  (try
+    (let [data (read-string (get-in content [0 :text]))]
+      (when (:embed (meta data))
+        data))
+    (catch Exception e
+      nil)))
+
 (def transform-ctx
   (assoc md.transform/default-hiccup-renderers
          :image (fn [{:as _ctx ::md.transform/keys [parent]} {:as node :keys [attrs  content]}]
@@ -107,24 +111,17 @@
                         [:a {:role "doc-backlink" :href (str "#fn" fn) :class "text-inherit"}
                          (icon/arrow-u-up-left {:class "size-4 inline ml-1 text-inherit border-b"})]]))
          :code (fn [ctx {:keys [text info] :as node}]
-                 (let [class (when info (str "language-" info))]
-                   [:pre [:code {:class class} (or text (md.transform/->text node))]]))
+                 (if-let [hiccup (embed-hiccup node)]
+                   hiccup
+                   (let [class (when info (str "language-" info))]
+                     [:pre [:code {:class class} (or text (md.transform/->text node))]])))
          :plain (partial md.transform/into-markup [:span])
          :html-inline (fn [ctx node]
                         (html/raw
                          (get-in node [:content 0 :text])))
          :html-block (fn [ctx node]
-                       (let [hiccup (html->hiccup (get-in node [:content 0 :text]))
-                             el     (ffirst hiccup)
-                             comp   (get markdown-components el)]
-                         (tap> [:node node :hic hiccup :el el :comp comp])
-                         (map (fn [el]
-                                (if-let [comp (get markdown-components (first el))]
-                                  (into [comp] (rest el))
-                                  el)) hiccup)
-                         #_(html/raw
-                            (tap> [node hiccup el comp])
-                            (get-in node [:content 0 :text]))))))
+                       (html/raw
+                        (get-in node [:content 0 :text])))))
 
 (defn md->hiccup [string]
   (let [[metadata {:keys [footnotes] :as md-ast}] (parse string)]
