@@ -37,7 +37,7 @@
     [:nav {:class "mt-6"}
      [:ul {:class "-my-2 divide-y divide-stone-100 text-base text-stone-800 dark:divide-stone-100/5 dark:text-stone-300"}
       (mobile-nav-item {:href "/about"} "About")
-      (mobile-nav-item {:href "/articles"} "Articles")
+      (mobile-nav-item {:href "/blog"} "blog")
       (mobile-nav-item {:href "/projects"} "Projects")]]]])
 
 (defn nav-item
@@ -60,7 +60,7 @@
    [:ul {:class
          "flex rounded-full bg-white/90 px-3 text-sm font-medium text-stone-800 ring-1 shadow-lg shadow-stone-800/5 ring-stone-900/5 backdrop-blur-sm dark:bg-stone-800/90 dark:text-stone-200 dark:ring-white/10"}
     (nav-item {:href "/about" :active? (= path "/about")} "About")
-    (nav-item {:href "/articles" :active? (= path "/articles")} "Articles")
+    (nav-item {:href "/blog" :active? (= path "/blog")} "Blog")
     (nav-item {:href "/projects" :active? (= path "/projects")} "Projects")]])
 
 (defn theme-toggle
