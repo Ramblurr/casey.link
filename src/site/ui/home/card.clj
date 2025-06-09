@@ -26,7 +26,7 @@
   (let [[opts attrs children] (uic/extract args)
         {:keys [as href]
          :or   {as :h2}}      opts]
-    [as {:class "text-base font-semibold tracking-tight text-stone-800 dark:text-stone-100"}
+    [as (uic/merge-attrs attrs :class "text-base font-semibold tracking-tight text-stone-800 dark:text-stone-100")
      (if href
        (card-link {:href href} children)
        children)]))

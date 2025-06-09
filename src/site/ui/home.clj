@@ -178,7 +178,7 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
                           #_(social-link {:href     "https://twitter.com/ramblurr"
                                           :icon     icon/the-social-network-formerly-known-as-twitter-fill
                                           :children "Follow on X"})
-                          (social-link {:href     "https://bsky.app/profile/ramblurr.bsky.social"
+                          (social-link {:href     "https://bsky.app/profile/casey.link"
                                         :icon     icon/bluesky-outline
                                         :children "Follow on Bluesky"})]])
    (photos)

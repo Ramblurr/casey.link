@@ -20,6 +20,7 @@
             [site.dev :as dev]
             [site.pages.index :as index]
             [site.pages.about :as about]
+            [site.pages.projects :as projects]
             [site.pages.articles :as articles])
   (:import (java.io File)))
 
@@ -39,6 +40,7 @@
    (when (:dev? config)
      (dev/routes config))
    ["/about" {:handler (html-response config about/about)}]
+   ["/projects" {:handler (html-response config projects/projects)}]
    ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
                     :sitemap/exclude? true}]
    ["/articles"
