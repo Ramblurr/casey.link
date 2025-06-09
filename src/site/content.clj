@@ -1,14 +1,25 @@
 (ns site.content
   (:require
+   [taipei-404.html :refer [html->hiccup]]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
+   [site.html :as html]
    [nextjournal.markdown.utils :as md.util]
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as md.transform]
-   [site.ui.icons :as icon])
+   [site.ui.icons :as icon]
+   [site.ui.alert :as ui-alert])
   (:import (java.time.format DateTimeFormatter)
            (java.time LocalDate ZoneOffset)))
+
+(def markdown-components
+  {:ui-Alert ::ui-alert/Alert})
+
+(def outdated-alert
+  [::ui-alert/Alert {:_title "This post is over 5 years old."
+                     :_type  "warning"}
+   [:p "Information may be outdated or no longer relevant."]])
 
 (defn s2sr [s]
   (-> s (java.io.StringReader.) (java.io.BufferedReader.)))
@@ -98,7 +109,22 @@
          :code (fn [ctx {:keys [text info] :as node}]
                  (let [class (when info (str "language-" info))]
                    [:pre [:code {:class class} (or text (md.transform/->text node))]]))
-         :plain (partial md.transform/into-markup [:span])))
+         :plain (partial md.transform/into-markup [:span])
+         :html-inline (fn [ctx node]
+                        (html/raw
+                         (get-in node [:content 0 :text])))
+         :html-block (fn [ctx node]
+                       (let [hiccup (html->hiccup (get-in node [:content 0 :text]))
+                             el     (ffirst hiccup)
+                             comp   (get markdown-components el)]
+                         (tap> [:node node :hic hiccup :el el :comp comp])
+                         (map (fn [el]
+                                (if-let [comp (get markdown-components (first el))]
+                                  (into [comp] (rest el))
+                                  el)) hiccup)
+                         #_(html/raw
+                            (tap> [node hiccup el comp])
+                            (get-in node [:content 0 :text]))))))
 
 (defn md->hiccup [string]
   (let [[metadata {:keys [footnotes] :as md-ast}] (parse string)]
@@ -128,6 +154,19 @@ much nice")
   ;;
   )
 
+(defn parse-date [date-str]
+  (when parse-date
+    (LocalDate/parse date-str)))
+
+(defn maybe-outdated
+  "Inject an alert if the post is outdated.
+   A post is considered outdated if it has a date more than 5 years in the past and does not have the 'evergreen' tag."
+  [{:keys [title tags date]} content]
+  (if (and (not (contains? tags "evergreen"))
+           (.isAfter (LocalDate/now) (.plusYears (parse-date date) 5)))
+    (into (list outdated-alert content))
+    content))
+
 (defn parse-post [path]
   (let [file               (io/as-file (io/resource  (str "public/" path "/index.md")))
         [metadata content] (-> file slurp md->hiccup)]
@@ -135,21 +174,21 @@ much nice")
      :uri      (str "/" path)
      :path     (str "public/" path)
      :title    (:title metadata)
-     :content  content}))
+     :content  (maybe-outdated metadata content)}))
 
 (defn format-date
   "Format date in US format (e.g., January 12, 2023)"
   [date-str]
   (if (and date-str (not (str/blank? date-str)))
     (try
-      (let [date (LocalDate/parse date-str)]
+      (let [date (parse-date date-str)]
         (.format date (DateTimeFormatter/ofPattern "MMMM d, yyyy")))
       (catch Exception _
         "No date available"))
     "No date available"))
 
 (defn article-dirs []
-  (->> (io/as-file (io/resource "public/articles"))
+  (->> (io/as-file (io/resource "public/blog"))
        (.listFiles)
        (seq)
        (filter #(.isDirectory %))))
@@ -167,7 +206,7 @@ much nice")
        (filter #(.exists (io/file (str (.getPath %) "/index.md"))))
        (map (fn [dir]
               (let [slug               (.getName dir)
-                    {:keys [metadata]} (parse-post (str "articles/" slug))]
+                    {:keys [metadata]} (parse-post (str "blog/" slug))]
                 (assoc metadata
                        :slug slug
                        :dir dir
@@ -176,7 +215,7 @@ much nice")
 
 (comment
   (:content
-   (parse-post "articles/mobile-security-field-workers"))
+   (parse-post "blog/mobile-security-field-workers"))
   (format-date "2023-01-12")
   (article-index-data)
   (article-route-data)

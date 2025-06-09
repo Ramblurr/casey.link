@@ -105,6 +105,9 @@
     var(--base-unit) + var(--figure-wide-overlap) + var(--text-width) +
       var(--base-unit) + var(--footnote-width) + var(--base-unit)
   );
+
+  --alert-warning: var(--color-yellow-500);
+  --alert-default: var(--color-ol-turquoise-500);
 }
 
 .ol-logo {
