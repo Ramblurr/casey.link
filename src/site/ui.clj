@@ -1,9 +1,8 @@
 (ns site.ui
   (:require
-   [jsonista.core :as json]
+   [site.html :as html]
    [site.ui.footer :as footer]
-   [site.ui.header :as header]
-   [site.html :as html]))
+   [site.ui.header :as header]))
 
 (defn layout [{:keys [uri content] :as page}]
   (list

@@ -3,7 +3,8 @@
             [site.ui.icons :as icon]
             [site.ui.home.card :as card]
             [site.ui.core :as uic]
-            [site.content :as content]))
+            [site.content :as content]
+            [site.pages.urls :as urls]))
 
 (defn social-link [{:keys [href class-name icon children]}]
   [:li {:class (uic/cs "flex" class-name)}
@@ -30,7 +31,7 @@
                               content]
                              [:div
                               (card/card {:class "md:col-span-3"}
-                                         (card/title {:-href "/articles"} "Still Interested?")
+                                         (card/title {:-href (urls/url-for :url/blog-index)} "Still Interested?")
                                          (card/description "Check out my articles where I write about software, consultancy, and occasionally the intersection of tech and real life.")
                                          (card/cta "To the articles"))]]]
                            [:div {:class "lg:pl-20"}
@@ -63,7 +64,7 @@
 
 (defn about [_]
   {:title   "About - Casey Link"
-   :uri     "/about"
+   :uri     (urls/url-for :url/about)
    :content about-content})
 
 (comment

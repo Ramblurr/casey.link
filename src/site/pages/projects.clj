@@ -3,7 +3,8 @@
    [clojure.string :as str]
    [site.ui.home.card :as card]
    [site.ui.icons :as icon]
-   [site.ui.simple-layout :as simple-layout]))
+   [site.ui.simple-layout :as simple-layout]
+   [site.pages.urls :as urls]))
 
 (defn project-card [{:keys [name description href label icon tags]}]
   (card/card {:as :li}
@@ -145,8 +146,8 @@
                   (project-card project))]]}))
 
 (defn projects [_]
-  {:title   "Projects - Casey Link"
-   :uri     "/projects"
+  {:title "Projects - Casey Link"
+   :uri (urls/url-for :url/project-index)
    :content (projects-content)})
 
 (comment
