@@ -1,21 +1,22 @@
 (ns site.ui.home
   (:require
-   [site.ui.icons :as icon]
+   [site.pages.urls :as urls]
    [site.ui.container :as container]
    [site.ui.home.card :as card]
-   [site.ui.home.button :as button])
-  (:import (java.time Year)))
+   [site.ui.icons :as icon])
+  (:import
+   (java.time Year)))
 
 (defn arrow-down-icon
   "Arrow down icon SVG component"
   [{:keys [class]}]
-  [:svg {:viewBox     "0 0 16 16"
-         :fill        "none"
+  [:svg {:viewBox "0 0 16 16"
+         :fill "none"
          :aria-hidden "true"
-         :class       class}
-   [:path {:d               "M4.75 8.75 8 12.25m0 0 3.25-3.5M8 12.25v-8.5"
-           :stroke-width    "1.5"
-           :stroke-linecap  "round"
+         :class class}
+   [:path {:d "M4.75 8.75 8 12.25m0 0 3.25-3.5M8 12.25v-8.5"
+           :stroke-width "1.5"
+           :stroke-linecap "round"
            :stroke-linejoin "round"}]])
 
 ;; Main Component Functions
@@ -23,7 +24,7 @@
   "Article component for displaying a single article"
   [{:keys [title slug date description]}]
   (card/card {:as :article}
-             (card/title {:-href (str "/blog/" slug)} title)
+             (card/title {:-href (urls/url-for :url/blog-post slug)} title)
              (card/eyebrow {:-as :time :-datetime date :-decorate? true} date)
              (card/description description)
              (card/cta "Read article")))

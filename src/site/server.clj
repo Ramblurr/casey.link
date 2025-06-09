@@ -21,7 +21,8 @@
             [site.pages.index :as index]
             [site.pages.about :as about]
             [site.pages.projects :as projects]
-            [site.pages.blog :as blog])
+            [site.pages.blog :as blog]
+            [site.pages.urls :as urls])
   (:import (java.io File)))
 
 (defn html-response [config page-fn]
@@ -36,14 +37,14 @@
 
 (defn routes [config]
   ["" {:middleware [[cache/wrap-cache config]]}
-   ["/" {:handler (html-response config index/index)}]
+   [(urls/url-for :url/home) {:handler (html-response config index/index)}]
    (when (:dev? config)
      (dev/routes config))
-   ["/about" {:handler (html-response config about/about)}]
-   ["/projects" {:handler (html-response config projects/projects)}]
-   ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
+   [(urls/url-for :url/about) {:handler (html-response config about/about)}]
+   [(urls/url-for :url/project-index) {:handler (html-response config projects/projects)}]
+   ["/sitemap.xml" {:get (sitemap/create-sitemap-handler config)
                     :sitemap/exclude? true}]
-   ["/blog"
+   [(urls/url-for :url/blog-index)
     ["" {:handler (html-response config blog/blog-index-page)}]
     (blog/blog-routes (partial html-response config))]])
 
