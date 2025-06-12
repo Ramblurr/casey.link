@@ -55,10 +55,10 @@
           actual-last-modified                   (get-modified files)]
       (if (or (nil? response) (> actual-last-modified last-modified))
         (do
-          (prn "MISS!" cache-key)
+          ;; (prn "MISS!" cache-key)
           (cache-miss !cache cache-key actual-last-modified handler request))
         (do
-          (prn "HIT!" cache-key)
+          ;; (prn "HIT!" cache-key)
           (ring.not-modified/not-modified-response response request))))))
 
 (defn wrap-cache [handler {:keys [exclude? dev?]
