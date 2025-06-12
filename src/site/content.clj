@@ -1,220 +1,173 @@
 (ns site.content
   (:require
-   [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
-   [site.html :as html]
-   [nextjournal.markdown.utils :as md.util]
-   [nextjournal.markdown :as md]
-   [nextjournal.markdown.transform :as md.transform]
-   [site.ui.icons :as icon]
-   [site.ui.alert :as alert])
-  (:import (java.time.format DateTimeFormatter)
-           (java.time LocalDate ZoneOffset)))
+   [datomic.api :as d]
+   [ring.util.mime-type :as ring-mime]
+   [site.class-path :as cp]
+   [site.crypto :as crypto]
+   [site.db :as db]
+   [site.markdown :as md]))
 
-(def outdated-alert
-  [alert/Alert {:alert/title "This post is over 5 years old."
-                :alert/type  "warning"}
-   [:p "Information may be outdated or no longer relevant."]])
+(defn content-pattern [suffixes]
+  (re-pattern (str "(" (str/join "|" suffixes) ")$")))
 
-(defn s2sr [s]
-  (-> s (java.io.StringReader.) (java.io.BufferedReader.)))
+(defn suggest-uri [uri path]
+  (or uri
+      (-> (str "/" (str/replace path #"\.[^\.]+$" "/"))
+          (str/replace #"index\/$" "")
+          (str/replace #"\/\/+" "/"))))
 
-(defn parse-edn-frontmatter
-  [lines-seq]
-  (if (re-matches #"\{.*" (or (first lines-seq) ""))
-    ;; take sequences until you hit an empty line
-    (let [meta-lines (take-while (comp not (partial re-matches #"\s*"))
-                                 lines-seq)]
-      [(->> meta-lines
-            ;; join together and parse
-            (str/join "\n")
-            edn/read-string)
-       ;; count the trailing empty line
-       (inc (count meta-lines))])
-    [nil 0]))
+(defmulti parse-file (fn [_ctx {:keys [path]}]
+                       (keyword (last (str/split path #"\.")))))
 
-(defn parse [string]
-  (let [s                     (-> string s2sr line-seq)
-        [metadata meta-lines] (parse-edn-frontmatter s)]
-    [metadata
-     (->> (drop meta-lines s)
-          (str/join "\n")
-          md/parse
-          md.util/insert-sidenote-containers)]))
+(defmethod parse-file :md [{:keys [db get-page-kind]} {:keys [thunk path last-modified]}]
+  (when-let [kind (get-page-kind path)]
+    [(-> (md/parse-markdown-meta (thunk))
+         (assoc :page/resource-path path
+                :page/last-modified last-modified
+                :page/kind kind)
+         (update :page/uri suggest-uri path))]))
 
-(defn content-by-type [node type]
-  (filter #(= (:type %) type) (:content node)))
+(defmethod parse-file :edn [ctx {:keys [thunk] :as r}]
+  (let [data (read-string (thunk))]
+    (if (and (coll? data) (not (map? data)))
+      data
+      [data])))
 
-(defn lift-block-images
-  "Lift an image node to top-level when it is the only child of a paragraph."
-  [md-nodes]
-  (map (fn [{:as node :keys [type content]}]
-         (cond
+(defmethod parse-file :default [ctx _]
+  nil)
 
-           (and (= :paragraph type)
-                (= 3 (count content))
-                (= :image (:type (first content)))
-                (= :text (:type (last content))))
-           (let [caption-node  (last content)
-                 image-node    (first content)
-                 alt-text-node (-> image-node :content first)]
-             (assoc image-node
-                    :content
-                    [(assoc alt-text-node :type :alt)
-                     (-> caption-node
-                         (assoc :type :caption))]))
-
-           (and (= :paragraph type)
-                (= 1 (count content))
-                (= :image (:type (first content))))
-           (let [image-node (first content)]
-             (doto
-              (assoc-in image-node [:content 0 :type] :alt) prn))
-
-           :else node)) md-nodes))
-
-(defn transform-ast [md-ast]
-  (-> md-ast
-      (update :content lift-block-images)))
-
-(defn embed-hiccup [{:keys [info content] :as node}]
+(defn load-content [ctx resource]
   (try
-    (let [data (read-string (get-in content [0 :text]))]
-      (when (:embed (meta data))
-        data))
+    (let [pages (vec (parse-file (assoc ctx :db (d/db (:conn ctx)))
+                                 resource))]
+      (filterv :page/kind pages))
     (catch Exception e
+      (let [ex {:exception e
+                :path      (:path resource)
+                :message   (str "Failed to parse file " (:path resource))
+                :kind      ::parse-file}]
+        (prn e)
+        (tap> ex))
       nil)))
 
-(def transform-ctx
-  (assoc md.transform/default-hiccup-renderers
-         :image (fn [{:as _ctx ::md.transform/keys [parent]} {:as node :keys [attrs  content]}]
-                  ;; This works together with lift-block-images to ensure that "block" images are lifted to the top level.
-                  (if (= :doc (:type parent))
-                    (let [caption-node  (content-by-type node :caption)
-                          alt-text-node (content-by-type node :alt)
-                          alt-text      (apply str (map :text alt-text-node))
-                          caption-text  (apply str (map :text caption-node))]
-                      [:figure.image
-                       [:img (assoc attrs :alt alt-text)]
-                       (when-not (str/blank? caption-text)
-                         [:figcaption.text-center.mt-1 caption-text])])
-                    [:img.inline (assoc attrs :alt (md.transform/->text node))]))
-         :sidenote-ref (fn [_ {:keys [ref label]}]
-                         (let [fn (str (inc ref))]
-                           [:a.sidenote-ref {:id (str "fn" fn) :href (str "#fnref" fn) :role "doc-noteref"} [:sup {:data-label label} fn]]))
-         :sidenote (fn [ctx {:as node :keys [ref text]}]
-                     (let [fn (str (inc ref))]
-                       [:span.sidenote {:role "doc-footnote" :id (str "fnref" fn)}
-                        [:sup.sidenote-number (str fn ".")]
-                        (or text (md.transform/->text node))
-                        [:a {:role "doc-backlink" :href (str "#fn" fn) :class "text-inherit"}
-                         (icon/arrow-u-up-left {:class "size-4 inline ml-1 text-inherit border-b"})]]))
-         :code (fn [ctx {:keys [text info] :as node}]
-                 (if-let [hiccup (embed-hiccup node)]
-                   hiccup
-                   (let [class (when info (str "language-" info))]
-                     [:pre [:code {:class class} (or text (md.transform/->text node))]])))
-         :plain (partial md.transform/into-markup [:span])
-         :html-inline (fn [ctx node]
-                        (html/raw
-                         (get-in node [:content 0 :text])))
-         :html-block (fn [ctx node]
-                       (html/raw
-                        (get-in node [:content 0 :text])))))
+(defn load-all-content [ctx content-dir suffixes]
+  (->> (cp/list-resources content-dir (content-pattern suffixes))
+       (map (partial load-content ctx))
+       (apply concat)))
 
-(defn md->hiccup [string]
-  (let [[metadata {:keys [footnotes] :as md-ast}] (parse string)]
-    [metadata
-     (md.transform/->hiccup transform-ctx (transform-ast md-ast))]))
+(defn load-all-assets [content-dir suffixes]
+  (->> (cp/list-resources content-dir (content-pattern suffixes))
+       (map (fn [{:keys [thunk path last-modified size] :as resource}]
+              (let [resource-path (cp/join content-dir path)]
+                {:asset/resource-path  resource-path
+                 :asset/last-modified  last-modified
+                 :asset/content-type   (ring-mime/ext-mime-type resource-path {"map" "application/json"})
+                 :asset/content-length size
+                 :asset/hash           (crypto/sha384-resource resource-path)
+                 :asset/uri            (str "/" path)})))
+       (filter #(not= (:asset/resource-path %) "public/compiled.css"))))
 
-(comment
-  (md->hiccup "_hello_ what and foo[^note1] and
-And what.
+(defn ingest-txs [conn txs]
+  (d/transact conn txs))
 
-![](./fairybox2.jpg)
+(def default-content-suffixes ["md" "edn"])
+(def default-asset-suffixes ["css" "gif" "jpg" "jpeg" "js" "js.map" "png" "svg" "txt" "webp" "woff2"])
 
-[^note1]: the _what_
-")
-  (md->hiccup "
-![This is an alt text](./fairybox2.jpg)
-")
-  ;; rcf
+(defn ingest! [ctx]
+  (tap> :ingest!)
+  (let [suffixes    default-content-suffixes
+        content-dir "public/"]
+    @(->> (load-all-content ctx  content-dir suffixes)
+          (concat (load-all-assets content-dir default-asset-suffixes))
+          (ingest-txs (:conn ctx)))
+    nil))
 
-  ;; => [nil [:div [:p [:em "hello"] " what" " " "And what."] [:p [:img {:src "./fairybox2.jpg", :title nil, :alt ""}]]]]
+(defn handle-request [{:app/keys [render-fn db]} req]
+  (when-let [page (d/entity db
+                            [:page/uri (:uri req)])]
+    (render-fn page req)))
 
-  ;; => [nil [:div [:p [:em "hello"] " what" " " "And what."] [:p [:img {:src "./fairybox2.jpg", :title nil, :alt ""}]]]]
+#_(defn request-handler [{:keys [conn]} render-page]
+    (ingest! conn)
+    (partial handle-request {:app/db        (d/db conn)
+                             :app/render-fn render-page}))
 
-  (md->hiccup "# Hello {class=wow}
-much nice")
+(defn asset-handler [{:asset/keys [content-length last-modified content-type resource-path]}]
+  (let [response {:status  200
+                  :body    (io/as-file (io/resource resource-path))
+                  :headers {"Content-Length" content-length
+                            "Last-Modified"  last-modified
+                            "Cache-Control"  "max-age=31536000,immutable,public"
+                            "Content-Type"   content-type}}]
+    (fn [req]
+      response)))
 
-  ;;
-  )
-
-(defn parse-date [date-str]
-  (when parse-date
-    (LocalDate/parse date-str)))
-
-(defn maybe-outdated
-  "Inject an alert if the post is outdated.
-   A post is considered outdated if it has a date more than 5 years in the past and does not have the 'evergreen' tag."
-  [{:keys [title tags date]} content]
-  (if (and (not (contains? tags "evergreen"))
-           (.isAfter (LocalDate/now) (.plusYears (parse-date date) 5)))
-    (into (list outdated-alert content))
-    content))
-
-(defn parse-post [path]
-  (let [file               (io/as-file (io/resource  (str "public/" path "/index.md")))
-        [metadata content] (-> file slurp md->hiccup)]
-    {:metadata metadata
-     :uri      (str "/" path)
-     :path     (str "public/" path)
-     :title    (:title metadata)
-     :content  (maybe-outdated metadata content)}))
-
-(defn format-date
-  "Format date in US format (e.g., January 12, 2023)"
-  [date-str]
-  (if (and date-str (not (str/blank? date-str)))
-    (try
-      (let [date (parse-date date-str)]
-        (.format date (DateTimeFormatter/ofPattern "MMMM d, yyyy")))
-      (catch Exception _
-        "No date available"))
-    "No date available"))
-
-(defn article-dirs []
-  (->> (io/as-file (io/resource "public/blog"))
-       (.listFiles)
-       (seq)
-       (filter #(.isDirectory %))))
-
-(defn get-about []
-  (->
-   (io/as-file (io/resource "public/about.md"))
-   (slurp)
-   (md->hiccup)))
-
-(defn article-index-data
-  "Get all articles sorted by date (most recent first)"
-  []
-  (->> (article-dirs)
-       (filter #(.exists (io/file (str (.getPath %) "/index.md"))))
-       (map (fn [dir]
-              (let [slug               (.getName dir)
-                    {:keys [metadata]} (parse-post (str "blog/" slug))]
-                (assoc metadata
-                       :slug slug
-                       :dir dir
-                       :date (:date metadata)))))
-       (sort-by :date #(compare %2 %1))))
+(defn routes [{:keys [get-page-kind conn render-page] :as config}]
+  (assert conn)
+  (assert render-page)
+  (assert get-page-kind)
+  (ingest! config)
+  (let [db     (d/db conn)
+        pages  (db/get-pages db)
+        assets (db/get-assets db)]
+    [""
+     (mapv (fn [page]
+             [(:page/uri page)
+              {:handler               #(render-page page (merge config %))
+               :sitemap/last-modified (:page/last-modified page)}])
+           pages)
+     [""
+      (mapv (fn [asset]
+              [(:asset/uri asset)
+               {:handler          (asset-handler asset)
+                :sitemap/exclude? true}])
+            assets)]]))
 
 (comment
   (:content
-   (parse-post "blog/mobile-security-field-workers"))
+   (parse-post "public/blog/fairybox/index.md"))
   (format-date "2023-01-12")
   (article-index-data)
   (article-route-data)
+  (cp/slurp-resources "public/blog" #"\.md$")
+  (cp/list-resources "public/blog" #".*\.(jpg|jpeg|gif|webp|png|svg)$")
+  (cp/slurp-resources "public/" #".*\.(jpg|jpeg|gif|webp|png|svg)$")
+  (cp/slurp-resources "public/blog" #".*\.(jpg|jpeg|gif|webp|png|svg)$")
+
+  :assets (cp/list-resources "public/" #".*\.(css|gif|jpg|jpeg|js|map|png|svg|txt|webp|woff2)$")
+
+  ((->
+    (cp/list-resources "public/blog" #"\.md$")
+    (first)
+    :thunk))
+
+  (ring-mime/ext-mime-type "public/js/datastar@1.0.0-RC.11.js.map"  {"map" "application/json"})
+
+  (do
+    (require '[site.pages :as pages])
+    (def _conn (db/create-database "datomic:mem://site-dev"))
+    (ingest! {:conn          _conn
+              :get-page-kind pages/get-page-kind})
+    (def _db (d/db _conn)))
+  (d/release _conn)
+  (->>
+   (d/q '[:find (pull ?e [*])
+          :in $
+          :where [?e :asset/uri _]]
+        _db)
+   (map first)
+   (map :asset/uri))
+
+  (get-pages _db)
+
+  (d/entity _db [:db/ident :page/uri])
+  (d/entity _db [:page/uri "/blog"])
+  (map :asset/uri
+       (load-all-assets "public/" default-asset-suffixes))
+  (load-all-content _conn "public/" default-content-suffixes)
+  (db/get-pages _db)
+  (db/get-page _db "/blog")
   ;; rcf
   )

@@ -81,6 +81,7 @@
               :height h) children])))
 
 (defn polish-element [{:keys [base-url]} page element]
+  (assert base-url "base-url must be provided in config")
   (or
    (when-some [[tag attrs children] (norm element)]
      (cond
@@ -99,5 +100,4 @@
 (defn hiccup [page config]
   (update page :content
           (fn [form]
-            (prn "polish:" form)
             (walk/postwalk #(polish-element config page %) form))))

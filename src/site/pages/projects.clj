@@ -1,5 +1,7 @@
 (ns site.pages.projects
   (:require
+   [site.pages.render :as render]
+   [site.dev :as dev]
    [clojure.string :as str]
    [site.ui.home.card :as card]
    [site.ui.icons :as icon]
@@ -145,10 +147,16 @@
                 (for [project archived]
                   (project-card project))]]}))
 
-(defn projects [_]
-  {:title "Projects - Casey Link"
-   :uri (urls/url-for :url/project-index)
+(defn render [_req _page]
+  {:title   "Projects - Casey Link"
+   :uri     (urls/url-for :url/project-index)
    :content (projects-content)})
 
 (comment
   (projects nil))
+
+(defmethod render/page-content :page.kind/project-index
+  [page req]
+  (render req page))
+
+(dev/re-render!)

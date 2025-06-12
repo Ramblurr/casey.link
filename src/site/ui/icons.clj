@@ -213,3 +213,5 @@
 (deficon house (ico :house))
 
 (deficon warning (ico :warning-bold "phosphor-bold"))
+
+(deficon info (ico :info-bold "phosphor-bold"))
