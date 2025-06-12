@@ -1,6 +1,9 @@
-[{:page/uri  "/blog"
-  :page/kind :page.kind/blog-index}
+[{:page/uri   "/blog"
+  :page/title "Blog - Casey Link"
+  :page/kind  :page.kind/blog-index}
  {:page/uri  "/"
+  :page/title "Casey Link | Developer, Technical Strategist & NGO Specialist"
   :page/kind :page.kind/home}
- {:page/uri  "/projects"
-  :page/kind :page.kind/project-index}]
+ {:page/uri   "/projects"
+  :page/title "Projects - Casey Link"
+  :page/kind  :page.kind/project-index}]

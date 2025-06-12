@@ -1,12 +1,11 @@
 (ns site.pages.projects
   (:require
-   [site.pages.render :as render]
-   [site.dev :as dev]
    [clojure.string :as str]
+   [site.dev :as dev]
+   [site.pages.render :as render]
    [site.ui.home.card :as card]
    [site.ui.icons :as icon]
-   [site.ui.simple-layout :as simple-layout]
-   [site.pages.urls :as urls]))
+   [site.ui.simple-layout :as simple-layout]))
 
 (defn project-card [{:keys [name description href label icon tags]}]
   (card/card {:as :li}
@@ -147,10 +146,8 @@
                 (for [project archived]
                   (project-card project))]]}))
 
-(defn render [_req _page]
-  {:title   "Projects - Casey Link"
-   :uri     (urls/url-for :url/project-index)
-   :content (projects-content)})
+(defn render [_req page]
+  (render/with-body page (projects-content)))
 
 (comment
   (projects nil))
