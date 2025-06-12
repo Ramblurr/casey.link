@@ -18,8 +18,8 @@
 
 (defn midnight-today []
   (->
-   (java.time.LocalDate/now UTC)
-   (.atStartOfDay UTC)
+   (java.time.LocalDate/now ^java.time.ZoneId  UTC)
+   (.atStartOfDay ^java.time.ZoneId  UTC)
    (.getLong java.time.temporal.ChronoField/INSTANT_SECONDS)
    (* 1000)))
 
