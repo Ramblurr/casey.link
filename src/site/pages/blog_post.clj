@@ -58,12 +58,25 @@
                      (md/->hiccup body))]]])))
 
 (defmethod render/page-content :page.kind/blog-post
-  [{:blog/keys [tags modified date] :as page} req]
+  [{:blog/keys [tags modified date] :page/keys [title description uri] :as page} req]
   (-> (render req page)
       (assoc
        :open-graph/type "article"
+       :ld-json/value {"@context"      "http://schema.org"
+                       "@type"         "BlogPosting"
+                       "headline"      title
+                       "author"        {"@type" "Person"
+                                        "name"  "Casey Link"
+                                        "url"   "https://casey.link"}
+                       "datePublished" date
+                       "dateCreated"   date
+                       "url"           (str (:base-url req) uri)
+                       "dateModified"  modified
+                       "description"   description
+                       "inLanguage"    "en-US"
+                       "keywords"      (str/join ", " tags)}
        :page/head (list
-                   [:meta {:property "article:author" :content (str (:base-url req) "/about")}]
+                   [:meta {:property "article:author" :content (:base-url req)}]
                    [:meta {:property "article:published_time" :content date}]
                    (when modified
                      [:meta {:property "article:modified_time" :content modified}])

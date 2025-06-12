@@ -1,5 +1,6 @@
 (ns site.ui
   (:require
+   [jsonista.core :as j]
    [site.html :as html]
    [site.ui.footer :as footer]
    [site.ui.header :as header]))
@@ -17,6 +18,15 @@
     body
     (footer/footer)]])
 
+(def default-ld-json
+  {"@context"   "http://schema.org"
+   "@type"      "Person"
+   "url"        "https://casey.link"
+   "name"       "Casey Link"
+   "givenName"  "Casey"
+   "familyName" "Link"
+   "image"      "https://casey.link/square-flask.png"})
+
 (defn shell [{:page/keys [description uri title head] :as page}]
   (assoc page :content
          [html/doctype-html5
@@ -28,10 +38,28 @@
            [:head
             [:meta {:http-equiv "content-type" :content "text/html;charset=UTF-8"}]
             [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
+            [:meta {:name "author" :content "Casey Link"}]
+            [:meta {:name "color-scheme" :content "light dark"}]
+            [:meta {:name "theme-color" :content "#e76227"}]
+            [:link {:rel "icon" :type "image/svg+xml" :href "icon.svg"}]
+            [:link {:rel "icon" :href "/favicon.ico" :sizes "32x32"}]
+            [:link {:rel "icon" :href "/icon.svg" :type "image/svg+xml"}]
+            [:link {:rel "apple-touch-icon" :href "/apple-touch-icon.png"}]
+            [:meta {:name "twitter:card" :content "summary"}]
+            [:meta {:name "twitter:creator" :content "@ramblurr"}]
+            [:meta {:name "twitter:title" :content "Casey Link"}]
+            [:meta {:name "twitter:image" :content (or (:twitter/image page) "https://casey.link/square-flask.png")}]
+            [:meta {:property "og:image" :content (or (:open-graph/image page) "https://casey.link/square-flask.png")}]
+            [:script {:type "application/ld+json"}
+             (j/write-value-as-string (or (:ld-json/value page)
+                                          default-ld-json))]
+
             (when description
-              [:meta {:property "description" :content description}])
+              [:meta {:name "description" :content description}])
             (when-let [description (or (:open-graph/description page) description)]
-              [:meta {:property "og:description" :content description}])
+              (list
+               [:meta {:property "og:description" :content description}]
+               [:meta {:name "twitter:description" :content description}]))
             (when title
               [:title title])
             (when-let [title (or (:open-graph/title page) title)]
