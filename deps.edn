@@ -2,23 +2,24 @@
  :deps  {org.clojure/clojure            {:mvn/version "1.12.0"}
          org.clojure/data.xml           {:mvn/version "0.0.8"}
          party.donut/system             {:mvn/version "1.0.255"}
-         io.github.nextjournal/markdown {;; :mvn/version "0.6.157"
-                                         :git/url "https://github.com/nextjournal/markdown"
-                                         :git/sha "5829ec101331b1702841094f4dc897ee46f0ddcd"}
+         io.github.nextjournal/markdown {:mvn/version "0.7.186"}
          aero/aero                      {:mvn/version "1.1.6"}
          datastar/sdk                   {:git/url   "https://github.com/starfederation/datastar/"
-                                         :git/sha   "04857cbd09bca12e3582c42124c16a29c16c89c5"
+                                         :git/sha   "4a9b1e4f15a82fcb366297c9c7da25f62ee980c7"
                                          :deps/root "sdk/clojure/sdk"}
-         datastar/adapter-http-kit      {:git/url   "https://github.com/starfederation/datastar/"
-                                         :git/sha   "04857cbd09bca12e3582c42124c16a29c16c89c5"
-                                         :deps/root "sdk/clojure/adapter-http-kit"}
-         metosin/reitit                 {:mvn/version "0.9.1"}
-         metosin/jsonista               {:mvn/version "0.3.13"}
-         com.datomic/peer               {:mvn/version "1.0.7364"
-                                         :exclusions  [com.amazonaws/aws-java-sdk-core
-                                                       com.amazonaws/aws-java-sdk-ec2
-                                                       com.google.guava/guava]}
-         dev.weavejester/medley         {:mvn/version "1.8.1"}
+         datastar/adapter-http-kit      {:git/url    "https://github.com/starfederation/datastar/"
+                                         :git/sha    "4a9b1e4f15a82fcb366297c9c7da25f62ee980c7"
+                                         :deps/root  "sdk/clojure/adapter-http-kit"
+                                         :exclusions [http-kit/http-kit]}
+
+         http-kit/http-kit      {:mvn/version "2.9.0-beta1"}
+         metosin/reitit         {:mvn/version "0.9.1"}
+         metosin/jsonista       {:mvn/version "0.3.13"}
+         com.datomic/peer       {:mvn/version "1.0.7364"
+                                 :exclusions  [com.amazonaws/aws-java-sdk-core
+                                               com.amazonaws/aws-java-sdk-ec2
+                                               com.google.guava/guava]}
+         dev.weavejester/medley {:mvn/version "1.8.1"}
          ;; org.clojure/tools.cli
          ;; org.slf4j/slf4j-nop
          ;; org.slf4j/slf4j-api
