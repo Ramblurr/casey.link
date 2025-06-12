@@ -34,10 +34,10 @@
 
 (defn create-sitemap-handler [{:keys [base-url]}]
   (fn sitemap-handler [req]
-    (let [r
-          (map #(route->sitemap-entry base-url %)
-               (-> req :reitit.core/router reitit/routes))]
-      (prn r)
-      {:status  200
-       :headers {"content-type" "text/xml"}
-       :body    (generate-sitemap r)})))
+    {:status  200
+     :headers {"content-type" "text/xml"}
+     :body    (->> req
+                   :reitit.core/router
+                   reitit/routes
+                   (keep #(route->sitemap-entry base-url %))
+                   (generate-sitemap))}))

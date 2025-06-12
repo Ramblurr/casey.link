@@ -14,7 +14,17 @@
                                          :deps/root "sdk/clojure/adapter-http-kit"}
          metosin/reitit                 {:mvn/version "0.9.1"}
          metosin/jsonista               {:mvn/version "0.3.13"}
-         dev.onionpancakes/chassis      {:mvn/version "1.0.365"}}
+         com.datomic/peer               {:mvn/version "1.0.7364"
+                                         :exclusions  [com.amazonaws/aws-java-sdk-core
+                                                       com.amazonaws/aws-java-sdk-ec2
+                                                       com.google.guava/guava]}
+         dev.weavejester/medley         {:mvn/version "1.8.1"}
+         ;; org.clojure/tools.cli
+         ;; org.slf4j/slf4j-nop
+         ;; org.slf4j/slf4j-api
+         ;; org.slf4j/jcl-over-slf4j
+
+         dev.onionpancakes/chassis {:mvn/version "1.0.365"}}
  :aliases
  {:dev   {:extra-deps  {djblue/portal               {:mvn/version "0.59.1"}
                         io.github.tonsky/clj-reload {:mvn/version "0.9.7"}
@@ -26,7 +36,10 @@
                         ;; so this won't need to be specified
                         "-XX:+ZGenerational"]}
   :test  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
-  :build {:deps       {io.github.clojure/tools.build
-                       {:git/tag "v0.10.9" :git/sha "e405aac"}}
+  :run-m {:main-opts ["-m" "site.server"]}
+  :build {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.9"
+                                                      :git/sha "e405aac"}
+                       slipset/deps-deploy           {:mvn/version "0.2.2"}}
           :ns-default build}
-  :run-m {:main-opts ["-m" "site.server"]}}}
+  :neil  {:project {:name    "site"
+                    :version "2.0.0"}}}}

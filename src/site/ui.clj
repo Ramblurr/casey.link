@@ -4,15 +4,18 @@
    [site.ui.footer :as footer]
    [site.ui.header :as header]))
 
+(defn main [& children]
+  [:main {:id "main" :class "flex-auto"} children])
+
 (defn layout [{:keys [uri content] :as page}]
-  (list
+  [:div {:class "flex w-full"}
    [:div {:class "fixed inset-0 flex justify-center sm:px-8"}
     [:div {:class "flex w-full max-w-7xl lg:px-8"}
      [:div {:class "w-full bg-white ring-1 ring-zinc-100 dark:bg-stone-800 dark:ring-zinc-300/20"}]]]
    [:div {:class "relative flex w-full flex-col"}
     (header/header {:path uri})
-    [:main {:class "flex-auto"} content]
-    (footer/footer)]))
+    content
+    (footer/footer)]])
 
 (defn shell [{:keys [uri content] :as page}]
   (assoc page :content
@@ -33,8 +36,7 @@
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             [:title (:title page)]]
            [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}
-            [:div {:data-on-load "@post('/dev')"}]
-            [:div {:class "flex w-full"}
-             (layout page)]
+            [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}]
+            (layout page)
             [:script {:defer true :src "/js/header.js"}]
             [:script {:defer true :type "module" :src "/js/flask.js"}]]]]))

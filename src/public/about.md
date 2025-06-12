@@ -1,5 +1,6 @@
 {
-:title "I'm Casey Link, a Dad based in Austria with a software consultancy for those at the edge"
+:page/title "I'm Casey Link, a Dad based in Austria with a software consultancy for those at the edge"
+:page/uri "/about"
 }
 
 I grew up restless in New Mexico, where sun-baked landscapes made me dream of distant places.

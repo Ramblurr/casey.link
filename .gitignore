@@ -7,3 +7,5 @@
 !.env.edn
 old-site
 extra/
+src/public/site.css
+target/

@@ -1,52 +1,39 @@
 (ns site.server
-  (:require [aero.core :as aero]
-            [site.sitemap :as sitemap]
-            [clojure.java.io :as io]
-            [donut.system :as ds]
-            [org.httpkit.server :as server]
-            [reitit.ring :as rr]
-            [ring.middleware.cookies :as ring.cookies]
-            [ring.middleware.head :as ring.head]
-            [ring.middleware.not-modified :as ring.not-modified]
-            [ring.middleware.params :as ring.params]
-            [ring.util.io :as ring-io]
-            [ring.util.mime-type :as ring-mime]
-            [ring.util.time :as ring-time]
-            [site.cache :as cache]
-            [site.headers :as headers]
-            [site.html :as html]
-            [site.ui :as ui]
-            [site.polish :as polish]
-            [site.dev :as dev]
-            [site.pages.index :as index]
-            [site.pages.about :as about]
-            [site.pages.projects :as projects]
-            [site.pages.blog :as blog]
-            [site.pages.urls :as urls])
-  (:import (java.io File)))
-
-(defn html-response [config page-fn]
-  (fn [req]
-    {:status  200
-     :headers headers/default-headers
-     :body    (-> (page-fn req)
-                  ui/shell
-                  (polish/hiccup config)
-                  :content
-                  html/->str)}))
+  (:require
+   [aero.core :as aero]
+   [clojure.java.io :as io]
+   [donut.system :as ds]
+   [org.httpkit.server :as server]
+   [reitit.ring :as rr]
+   [ring.middleware.cookies :as ring.cookies]
+   [ring.middleware.head :as ring.head]
+   [ring.middleware.not-modified :as ring.not-modified]
+   [ring.middleware.params :as ring.params]
+   [ring.util.io :as ring-io]
+   [ring.util.mime-type :as ring-mime]
+   [ring.util.time :as ring-time]
+   [site.cache :as cache]
+   [site.content :as content2]
+   [site.db :as db]
+   [site.dev :as dev]
+   [site.pages :as pages]
+   [site.sitemap :as sitemap])
+  (:import
+   (java.io File))
+  (:gen-class))
 
 (defn routes [config]
-  ["" {:middleware [[cache/wrap-cache config]]}
-   [(urls/url-for :url/home) {:handler (html-response config index/index)}]
+  ["" {:middleware [[cache/wrap-cache config]
+                    [db/wrap-datomic config]]}
    (when (:dev? config)
      (dev/routes config))
-   [(urls/url-for :url/about) {:handler (html-response config about/about)}]
-   [(urls/url-for :url/project-index) {:handler (html-response config projects/projects)}]
-   ["/sitemap.xml" {:get (sitemap/create-sitemap-handler config)
+
+   ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
                     :sitemap/exclude? true}]
-   [(urls/url-for :url/blog-index)
-    ["" {:handler (html-response config blog/blog-index-page)}]
-    (blog/blog-routes (partial html-response config))]])
+   (content2/routes (assoc config
+                           :get-page-kind pages/get-page-kind
+                           :render-page pages/render-page))
+   #_[(urls/url-for :url/home) {:handler (html-response config index/index)}]])
 
 (defn find-file ^File [path]
   (when-let [file ^File (io/as-file (io/resource path))]
@@ -87,18 +74,26 @@
   {::ds/defs
    {:env {}
     :site
-    {:handler #::ds{:start  (fn [{config ::ds/config}]
+    {:datomic #::ds{:start (fn [{config ::ds/config}]
+                             (db/create-database "datomic:mem://site"))
+                    :stop  (fn [{conn ::ds/instance}]
+                             (when conn
+                               (db/close conn)))}
+
+     :handler #::ds{:start  (fn [{config ::ds/config}]
                               (rr/ring-handler (rr/router (routes config)
                                                           {:data {:middleware [ring.params/wrap-params
                                                                                ring.cookies/wrap-cookies
                                                                                ring.head/wrap-head]}})
                                                (rr/routes
                                                 ;; (create-asset-handler "content" {:cache-level :immutable})
-                                                (create-asset-handler "public" {:cache-level :immutable})
+                                                ;; (create-asset-handler "public" {:cache-level :immutable})
+                                                ;; (content2/request-handler config (partial render-page config))
                                                 folder-redirects-handler
                                                 (rr/create-default-handler {:not-found not-found-handler}))))
                     :config {:dev?     (ds/ref [:env :dev?])
-                             :base-url (ds/ref [:env :base-url])}}
+                             :base-url (ds/ref [:env :base-url])
+                             :conn     (ds/local-ref [:datomic])}}
      :server  #::ds{:start  (fn [{config ::ds/config}]
                               (let [instance (server/run-server (:handler config)
                                                                 {:port                 (:port config)
@@ -136,5 +131,11 @@
   [_]
   (ds/system ::base {[:env] (env-config :dev)}))
 
+(defmethod ds/named-system ::prod
+  [_]
+  (ds/system ::base {[:env] (env-config :prod)}))
+
+(require '[site.class-path :as cp])
 (defn -main [& _args]
-  (ds/start ::dev))
+  (prn (cp/file-metadata-on-class-path))
+  #_(ds/start ::prod))

@@ -1,0 +1,6 @@
+[{:page/uri  "/blog"
+  :page/kind :page.kind/blog-index}
+ {:page/uri  "/"
+  :page/kind :page.kind/home}
+ {:page/uri  "/projects"
+  :page/kind :page.kind/project-index}]
