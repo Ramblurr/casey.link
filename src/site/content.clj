@@ -93,8 +93,13 @@
   (fn [req]
     {:status  200
      :body    (io/input-stream (io/resource resource-path))
-     :headers {"Content-Length" content-length
-               "Last-Modified"  last-modified
+     ;; Must always send the body
+     ;; https://github.com/http-kit/http-kit/issues/454
+     ;; even though we would like to do
+     #_(when (= :get (:request-method req))
+         (io/input-stream (io/resource resource-path)))
+     :headers {"Last-Modified"  last-modified
+               "Content-Length" content-length
                "Cache-Control"  "max-age=31536000,immutable,public"
                "Content-Type"   content-type}}))
 

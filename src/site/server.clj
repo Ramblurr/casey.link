@@ -6,10 +6,9 @@
    [org.httpkit.server :as server]
    [reitit.ring :as rr]
    [ring.middleware.cookies :as ring.cookies]
-   [ring.middleware.head :as ring.head]
    [ring.middleware.params :as ring.params]
    [site.cache :as cache]
-   [site.content :as content2]
+   [site.content :as content]
    [site.db :as db]
    [site.dev :as dev]
    [site.pages :as pages]
@@ -21,6 +20,9 @@
 
 (defn routes [config]
   [""
+   (content/asset-routes (assoc config
+                                :get-page-kind pages/get-page-kind
+                                :render-page render/render-page))
    ["" {:middleware [[cache/wrap-cache config]
                      [db/wrap-datomic config]]}
     (when (:dev? config)
@@ -28,12 +30,9 @@
 
     ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
                      :sitemap/exclude? true}]
-    (content2/page-routes (assoc config
-                                 :get-page-kind pages/get-page-kind
-                                 :render-page render/render-page))]
-   (content2/asset-routes (assoc config
-                                 :get-page-kind pages/get-page-kind
-                                 :render-page render/render-page))])
+    (content/page-routes (assoc config
+                                :get-page-kind pages/get-page-kind
+                                :render-page render/render-page))]])
 
 (defn not-found-handler [_req]
   {:status 404
@@ -57,8 +56,7 @@
      :handler #::ds{:start  (fn [{config ::ds/config}]
                               (rr/ring-handler (rr/router (routes config)
                                                           {:data {:middleware [ring.params/wrap-params
-                                                                               ring.cookies/wrap-cookies
-                                                                               ring.head/wrap-head]}})
+                                                                               ring.cookies/wrap-cookies]}})
                                                (rr/routes
                                                 folder-redirects-handler
                                                 (rr/create-default-handler {:not-found not-found-handler}))))
