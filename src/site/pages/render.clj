@@ -11,7 +11,7 @@
   (when content
     (->  content
          (polish/hiccup config)
-         :content
+         :page/body
          html/->str)))
 
 (defn html-response [req content]
@@ -19,7 +19,7 @@
     (let [r (->  content
                  ui/shell
                  (polish/hiccup req)
-                 :content
+                 :page/body
                  html/->str)]
       {:status  200
        :headers headers/default-headers

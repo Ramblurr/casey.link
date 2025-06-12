@@ -50,10 +50,10 @@
                                     page (db/get-page (:app/db req) uri)]
                                 (swap! !connections assoc sse-gen {:uri    uri
                                                                    :render (fn []
-                                                                             (d*/merge-fragment! sse-gen
-                                                                                                 (render/render-fragment
-                                                                                                  page
-                                                                                                  (update-req config req))))})))
+                                                                             (when-let [frag (render/render-fragment
+                                                                                              page
+                                                                                              (update-req config req))]
+                                                                               (d*/merge-fragment! sse-gen frag)))})))
 
                             hk-gen/on-close
                             (fn [sse-gen _status]

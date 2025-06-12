@@ -1,5 +1,6 @@
 (ns site.pages.projects
   (:require
+   [site.ui :as ui]
    [clojure.string :as str]
    [site.dev :as dev]
    [site.pages.render :as render]
@@ -125,26 +126,27 @@
 (def active (remove #(:archived? %) all-projects))
 (def archived (filter #(:archived? %) all-projects))
 (defn projects-content []
-  (simple-layout/simple-layout
-   {:title    "Personal Projects"
-    :intro    (list [:p
-                     (format
-                      "Over %d years in the tech industry tends to produce quite the collection of personal experiments, side projects, and creative ventures—some still actively evolving, others now resting in the archives."
-                      (- (.getValue (java.time.Year/now)) 2008))]
-                    [:p {:class "mt-4"} "Below you will find a selection that reflects the range of my technical interests and skillset."])
-    :children [:div
-               [:ul {:class "grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3" :role "list"}
-                (for [project active]
-                  (project-card project))]
+  (ui/main
+   (simple-layout/simple-layout
+    {:title    "Personal Projects"
+     :intro    (list [:p
+                      (format
+                       "Over %d years in the tech industry tends to produce quite the collection of personal experiments, side projects, and creative ventures—some still actively evolving, others now resting in the archives."
+                       (- (.getValue (java.time.Year/now)) 2008))]
+                     [:p {:class "mt-4"} "Below you will find a selection that reflects the range of my technical interests and skillset."])
+     :children [:div
+                [:ul {:class "grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3" :role "list"}
+                 (for [project active]
+                   (project-card project))]
 
-               [:h1 {:class "mt-20 text-2xl font-bold tracking-tight text-stone-800 sm:text-3xl dark:text-stone-100"}
-                "Archived Projects"]
-               [:p {:class "mt-6 text-base text-stone-600 dark:text-stone-400"}
-                "These projects are no longer actively maintained, but they may still be of interest."]
+                [:h1 {:class "mt-20 text-2xl font-bold tracking-tight text-stone-800 sm:text-3xl dark:text-stone-100"}
+                 "Archived Projects"]
+                [:p {:class "mt-6 text-base text-stone-600 dark:text-stone-400"}
+                 "These projects are no longer actively maintained, but they may still be of interest."]
 
-               [:ul {:class "mt-16 grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3" :role "list"}
-                (for [project archived]
-                  (project-card project))]]}))
+                [:ul {:class "mt-16 grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3" :role "list"}
+                 (for [project archived]
+                   (project-card project))]]})))
 
 (defn render [_req page]
   (render/with-body page (projects-content)))

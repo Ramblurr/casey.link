@@ -98,6 +98,6 @@
    element))
 
 (defn hiccup [page config]
-  (update page :content
+  (update page :page/body
           (fn [form]
             (walk/postwalk #(polish-element config page %) form))))
