@@ -152,39 +152,37 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
 
 (defn render [req page]
   (let [index-articles (take 5 (db/get-blog-posts (:app/db req)))]
-    {:title "Casey Link | Developer, Technical Strategist & NGO Specialist"
-     :uri   "/"
-     :content
-     (ui/main
-      (container/container {:class "mt-18"}
-                           [:div {:class "max-w-2xl"}
-                            [:h1 {:class "text-4xl font-bold tracking-tight text-stone-800 sm:text-5xl dark:text-stone-100"}
-                             "Casey Link" [:span {:class "text-xl ml-2 text-stone-500 dark:text-stone-400"} "@Ramblurr"]]
-                            [:p {:class "mt-6 text-base text-stone-800 dark:text-stone-100"}
-                             "I'm Casey Link, Principal at "
-                             [:a {:href  "https://outskirtslabs.com"
-                                  :class "text-ol-orange-600 transition-colors rounded hover:bg-stone-100 dark:hover:bg-stone-900/50"}
-                              "Outskirts Labs"]
-                             ", specializing in custom design and software engineering for NGOs and social enterprises. I create technical solutions that make a positive impact while solving complex challenges."]
+    (render/with-body page
+      (ui/main
+       (container/container {:class "mt-18"}
+                            [:div {:class "max-w-2xl"}
+                             [:h1 {:class "text-4xl font-bold tracking-tight text-stone-800 sm:text-5xl dark:text-stone-100"}
+                              "Casey Link" [:span {:class "text-xl ml-2 text-stone-500 dark:text-stone-400"} "@Ramblurr"]]
+                             [:p {:class "mt-6 text-base text-stone-800 dark:text-stone-100"}
+                              "I'm Casey Link, Principal at "
+                              [:a {:href  "https://outskirtslabs.com"
+                                   :class "text-ol-orange-600 transition-colors rounded hover:bg-stone-100 dark:hover:bg-stone-900/50"}
+                               "Outskirts Labs"]
+                              ", specializing in custom design and software engineering for NGOs and social enterprises. I create technical solutions that make a positive impact while solving complex challenges."]
 
-                            [:div {:class "mt-6 flex gap-6"}
-                             (social-link {:href       "https://github.com/Ramblurr"
-                                           :aria-label "Follow on GitHub"
-                                           :icon       icon/github})
-                             #_(social-link {:href     "https://twitter.com/ramblurr"
-                                             :icon     icon/the-social-network-formerly-known-as-twitter-fill
-                                             :children "Follow on X"})
-                             (social-link {:href     "https://bsky.app/profile/casey.link"
-                                           :icon     icon/bluesky-outline
-                                           :children "Follow on Bluesky"})]])
-      (photos)
-      (container/container {:class "mt-24 md:mt-28"}
-                           [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}
-                            [:div {:class "flex flex-col gap-16"}
-                             (map article index-articles)]
-                            [:div {:class "space-y-10 lg:pl-16 xl:pl-24"}
-                             #_(newsletter)
-                             (resume)]]))}))
+                             [:div {:class "mt-6 flex gap-6"}
+                              (social-link {:href       "https://github.com/Ramblurr"
+                                            :aria-label "Follow on GitHub"
+                                            :icon       icon/github})
+                              #_(social-link {:href     "https://twitter.com/ramblurr"
+                                              :icon     icon/the-social-network-formerly-known-as-twitter-fill
+                                              :children "Follow on X"})
+                              (social-link {:href     "https://bsky.app/profile/casey.link"
+                                            :icon     icon/bluesky-outline
+                                            :children "Follow on Bluesky"})]])
+       (photos)
+       (container/container {:class "mt-24 md:mt-28"}
+                            [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}
+                             [:div {:class "flex flex-col gap-16"}
+                              (map article index-articles)]
+                             [:div {:class "space-y-10 lg:pl-16 xl:pl-24"}
+                              #_(newsletter)
+                              (resume)]])))))
 
 (defmethod render/page-content :page.kind/home
   [page req]

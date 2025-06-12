@@ -1,5 +1,6 @@
 {
-:page/title "I'm Casey Link, a Dad based in Austria with a software consultancy for those at the edge"
+:page/description "I'm Casey Link, a Dad based in Austria with a software consultancy for those at the edge"
+:page/title "About - Casey Link"
 :page/uri "/about"
 }
 

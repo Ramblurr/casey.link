@@ -22,7 +22,16 @@
             :last-modified {:db/valueType   :db.type/long
                             :db/cardinality :db.cardinality/one}
             :body          {:db/valueType   :db.type/string
+                            :db/cardinality :db.cardinality/one}
+            :description   {:db/valueType   :db.type/string
                             :db/cardinality :db.cardinality/one}}
+
+    #:open-graph {:title       {:db/valueType   :db.type/string
+                                :db/cardinality :db.cardinality/one}
+                  :description {:db/valueType   :db.type/string
+                                :db/cardinality :db.cardinality/one}
+                  :type        {:db/valueType   :db.type/string
+                                :db/cardinality :db.cardinality/one}}
 
     #:asset {:uri            {:db/valueType   :db.type/string
                               :db/unique      :db.unique/identity
