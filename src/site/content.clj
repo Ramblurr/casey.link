@@ -59,11 +59,12 @@
 
 (def default-content-types
   {"map"         "application/json"
-   "webmanifest" "application/json"})
+   "webmanifest" "application/json"
+   "asc" "application/pgp-keys"})
 
 (def default-content-suffixes ["md" "edn"])
 
-(def default-asset-suffixes ["css" "gif" "jpg" "jpeg" "js" "js.map" "png" "svg" "txt" "webp" "woff2" "ico" "webmanifest"])
+(def default-asset-suffixes ["css" "gif" "jpg" "jpeg" "js" "js.map" "png" "svg" "txt" "webp" "woff2" "ico" "webmanifest" "asc"])
 
 (defn load-all-assets [content-dir suffixes]
   (->> (cp/list-resources content-dir (content-pattern suffixes))
