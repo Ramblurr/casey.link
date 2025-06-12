@@ -1,10 +1,10 @@
 (ns site.pages
   (:require
-   [site.headers :as headers]
-   [site.pages.render :as render]
-   [site.html :as html]
-   [site.polish :as polish]
-   [site.ui :as ui]))
+   [site.pages.about]
+   [site.pages.blog-post]
+   [site.pages.blog-index]
+   [site.pages.home]
+   [site.pages.projects]))
 
 (defn get-page-kind [path]
   (cond
@@ -15,27 +15,3 @@
     :page.kind/about
 
     :else nil))
-
-(defn fragment-response [config content]
-  (when content
-    (->  content
-         (polish/hiccup config)
-         :content
-         html/->str)))
-
-(defn html-response [req content]
-  (when content
-    (let [r (->  content
-                 ui/shell
-                 (polish/hiccup req)
-                 :content
-                 html/->str)]
-      {:status  200
-       :headers headers/default-headers
-       :body    r})))
-
-(defn render-fragment [page req]
-  (fragment-response req (render/page-content page req)))
-
-(defn render-page [page req]
-  (html-response req (render/page-content page req)))
