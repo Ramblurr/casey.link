@@ -36,4 +36,10 @@
          deps-tree (shell+ "clj -X:deps tree :aliases '[:dev]'")
          test      {:doc  "Run JVM Clojure tests with kaocha"
                     :task (apply clojure {:extra-env {"TEST_SCI" "true"}}
-                                 "-M:test" "-m" "kaocha.runner" *command-line-args*)}}}
+                                 "-M:test" "-m" "kaocha.runner" *command-line-args*)}
+
+         uberjar {:doc              "Build deployment artifact"
+                  :depends          [css]
+                  :task             (clojure "-T:build uber")
+                  :override-builtin true}
+         clean   (clojure "-T:build clean")}}

@@ -36,6 +36,7 @@
                   :reload-hook 'start})
 (comment
 
+  (set! *warn-on-reflection* true)
   ;; Start your system
   (start)
   ;; Stop the system (if it is started)
