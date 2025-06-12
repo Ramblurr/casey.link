@@ -77,8 +77,7 @@
                 (= 1 (count content))
                 (= :image (:type (first content))))
            (let [image-node (first content)]
-             (doto
-              (assoc-in image-node [:content 0 :type] :alt) prn))
+             (assoc-in image-node [:content 0 :type] :alt))
 
            :else node)) md-nodes))
 
