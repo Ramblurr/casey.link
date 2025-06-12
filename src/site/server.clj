@@ -7,63 +7,37 @@
    [reitit.ring :as rr]
    [ring.middleware.cookies :as ring.cookies]
    [ring.middleware.head :as ring.head]
-   [ring.middleware.not-modified :as ring.not-modified]
    [ring.middleware.params :as ring.params]
-   [ring.util.io :as ring-io]
-   [ring.util.mime-type :as ring-mime]
-   [ring.util.time :as ring-time]
    [site.cache :as cache]
    [site.content :as content2]
    [site.db :as db]
    [site.dev :as dev]
    [site.pages :as pages]
+   [site.pages.render :as render]
    [site.sitemap :as sitemap])
   (:import
    (java.io File))
   (:gen-class))
 
 (defn routes [config]
-  ["" {:middleware [[cache/wrap-cache config]
-                    [db/wrap-datomic config]]}
-   (when (:dev? config)
-     (dev/routes config))
+  [""
+   ["" {:middleware [[cache/wrap-cache config]
+                     [db/wrap-datomic config]]}
+    (when (:dev? config)
+      (dev/routes config))
 
-   ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
-                    :sitemap/exclude? true}]
-   (content2/routes (assoc config
-                           :get-page-kind pages/get-page-kind
-                           :render-page pages/render-page))
-   #_[(urls/url-for :url/home) {:handler (html-response config index/index)}]])
-
-(defn find-file ^File [path]
-  (when-let [file ^File (io/as-file (io/resource path))]
-    (when (.exists file)
-      (let [file (if (.isDirectory file)
-                   (io/file file "index.html")
-                   file)]
-        (when (.exists file)
-          file)))))
-
-;; (def cache-levels #{:no-cache :immutable})
-(defn serve-files [dir {:keys [cache-level] :as _opts
-                        :or   {cache-level :no-cache}}]
-  (fn [req]
-    (if-some [file (find-file (str dir (:uri req)))]
-      {:status  200
-       :body    file
-       :headers {"Content-Length" (.length file)
-                 "Last-Modified"  (ring-time/format-date (ring-io/last-modified-date file))
-                 "Cache-Control"  (condp = cache-level :immutable "max-age=31536000,immutable,public" :no-cache "no-cache")
-                 "Content-Type"   (ring-mime/ext-mime-type (.getName file))}}
-      nil)))
+    ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
+                     :sitemap/exclude? true}]
+    (content2/page-routes (assoc config
+                                 :get-page-kind pages/get-page-kind
+                                 :render-page render/render-page))]
+   (content2/asset-routes (assoc config
+                                 :get-page-kind pages/get-page-kind
+                                 :render-page render/render-page))])
 
 (defn not-found-handler [_req]
   {:status 404
    :body   "Not Found"})
-
-(defn create-asset-handler [dir opts]
-  (let [handler (serve-files dir opts)]
-    (ring.not-modified/wrap-not-modified handler)))
 
 (defn folder-redirects-handler [{:keys [uri] :as req}]
   (when (re-matches #"(/blog/[^/]+|/projects/[^/]+)" uri)
@@ -86,9 +60,6 @@
                                                                                ring.cookies/wrap-cookies
                                                                                ring.head/wrap-head]}})
                                                (rr/routes
-                                                ;; (create-asset-handler "content" {:cache-level :immutable})
-                                                ;; (create-asset-handler "public" {:cache-level :immutable})
-                                                ;; (content2/request-handler config (partial render-page config))
                                                 folder-redirects-handler
                                                 (rr/create-default-handler {:not-found not-found-handler}))))
                     :config {:dev?     (ds/ref [:env :dev?])
@@ -135,7 +106,5 @@
   [_]
   (ds/system ::base {[:env] (env-config :prod)}))
 
-(require '[site.class-path :as cp])
 (defn -main [& _args]
-  (prn (cp/file-metadata-on-class-path))
-  #_(ds/start ::prod))
+  (ds/start ::prod))

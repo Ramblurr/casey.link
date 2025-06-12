@@ -89,46 +89,40 @@
           (ingest-txs (:conn ctx)))
     nil))
 
-(defn handle-request [{:app/keys [render-fn db]} req]
-  (when-let [page (d/entity db
-                            [:page/uri (:uri req)])]
-    (render-fn page req)))
-
-#_(defn request-handler [{:keys [conn]} render-page]
-    (ingest! conn)
-    (partial handle-request {:app/db        (d/db conn)
-                             :app/render-fn render-page}))
-
 (defn asset-handler [{:asset/keys [content-length last-modified content-type resource-path]}]
-  (let [response {:status  200
-                  :body    (io/as-file (io/resource resource-path))
-                  :headers {"Content-Length" content-length
-                            "Last-Modified"  last-modified
-                            "Cache-Control"  "max-age=31536000,immutable,public"
-                            "Content-Type"   content-type}}]
-    (fn [req]
-      response)))
+  (fn [req]
+    {:status  200
+     :body    (io/input-stream (io/resource resource-path))
+     :headers {"Content-Length" content-length
+               "Last-Modified"  last-modified
+               "Cache-Control"  "max-age=31536000,immutable,public"
+               "Content-Type"   content-type}}))
 
-(defn routes [{:keys [get-page-kind conn render-page] :as config}]
+(defn asset-routes [{:keys [get-page-kind conn render-page] :as config}]
   (assert conn)
   (assert render-page)
   (assert get-page-kind)
   (ingest! config)
   (let [db     (d/db conn)
-        pages  (db/get-pages db)
         assets (db/get-assets db)]
-    [""
-     (mapv (fn [page]
-             [(:page/uri page)
-              {:handler               #(render-page page (merge config %))
-               :sitemap/last-modified (:page/last-modified page)}])
-           pages)
-     [""
-      (mapv (fn [asset]
-              [(:asset/uri asset)
-               {:handler          (asset-handler asset)
-                :sitemap/exclude? true}])
-            assets)]]))
+    (mapv (fn [asset]
+            [(:asset/uri asset)
+             {:handler          (asset-handler asset)
+              :sitemap/exclude? true}])
+          assets)))
+
+(defn page-routes [{:keys [get-page-kind conn render-page] :as config}]
+  (assert conn)
+  (assert render-page)
+  (assert get-page-kind)
+  (ingest! config)
+  (let [db    (d/db conn)
+        pages (db/get-pages db)]
+    (mapv (fn [page]
+            [(:page/uri page)
+             {:handler               #(render-page page (merge config %))
+              :sitemap/last-modified (:page/last-modified page)}])
+          pages)))
 
 (comment
   (:content
