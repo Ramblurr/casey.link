@@ -13,8 +13,10 @@
                                          :exclusions [http-kit/http-kit]}
 
          http-kit/http-kit      {:mvn/version "2.9.0-beta1"}
-         metosin/reitit         {:mvn/version "0.9.1"}
-         metosin/jsonista       {:mvn/version "0.3.13"}
+         metosin/reitit-core    {:mvn/version "0.9.1"}
+         metosin/reitit-ring    {:mvn/version "0.9.1"
+                                 :exclusions  [metosin/muuntaja]}
+         com.cnuernber/charred  {:mvn/version "1.037"}
          com.datomic/peer       {:mvn/version "1.0.7364"
                                  :exclusions  [com.amazonaws/aws-java-sdk-core
                                                com.amazonaws/aws-java-sdk-ec2

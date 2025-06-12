@@ -1,6 +1,6 @@
 (ns site.ui
   (:require
-   [jsonista.core :as j]
+   [charred.api :as charred]
    [site.html :as html]
    [site.ui.footer :as footer]
    [site.ui.header :as header]))
@@ -51,8 +51,8 @@
             [:meta {:name "twitter:image" :content (or (:twitter/image page) "https://casey.link/square-flask.png")}]
             [:meta {:property "og:image" :content (or (:open-graph/image page) "https://casey.link/square-flask.png")}]
             [:script {:type "application/ld+json"}
-             (j/write-value-as-string (or (:ld-json/value page)
-                                          default-ld-json))]
+             (charred/write-json-str (or (:ld-json/value page)
+                                         default-ld-json))]
 
             (when description
               [:meta {:name "description" :content description}])
