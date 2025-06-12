@@ -57,13 +57,21 @@
        (map (partial load-content ctx))
        (apply concat)))
 
+(def default-content-types
+  {"map"         "application/json"
+   "webmanifest" "application/json"})
+
+(def default-content-suffixes ["md" "edn"])
+
+(def default-asset-suffixes ["css" "gif" "jpg" "jpeg" "js" "js.map" "png" "svg" "txt" "webp" "woff2" "ico" "webmanifest"])
+
 (defn load-all-assets [content-dir suffixes]
   (->> (cp/list-resources content-dir (content-pattern suffixes))
        (map (fn [{:keys [thunk path last-modified size] :as resource}]
               (let [resource-path (cp/join content-dir path)]
                 {:asset/resource-path  resource-path
                  :asset/last-modified  last-modified
-                 :asset/content-type   (ring-mime/ext-mime-type resource-path {"map" "application/json"})
+                 :asset/content-type   (ring-mime/ext-mime-type resource-path default-content-types)
                  :asset/content-length size
                  :asset/hash           (crypto/sha384-resource resource-path)
                  :asset/uri            (str "/" path)})))
@@ -71,9 +79,6 @@
 
 (defn ingest-txs [conn txs]
   (d/transact conn txs))
-
-(def default-content-suffixes ["md" "edn"])
-(def default-asset-suffixes ["css" "gif" "jpg" "jpeg" "js" "js.map" "png" "svg" "txt" "webp" "woff2"])
 
 (defn ingest! [ctx]
   (tap> :ingest!)

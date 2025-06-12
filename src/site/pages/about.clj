@@ -16,12 +16,13 @@
     [:span {:class "ml-4 transition"}
      children]]])
 
-(defn about [_req {:page/keys [body description] :as page}]
+(def photo "/images/photos/portrait@2x.webp")
+(defn render [_req {:page/keys [body description] :as page}]
   (render/with-body page (container/container  {:class "mt-16 sm:mt-32"}
                                                [:div {:class "grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12"}
                                                 [:div {:class "lg:pl-20"}
                                                  [:div {:class "max-w-xs px-2.5 lg:max-w-none"}
-                                                  [:img {:src   "/images/photos/portrait@2x.webp"
+                                                  [:img {:src   photo
                                                          :alt   ""
                                                          :class "aspect-square rotate-3 rounded-2xl bg-stone-100 object-cover dark:bg-stone-800"}]]]
                                                 [:article {:class "sidenote-gutter-lg lg:order-first lg:row-span-2"}
@@ -68,11 +69,7 @@
 
 (defmethod render/page-content :page.kind/about
   [page req]
-  (-> (about req page)
+  (-> (render req page)
       (assoc
-       :open-graph/type "profile"
        :page/head (list
-                   [:meta {:property "og:url" :content (str (:base-url req) "/about")}]
-                   [:meta {:property "profile:username" :content "ramblurr"}]
-                   [:meta {:property "profile:first_name" :content "Casey"}]
-                   [:meta {:property "profile:link_name" :content "Link"}]))))
+                   [:link {:rel "preload" :href photo :as "image"}]))))

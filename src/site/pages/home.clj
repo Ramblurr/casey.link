@@ -131,17 +131,20 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
                       "Download CV"
                       (arrow-down-icon {:class "h-4 w-4 stroke-ol-light-gray transition group-active:stroke-ol-gray dark:group-hover:stroke-white dark:group-active:stroke-white"}))]))
 
+(def splash-images [{:src "/images/photos/image-3.png"}
+                    {:src "/images/photos/bikeraft1.jpg" :class "object-left"}
+                    {:src "/images/photos/ol3.png"}
+                    {:src "/images/photos/image-2.png" :class "object-top"}
+                    {:src "/images/photos/bikeraft2.jpg"}])
+(defn preloads []
+  (for [img splash-images]
+    [:link {:rel "preload" :href (:src img) :as "image"}]))
 (defn photos
   []
-  (let [rotations ["rotate-2" "-rotate-2" "rotate-2" "rotate-2" "-rotate-2"]
-        images    [{:src "/images/photos/image-3.png"}
-                   {:src "/images/photos/bikeraft1.jpg" :class "object-left"}
-                   {:src "/images/photos/ol3.png"}
-                   {:src "/images/photos/image-2.png" :class "object-top"}
-                   {:src "/images/photos/bikeraft2.jpg"}]]
+  (let [rotations ["rotate-2" "-rotate-2" "rotate-2" "rotate-2" "-rotate-2"]]
     [:div {:class "mt-16 sm:mt-20"}
      [:div {:class "-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8"}
-      (for [[idx {:keys [src class]}] (map-indexed vector images)
+      (for [[idx {:keys [src class]}] (map-indexed vector splash-images)
             :let                      [rotation (get rotations (mod idx (count rotations)))]]
         [:div {:key   src
                :class (str "relative aspect-9/10 w-44 flex-none overflow-hidden rounded-xl bg-stone-100 sm:w-72 sm:rounded-2xl dark:bg-stone-800 " rotation)}
@@ -186,6 +189,14 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
 
 (defmethod render/page-content :page.kind/home
   [page req]
-  (render req page))
+  (-> (render req page)
+      (assoc
+       :open-graph/type "profile"
+       :page/head (list
+                   (preloads)
+                   [:meta {:property "og:url" :content (:base-url req)}]
+                   [:meta {:property "profile:username" :content "ramblurr"}]
+                   [:meta {:property "profile:first_name" :content "Casey"}]
+                   [:meta {:property "profile:link_name" :content "Link"}]))))
 
 (dev/re-render!)
