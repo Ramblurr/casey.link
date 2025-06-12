@@ -2,7 +2,7 @@
   (:require
    [site.db :as db]
    [datomic.api :as d]
-   [site.pages :as pages]
+   [site.pages.render :as render]
    [clojure.java.io :as io]
    [starfederation.datastar.clojure.api :as d*]
    [starfederation.datastar.clojure.adapter.http-kit :as hk-gen]))
@@ -51,7 +51,7 @@
                                 (swap! !connections assoc sse-gen {:uri    uri
                                                                    :render (fn []
                                                                              (d*/merge-fragment! sse-gen
-                                                                                                 (pages/render-fragment
+                                                                                                 (render/render-fragment
                                                                                                   page
                                                                                                   (update-req config req))))})))
 
