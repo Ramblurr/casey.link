@@ -1,5 +1,7 @@
 (ns site.pages.about
   (:require
+   [site.ui :as ui]
+   [site.dev :as dev]
    [site.markdown :as md]
    [site.pages.render :as render]
    [site.pages.urls :as urls]
@@ -79,3 +81,5 @@
       (assoc
        :page/head (list
                    [:link {:rel "preload" :href photo :as "image"}]))))
+
+(dev/re-render!)

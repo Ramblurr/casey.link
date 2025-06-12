@@ -28,7 +28,7 @@
    "image"      "https://casey.link/square-flask.png"})
 
 (defn shell [{:page/keys [description uri title head] :as page}]
-  (assoc page :content
+  (assoc page :page/body
          [html/doctype-html5
           [:html (array-map :lang                  "en"
                             :class "h-full antialiased"

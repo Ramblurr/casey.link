@@ -1,10 +1,10 @@
 (ns site.pages.blog-index
   (:require
+   [site.ui :as ui]
    [site.pages.render :as render]
    [site.dev :as dev]
    [site.db :as db]
    [site.pages.blog-post :refer [format-date]]
-   [site.pages.urls :refer [url-for]]
    [site.ui.home.card :as card]
    [site.ui.simple-layout :as simple-layout]))
 
@@ -30,14 +30,15 @@
 
 (defn render [req page]
   (render/with-body page
-    (simple-layout/simple-layout
-     {:title "Blog"
-      :intro "Notes on code, open-source, security, and tech in the social sector."
-      :children
-      [:div {:class "md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40"}
-       [:div {:class "flex max-w-3xl flex-col space-y-16"}
-        (for [page (db/get-blog-posts (:app/db req))]
-          (post-item page))]]})))
+    (ui/main
+     (simple-layout/simple-layout
+      {:title "Blog"
+       :intro "Notes on code, open-source, security, and tech in the social sector."
+       :children
+       [:div {:class "md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40"}
+        [:div {:class "flex max-w-3xl flex-col space-y-16"}
+         (for [page (db/get-blog-posts (:app/db req))]
+           (post-item page))]]}))))
 
 (defmethod render/page-content :page.kind/blog-index
   [page req]
