@@ -27,7 +27,7 @@
    "familyName" "Link"
    "image"      "https://casey.link/square-flask.png"})
 
-(defn shell [{:page/keys [description uri title head] :as page}]
+(defn shell [{:page/keys [description uri title head] :as page} req]
   (assoc page :page/body
          [html/doctype-html5
           [:html (array-map :lang                  "en"
@@ -73,7 +73,8 @@
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             head]
            [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}
-            [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}]
+            #_(when (:dev? req)
+                [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}])
             (layout page)
             [:script {:defer true :src "/js/header.js"}]
             [:script {:defer true :type "module" :src "/js/flask.js"}]]]]))

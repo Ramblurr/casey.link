@@ -77,18 +77,18 @@
 (defn logo
   [& args]
   (let [[opts attrs children] (uic/extract args)
-        {:keys [large?]} opts
-        alt "Outskirts Labs' logo, a laboratory flask with a bubbling cactus inside."]
+        {:keys [large?]}      opts
+        alt                   "Outskirts Labs' logo, a laboratory flask with a bubbling cactus inside."]
     [:a (uic/merge-attrs attrs
                          :href (urls/url-for :url/home)
                          :aria-label "Home"
                          :class "pointer-events-auto")
-     (icon/flask {:id "logo-square"
+     (icon/flask {:id                   "logo-square"
                   :data-flask-autostart "true"
-                  :class (uic/cs
-                          "rounded-full object-cover overflow-visible"
-                          (if large? "h-22 w-22 " "h-9 w-9"))
-                  :alt alt})]))
+                  :class                (uic/cs
+                                         "rounded-full object-cover overflow-visible"
+                                         (if large? "h-22 w-22 " "h-9 w-9"))
+                  :alt                  alt})]))
 
 (defn logo-background
   "Avatar container component"

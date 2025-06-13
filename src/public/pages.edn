@@ -1,9 +1,11 @@
-[{:page/uri   "/blog"
-  :page/title "Blog - Casey Link"
-  :page/kind  :page.kind/blog-index}
- {:page/uri  "/"
-  :page/title "Casey Link | Developer, Technical Strategist & NGO Specialist"
-  :page/kind :page.kind/home}
+[{:page/uri         "/blog"
+  :page/title       "Blog - Casey Link"
+  :page/description "Notes on code, open-source, security, and tech in the social sector."
+  :page/kind        :page.kind/blog-index}
+ {:page/uri         "/"
+  :page/title       "Casey Link | Developer, Technical Strategist & NGO Specialist"
+  :page/description "I'm Casey Link, Principal at Outskirts Labs, specializing in custom design and software engineering for NGOs and social enterprises. I create technical solutions that make a positive impact while solving complex challenges."
+  :page/kind        :page.kind/home}
  {:page/uri   "/projects"
   :page/title "Projects - Casey Link"
   :page/kind  :page.kind/project-index}]

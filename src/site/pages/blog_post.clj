@@ -51,8 +51,8 @@
          [:h1 {:class "mt-6 text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100"}
           title]
          [:time {:datetime date
-                 :class    "flex items-center text-base text-zinc-400 dark:text-zinc-500"}
-          [:span {:class "h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500"}]
+                 :class    "flex items-center text-base text-zinc-500 dark:text-zinc-400"}
+          [:span {:class "h-4 w-0.5 rounded-full bg-zinc-400 dark:bg-zinc-500"}]
           [:span {:class "ml-3"} (format-date date)]]]
         (prose/prose {:class "mt-8"}
                      (md/->hiccup body))]]])))

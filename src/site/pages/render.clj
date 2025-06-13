@@ -17,7 +17,7 @@
 (defn html-response [req content]
   (when content
     (let [r (->  content
-                 ui/shell
+                 (ui/shell req)
                  (polish/hiccup req)
                  :page/body
                  html/->str)]
