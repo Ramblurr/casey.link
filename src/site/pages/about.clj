@@ -1,10 +1,11 @@
 (ns site.pages.about
   (:require
-   [site.ui :as ui]
+   [clojure.string :as str]
    [site.dev :as dev]
    [site.markdown :as md]
    [site.pages.render :as render]
    [site.pages.urls :as urls]
+   [site.ui :as ui]
    [site.ui.container :as container]
    [site.ui.core :as uic]
    [site.ui.home.card :as card]
@@ -18,7 +19,18 @@
     [:span {:class "ml-4 transition"}
      children]]])
 
-(def photo "/images/photos/portrait@2x.webp")
+(def photo "/images/photos/portrait-300w.webp")
+
+(defn srcset [sizes path ext name]
+  (str/join ",\n"
+            (for [size sizes]
+              (str path name "-" size "w" ext " " size "w"))))
+
+(def portrait-srcset (srcset [300 600 900 1236]
+                             "/images/photos/"
+                             ".webp"
+                             "portrait"))
+(def portrait-sizes "(min-width: 1320px) 412px, (min-width: 1060px) calc(39.17vw - 97px), (min-width: 400px) 295px, calc(65vw + 53px)")
 (defn render [_req {:page/keys [body description] :as page}]
   (render/with-body page
     (ui/main
@@ -26,9 +38,11 @@
                            [:div {:class "grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12"}
                             [:div {:class "lg:pl-20"}
                              [:div {:class "max-w-xs px-2.5 lg:max-w-none"}
-                              [:img {:src   photo
-                                     :alt   ""
-                                     :class "aspect-square rotate-3 rounded-2xl bg-stone-100 object-cover dark:bg-stone-800"}]]]
+                              [:img {:src    photo
+                                     :sizes  portrait-sizes
+                                     :srcset portrait-srcset
+                                     :alt    "A portrait of me, a man in glasses and cap smiling with black and white dog resting paws up on his shoulders"
+                                     :class  "aspect-square rotate-3 rounded-2xl bg-stone-100 object-cover dark:bg-stone-800"}]]]
                             [:article {:class "sidenote-gutter-lg lg:order-first lg:row-span-2"}
                              [:h1 {:class "text-4xl font-bold tracking-tight text-stone-800 sm:text-5xl dark:text-stone-100"}
                               description]
@@ -43,7 +57,7 @@
                             [:div {:class "lg:pl-20"}
                              [:ul {:role "list"}
                               [:li {:class ""}
-                               [:span {:class "group flex text-sm font-medium text-stone-800"}
+                               [:span {:class "group flex text-sm font-medium text-stone-800 dark:text-stone-200"}
                                 (icon/at {:class "h-6 w-6 flex-none fill-stone-500 transition group-hover:fill-ol-turquoise-500"}) "Ramblurr"
                                 [:small {:class "ml-1 transition"}
                                  "(is my handle all over the web)"]]]
@@ -72,14 +86,15 @@
                                             :class-name "mt-4"
                                             :children   "PGP Key"})]]]))))
 
-(comment
-  (about nil))
-
 (defmethod render/page-content :page.kind/about
   [page req]
   (-> (render req page)
       (assoc
        :page/head (list
-                   [:link {:rel "preload" :href photo :as "image"}]))))
+                   [:link {:rel         "preload"
+                           :href        photo
+                           :as          "image"
+                           :imagesrcset portrait-srcset
+                           :imagesizes  portrait-sizes}]))))
 
 (dev/re-render!)
