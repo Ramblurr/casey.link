@@ -14,8 +14,8 @@
 (defn social-link [{:keys [href class-name icon children]}]
   [:li {:class (uic/cs "flex" class-name)}
    [:a {:href  href
-        :class "group flex text-sm font-medium text-stone-800 transition hover:text-ol-turquoise-600 dark:text-stone-200 dark:hover:text-ol-turquoise-500"}
-    (icon {:class "h-6 w-6 flex-none fill-stone-500 transition group-hover:fill-ol-turquoise-500"})
+        :class "group flex text-sm font-medium text-stone-800 transition any-hover:text-ol-turquoise-600 dark:text-stone-200 dark:any-hover:text-ol-turquoise-500"}
+    (icon {:class "h-6 w-6 flex-none fill-stone-500 transition group-any-hover:fill-ol-turquoise-500"})
     [:span {:class "ml-4 transition"}
      children]]])
 
@@ -58,7 +58,7 @@
                              [:ul {:role "list"}
                               [:li {:class ""}
                                [:span {:class "group flex text-sm font-medium text-stone-800 dark:text-stone-200"}
-                                (icon/at {:class "h-6 w-6 flex-none fill-stone-500 transition group-hover:fill-ol-turquoise-500"}) "Ramblurr"
+                                (icon/at {:class "h-6 w-6 flex-none fill-stone-500 transition group-any-hover:fill-ol-turquoise-500"}) "Ramblurr"
                                 [:small {:class "ml-1 transition"}
                                  "(is my handle all over the web)"]]]
                               #_(social-link {:href       "https://twitter.com/ramblurr"

@@ -15,7 +15,7 @@
   [{:keys [href]} & children]
   (list
    [:div {:class
-          "absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-stone-100 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:-inset-x-6 sm:rounded-2xl dark:bg-stone-900/50"}]
+          "absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-stone-100 opacity-0 transition group-any-hover:scale-100 group-any-hover:opacity-100 sm:-inset-x-6 sm:rounded-2xl dark:bg-stone-900/50"}]
    [:a {:href href}
     [:span {:class "absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl"}]
     [:span {:class "relative z-10"} children]]))
