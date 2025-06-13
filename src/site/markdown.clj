@@ -116,7 +116,10 @@
                         [:sup.sidenote-number (str fn ".")]
                         (or text (md.transform/->text node))
                         [:a {:role "doc-backlink" :href (str "#fn" fn) :class "text-inherit"}
-                         (icon/arrow-u-up-left {:class "size-4 inline ml-1 text-inherit border-b"})]]))
+                         (icon/arrow-u-up-left {:class       "size-4 inline ml-1 text-inherit border-b"
+                                                :aria-hidden "true"
+                                                :focusable   "false"})
+                         [:span.sr-only "Back to reference"]]]))
          :code (fn [ctx {:keys [text info] :as node}]
                  (if-let [hiccup (embed-hiccup node)]
                    hiccup
