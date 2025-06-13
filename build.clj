@@ -1,5 +1,6 @@
 (ns build
   (:require [clojure.tools.build.api :as b]
+            [babashka.process :as p]
             [clojure.edn :as edn]))
 
 (def project (-> (edn/read-string (slurp "deps.edn"))
@@ -14,8 +15,12 @@
 (defn clean [_]
   (b/delete {:path "target"}))
 
+(defn tailwind [_]
+  (p/shell "tailwindcss --minify -i ./src/site/input.css -o ./src/public/site.css"))
+
 (defn uber [_]
   (clean nil)
+  (tailwind {:release true})
   (b/copy-dir {:src-dirs   ["src" "resources"]
                :target-dir class-dir})
   (b/compile-clj {:basis     basis
