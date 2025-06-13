@@ -39,8 +39,8 @@
   [:a {:href       href
        :aria-label aria-label
        :class      "group -m-1 p-1"}
-   (icon {:class "h-6 w-6 transition fill-stone-400 group-hover:fill-ol-orange-600 dark:fill-stone-400 dark:group-hover:fill-ol-orange-500
-text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hover:text-ol-orange-500
+   (icon {:class "h-6 w-6 transition fill-stone-400 group-any-hover:fill-ol-orange-600 dark:fill-stone-400 dark:group-any-hover:fill-ol-orange-500
+text-stone-400 group-any-hover:text-ol-orange-600 dark:text-stone-400 dark:group-any-hover:text-ol-orange-500
 "})])
 
 #_(defn newsletter
@@ -77,7 +77,7 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
       [:dt {:class "sr-only"} "Company"]
       [:dd {:class "w-full flex-none text-sm font-medium text-ol-gray dark:text-white"}
        (if link
-         [:a {:href link :class "hover:bg-stone-100 dark:hover:bg-stone-900/50"} company]
+         [:a {:href link :class "any-hover:bg-stone-100 dark:any-hover:bg-stone-900/50"} company]
          company)]
       [:dt {:class "sr-only"} "Role"]
       [:dd {:class "text-xs text-stone-600 dark:text-stone-100"}
@@ -132,7 +132,7 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
                        :variant "secondary"
                        :class   "group mt-6 w-full"}
                       "Download CV"
-                      (arrow-down-icon {:class "h-4 w-4 stroke-ol-light-gray transition group-active:stroke-ol-gray dark:group-hover:stroke-white dark:group-active:stroke-white"}))]))
+                      (arrow-down-icon {:class "h-4 w-4 stroke-ol-light-gray transition group-active:stroke-ol-gray dark:group-any-hover:stroke-white dark:group-active:stroke-white"}))]))
 
 (defn srcset [sizes path ext name]
   (str/join ",\n"
@@ -185,7 +185,7 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
                                 (list
                                  p1
                                  [:a {:href  "https://outskirtslabs.com"
-                                      :class "text-ol-orange-600 transition-colors rounded hover:bg-stone-100 dark:hover:bg-stone-900/50"}
+                                      :class "text-ol-orange-600 transition-colors rounded any-hover:bg-stone-100 dark:any-hover:bg-stone-900/50"}
                                   "Outskirts Labs"]
                                  p2))]
 

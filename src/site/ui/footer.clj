@@ -6,8 +6,8 @@
 (defn nav-link
   "Navigation link component"
   [{:keys [href]} & children]
-  [:a {:href href
-       :class "transition hover:text-ol-orange dark:hover:text-ol-orange"}
+  [:a {:href  href
+       :class "transition any-hover:text-ol-orange dark:any-hover:text-ol-orange"}
    children])
 
 (defn footer

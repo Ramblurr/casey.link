@@ -29,12 +29,12 @@
                  (:name project)]]
              (card/title {:class "mt-6" :-href href :rel "noopener noreferrer"} name)
              (card/description description)
-             [:p {:class "relative z-10 mt-6 flex text-sm font-medium text-stone-400 transition group-hover:text-ol-orange-500 dark:text-stone-200"}
+             [:p {:class "relative z-10 mt-6 flex text-sm font-medium text-stone-400 transition group-any-hover:text-ol-orange-500 dark:text-stone-200"}
               ((or icon icon/link) {:class "h-5 w-5 flex-none"})
               [:span {:class "ml-2"}
                label]]
              (when (seq tags)
-               [:div {:class "relative flex text-sm text-stone-400 transition group-hover:text-ol-orange-500 dark:text-stone-200"}
+               [:div {:class "relative flex text-sm text-stone-400 transition group-any-hover:text-ol-orange-500 dark:text-stone-200"}
                 (icon/stack {:class      "h-5 w-5 flex-none"
                              :title      "Tech Stack"
                              :aria-label "Tech Stack"

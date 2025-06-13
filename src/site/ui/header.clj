@@ -17,20 +17,20 @@
   "Mobile navigation component"
   [{:keys [class]}]
   [:div {:class (str "relative " class)}
-   [:button {:type "button"
-             :class "group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-stone-800 ring-1 shadow-lg shadow-stone-800/5 ring-stone-900/5 backdrop-blur-sm dark:bg-stone-800/90 dark:text-stone-200 dark:ring-white/10 dark:hover:ring-white/20"
+   [:button {:type          "button"
+             :class         "group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-stone-800 ring-1 shadow-lg shadow-stone-800/5 ring-stone-900/5 backdrop-blur-sm dark:bg-stone-800/90 dark:text-stone-200 dark:ring-white/10 dark:any-hover:ring-white/20"
              :popovertarget "mobile-nav-panel"}
     "Menu"
-    (icon/chevron-down {:class "ml-3 h-auto w-2 stroke-stone-500 group-hover:stroke-stone-700 dark:group-hover:stroke-stone-400"})]
-   [:div {:id "mobile-nav-panel"
+    (icon/chevron-down {:class "ml-3 h-auto w-2 stroke-stone-500 group-any-hover:stroke-stone-700 dark:group-any-hover:stroke-stone-400"})]
+   [:div {:id      "mobile-nav-panel"
           :popover true
-          :class (uic/cs "fixed w-auto inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-stone-900/5 dark:bg-stone-900 dark:ring-stone-800"
-                         "backdrop:backdrop-blur-xs opacity-0 transition-[display,opacity] transition-discrete duration-150 open:opacity-100 motion-reduce:duration-0 starting:open:opacity-0")
+          :class   (uic/cs "fixed w-auto inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-stone-900/5 dark:bg-stone-900 dark:ring-stone-800"
+                           "backdrop:backdrop-blur-xs opacity-0 transition-[display,opacity] transition-discrete duration-150 open:opacity-100 motion-reduce:duration-0 starting:open:opacity-0")
 
           :data-ref "navMenuPopover"}
     [:div {:class "flex flex-row-reverse items-center justify-between"}
-     [:button {:aria-label "Close menu"
-               :class "-m-1 p-1"
+     [:button {:aria-label    "Close menu"
+               :class         "-m-1 p-1"
                :data-on-click "$navMenuPopover.hidePopover()"}
       (icon/close {:class "h-6 w-6 text-stone-500 dark:text-stone-400"})]
      [:h2 {:class "text-sm font-medium text-stone-600 dark:text-stone-400"}
@@ -45,11 +45,11 @@
   "Navigation item component"
   [{:keys [href active?]} & children]
   [:li
-   [:a {:href href
+   [:a {:href  href
         :class (str "relative block px-3 py-2 transition "
                     (if active?
                       "text-ol-orange dark:text-ol-orange"
-                      "hover:text-ol-orange dark:hover:text-ol-orange"))}
+                      "any-hover:text-ol-orange dark:any-hover:text-ol-orange"))}
     children
     (when active?
       [:span {:class "absolute inset-x-1 -bottom-px h-px bg-linear-to-r from-ol-orange/0 via-ol-orange/40 to-ol-orange/0 dark:from-ol-orange/0 dark:via-ol-orange/40 dark:to-ol-orange/0"}])]])
@@ -67,12 +67,12 @@
 (defn theme-toggle
   "Theme toggle button"
   []
-  [:button {:type "button"
-            :aria-label "Toggle theme"
-            :class "cursor-pointer group rounded-full bg-white/90 px-3 py-2 ring-1 shadow-lg shadow-stone-800/5 ring-stone-900/5 backdrop-blur-sm transition dark:bg-stone-800/90 dark:ring-white/10 dark:hover:ring-white/20"
+  [:button {:type          "button"
+            :aria-label    "Toggle theme"
+            :class         "cursor-pointer group rounded-full bg-white/90 px-3 py-2 ring-1 shadow-lg shadow-stone-800/5 ring-stone-900/5 backdrop-blur-sm transition dark:bg-stone-800/90 dark:ring-white/10 dark:any-hover:ring-white/20"
             :data-on-click "$darkmode = !$darkmode"}
-   (icon/sun {:class "h-6 w-6 fill-stone-100 stroke-stone-500 transition group-hover:fill-stone-200 group-hover:stroke-stone-700 dark:hidden [@media(prefers-color-scheme:dark)]:fill-teal-50 [@media(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-hover:fill-teal-50 [@media(prefers-color-scheme:dark)]:group-hover:stroke-teal-600"})
-   (icon/moon-sparkle {:class "hidden h-6 w-6 fill-stone-700 stroke-stone-500 transition dark:block [@media_not_(prefers-color-scheme:dark)]:fill-teal-400/10 [@media_not_(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-hover:stroke-stone-400"})])
+   (icon/sun {:class "h-6 w-6 fill-stone-100 stroke-stone-500 transition group-any-hover:fill-stone-200 group-any-hover:stroke-stone-700 dark:hidden [@media(prefers-color-scheme:dark)]:fill-teal-50 [@media(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-any-hover:fill-teal-50 [@media(prefers-color-scheme:dark)]:group-any-hover:stroke-teal-600"})
+   (icon/moon-sparkle {:class "hidden h-6 w-6 fill-stone-700 stroke-stone-500 transition dark:block [@media_not_(prefers-color-scheme:dark)]:fill-teal-400/10 [@media_not_(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-any-hover:stroke-stone-400"})])
 
 (defn logo
   [& args]

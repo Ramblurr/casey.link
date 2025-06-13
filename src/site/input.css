@@ -4,6 +4,13 @@
 @plugin '@tailwindcss/typography';
 @config '../../typography.js';
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant any-hover {
+  @media (any-hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+}
 @theme {
   /* Outskirts Labs brand colors */
   --color-dark-liver: #524b47;
