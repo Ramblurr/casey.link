@@ -1,16 +1,12 @@
 (ns site.markdown
   (:require
-   [site.html :as html]
-   [site.class-path :as cp]
    [clojure.edn :as edn]
-
-   [site.ui.icons :as icon]
-   [clojure.java.io :as io]
    [clojure.string :as str]
-
-   [nextjournal.markdown.utils :as md.util]
    [nextjournal.markdown :as md]
-   [nextjournal.markdown.transform :as md.transform]))
+   [nextjournal.markdown.transform :as md.transform]
+   [nextjournal.markdown.utils :as md.util]
+   [site.html :as html]
+   [site.ui.icons :as icon]))
 
 (defn parse-edn-frontmatter
   [lines-seq]

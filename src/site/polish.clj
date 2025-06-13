@@ -69,18 +69,16 @@
       url)))
 
 (defn polish-img [page [tag attrs children]]
-  (when (and (not (str/blank? (:src attrs)))
-             (not (contains? attrs :sizes)))
+  (when (and (not (str/blank? (:src attrs))))
     (when-some [file (find-file page (:src attrs))]
       (let [[w h]  (image-dimensions file)
             style' (str "aspect-ratio: " w "/" h "; " (:style attrs))
             src'   (timestamp-url (:src attrs) file)]
         [tag
-         (assoc attrs
-                :src src'
-                :style style'
-                :width w
-                :height h) children]))))
+         (cond-> attrs
+           (not (contains? attrs :sizes)) (assoc :width w :height h)
+           true                           (assoc :src src' :style style'))
+         children]))))
 
 (defn polish-element [{:keys [base-url]} page element]
   (assert base-url "base-url must be provided in config")
