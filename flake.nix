@@ -13,11 +13,27 @@
       clj-nix,
     }:
 
+    let
+
+      javaVersion = 24;
+
+      overlays = [
+        (
+          final: prev:
+          let
+            jdk = prev."jdk${toString javaVersion}";
+          in
+          {
+            clojure = prev.clojure.override { inherit jdk; };
+          }
+        )
+      ];
+    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        javaVersion = 24;
-        pkgs = nixpkgs.legacyPackages.${system};
+        #pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs { inherit system overlays; };
       in
       {
         packages = {
@@ -44,16 +60,6 @@
           };
 
         };
-
-        overlays.default =
-          final: prev:
-          let
-            jdk = prev."jdk${toString javaVersion}";
-          in
-          {
-            clojure = prev.clojure.override { inherit jdk; };
-          };
-
         devShells = {
           default = pkgs.mkShell {
             packages = [
