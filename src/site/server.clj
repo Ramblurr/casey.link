@@ -1,5 +1,7 @@
 (ns site.server
   (:require
+   [site.compression :as compression]
+
    [aero.core :as aero]
    [clojure.java.io :as io]
    [donut.system :as ds]
@@ -56,7 +58,8 @@
      :handler #::ds{:start  (fn [{config ::ds/config}]
                               (rr/ring-handler (rr/router (routes config)
                                                           {:data {:middleware [ring.params/wrap-params
-                                                                               ring.cookies/wrap-cookies]}})
+                                                                               ring.cookies/wrap-cookies
+                                                                               compression/wrap-compression]}})
                                                (rr/routes
                                                 folder-redirects-handler
                                                 (rr/create-default-handler {:not-found not-found-handler}))))
