@@ -60,21 +60,28 @@
           };
 
         };
-        devShells = {
-          default = pkgs.mkShell {
-            packages = [
+        devShells =
+          let
+            base = [
               pkgs.babashka
-              pkgs.caddy
               pkgs.cljfmt
               pkgs.clj-kondo
               pkgs.clojure
-              pkgs.clojure-lsp
               pkgs.tailwindcss_4
-              pkgs.vips
-              pkgs.zsh
             ];
+          in
+          {
+            ci = pkgs.mkShell {
+              packages = base;
+            };
+            default = pkgs.mkShell {
+              packages = base ++ [
+                pkgs.clojure-lsp
+                pkgs.vips
+                pkgs.zsh
+              ];
+            };
           };
-        };
       }
     );
 }
