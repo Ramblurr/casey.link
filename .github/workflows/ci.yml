@@ -26,7 +26,7 @@ jobs:
       - name: Run flake check
         run: nix flake check
       - name: Verify
-        run: nix develop --command bb ci
+        run: nix develop #devShells.x86_64-linux.ci --command -- bb ci
       - name: Build package
         run: nix build .
 #  publish:
