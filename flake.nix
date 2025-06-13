@@ -65,10 +65,10 @@
             packages = [
               pkgs.babashka
               pkgs.caddy
+              pkgs.cljfmt
               pkgs.clj-kondo
               pkgs.clojure
               pkgs.clojure-lsp
-              pkgs.flyctl
               pkgs.tailwindcss_4
               pkgs.vips
               pkgs.zsh
