@@ -29,12 +29,14 @@ This is a markdown post with EDN frontmatter
     [:sup.sidenote-number "1."]
     note
     [:a
-     {:role "doc-backlink", :href "#fn1", :class "text-inherit"}
+     {:role "doc-backlink" :href "#fn1" :class "text-inherit"}
      [:svg
-      {:xmlns   "http://www.w3.org/2000/svg",
-       :viewBox "0 0 256 256",
-       :role    "img"
-       :class   "size-4 inline ml-1 text-inherit border-b "}
+      {:xmlns       "http://www.w3.org/2000/svg"
+       :viewBox     "0 0 256 256"
+       :role        "img"
+       :class       "size-4 inline ml-1 text-inherit border-b "
+       :aria-hidden "true"
+       :focusable   "false"}
       [:path {:fill "none", :d "M0 0h256v256H0z"}]
       [:path
        {:fill            "none",
@@ -50,7 +52,8 @@ This is a markdown post with EDN frontmatter
         :stroke-linejoin "round",
         :stroke-width    "16",
         :d
-        "M80 200h88a56 56 0 0 0 56-56h0a56 56 0 0 0-56-56H32"}]]]]])
+        "M80 200h88a56 56 0 0 0 56-56h0a56 56 0 0 0-56-56H32"}]]
+     [:span.sr-only "Back to reference"]]]])
 
 (deftest test-markdown-parsing
   (testing "Images"
