@@ -2,6 +2,7 @@
   (:import
    (java.time Year))
   (:require
+   [clojure.string :as str]
    [site.pages.render :as render]
    [site.dev :as dev]
    [site.ui :as ui]
@@ -133,27 +134,45 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
                       "Download CV"
                       (arrow-down-icon {:class "h-4 w-4 stroke-ol-light-gray transition group-active:stroke-ol-gray dark:group-hover:stroke-white dark:group-active:stroke-white"}))]))
 
-(def splash-images [{:src "/images/photos/image-3.png"}
-                    {:src "/images/photos/bikeraft1.jpg" :class "object-left"}
-                    {:src "/images/photos/ol3.png"}
-                    {:src "/images/photos/image-2.png" :class "object-top"}
-                    {:src "/images/photos/bikeraft2.jpg"}])
+(defn srcset [sizes path ext name]
+  (str/join ",\n"
+            (for [size sizes]
+              (str path name "-" size "w" ext " " size "w"))))
+
+(defn image [sizes path ext name]
+  {:src    (str path name "-" (last sizes) "w" ext)
+   :srcset (srcset sizes path ext name)})
+
+(def splash-images
+  (let [sizes  [176 288 472 672]
+        path   "/images/photos/"
+        ext    ".webp"
+        image* (partial image sizes path ext)]
+    [(image* "image-3")
+     (assoc (image* "bikeraft1")
+            :class "object-left")
+     (image* "ol3")
+     (assoc (image* "image-2") :class "object-top")
+     (image* "bikeraft2")]))
 (defn preloads []
-  (for [img splash-images]
-    [:link {:rel "preload" :href (:src img) :as "image"}]))
+  #_(for [img splash-images]
+      [:link {:rel "preload" :href (:src img) :as "image"}]))
 (defn photos
   []
   (let [rotations ["rotate-2" "-rotate-2" "rotate-2" "rotate-2" "-rotate-2"]]
     [:div {:class "mt-16 sm:mt-20"}
      [:div {:class "-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8"}
-      (for [[idx {:keys [src class]}] (map-indexed vector splash-images)
-            :let                      [rotation (get rotations (mod idx (count rotations)))]]
+      (for [[idx {:keys [srcset src class]}] (map-indexed vector splash-images)
+            :let                             [rotation (get rotations (mod idx (count rotations)))]]
         [:div {:key   src
                :class (str "relative aspect-9/10 w-44 flex-none overflow-hidden rounded-xl bg-stone-100 sm:w-72 sm:rounded-2xl dark:bg-stone-800 " rotation)}
-         [:img {:src   src
-                :alt   ""
-                :sizes "(min-width: 1024px) 42rem, (min-width: 640px) 18rem, 11rem"
-                :class (str (or class "") " absolute inset-0 h-full w-full object-cover")}]])]]))
+         [:img {:alt      ""
+                :src      src
+                :loading  "lazy"
+                :decoding "async"
+                :srcset   srcset
+                :sizes    "(min-width: 640px) 18rem, 11rem"
+                :class    (str (or class "") " absolute inset-0 h-full w-full object-cover")}]])]]))
 
 (defn render [req {:page/keys [description] :as page}]
   (let [index-articles (take 5 (db/get-blog-posts (:app/db req)))]
