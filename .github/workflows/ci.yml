@@ -23,6 +23,10 @@ jobs:
       - uses: DeterminateSystems/flake-checker-action@main
       - name: Run flake check
         run: nix flake check
+      - name: Run flake check
+        run: nix flake check
+      - name: Verify
+        run: nix develop --command bb ci
       - name: Build package
         run: nix build .
 #  publish:
