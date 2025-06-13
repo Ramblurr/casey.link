@@ -44,7 +44,7 @@
   :run-m {:main-opts ["-m" "site.server"]}
   :build {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.9"
                                                       :git/sha "e405aac"}
-                       slipset/deps-deploy           {:mvn/version "0.2.2"}}
+                       babashka/process              {:mvn/version "0.6.23"}}
           :ns-default build}
   :neil  {:project {:name    "site"
                     :version "2.0.0"}}}}

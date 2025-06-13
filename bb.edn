@@ -38,8 +38,9 @@
                     :task (apply clojure {:extra-env {"TEST_SCI" "true"}}
                                  "-M:test" "-m" "kaocha.runner" *command-line-args*)}
 
-         uberjar {:doc              "Build deployment artifact"
-                  :depends          [css]
-                  :task             (clojure "-T:build uber")
-                  :override-builtin true}
-         clean   (clojure "-T:build clean")}}
+         uberjar   {:doc              "Build deployment artifact"
+                    :depends          [css]
+                    :task             (clojure "-T:build uber")
+                    :override-builtin true}
+         clean     (clojure "-T:build clean")
+         deps-lock (shell "nix run github:jlesquembre/clj-nix#deps-lock -- --alias-exclude test --alias-exclude dev")}}
