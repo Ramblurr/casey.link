@@ -154,9 +154,7 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
      (image* "ol3")
      (assoc (image* "image-2") :class "object-top")
      (image* "bikeraft2")]))
-(defn preloads []
-  #_(for [img splash-images]
-      [:link {:rel "preload" :href (:src img) :as "image"}]))
+
 (defn photos
   []
   (let [rotations ["rotate-2" "-rotate-2" "rotate-2" "rotate-2" "-rotate-2"]]
@@ -217,7 +215,6 @@ text-stone-400 group-hover:text-ol-orange-600 dark:text-stone-400 dark:group-hov
       (assoc
        :open-graph/type "profile"
        :page/head (list
-                   (preloads)
                    [:meta {:property "og:url" :content (:base-url req)}]
                    [:meta {:property "profile:username" :content "ramblurr"}]
                    [:meta {:property "profile:first_name" :content "Casey"}]
