@@ -23,13 +23,11 @@ jobs:
       - uses: DeterminateSystems/flake-checker-action@main
       - name: Run flake check
         run: nix flake check
-      - name: Run flake check
-        run: nix flake check
       - name: Verify
         run: nix develop #devShells.x86_64-linux.ci --command -- bb ci
       - name: Build package
         run: nix build .
-  publish:
+  deploy:
     runs-on: ubuntu-latest
     needs: check
     environment: james
@@ -40,6 +38,10 @@ jobs:
       packages: write
     if: github.ref == 'refs/heads/main'
     steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          determinate: true
       - name: Tailscale
         uses: tailscale/github-action@v3
         with:
