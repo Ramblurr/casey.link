@@ -1,7 +1,6 @@
 (ns site.server
   (:require
    [site.compression :as compression]
-
    [aero.core :as aero]
    [clojure.java.io :as io]
    [donut.system :as ds]
@@ -17,7 +16,9 @@
    [site.pages.render :as render]
    [site.sitemap :as sitemap])
   (:import
-   (java.io File))
+   [java.nio.channels SocketChannel ServerSocketChannel]
+   [java.net SocketAddress UnixDomainSocketAddress StandardProtocolFamily]
+   [java.io File])
   (:gen-class))
 
 (defn routes [config]
@@ -67,18 +68,22 @@
                              :base-url (ds/ref [:env :base-url])
                              :conn     (ds/local-ref [:datomic])}}
      :server  #::ds{:start  (fn [{config ::ds/config}]
-                              (let [instance (server/run-server (:handler config)
-                                                                {:port                 (:port config)
-                                                                 :ip                   (:host config)
-                                                                 :legacy-return-value? false})]
-                                (println (format "started listening at %s:%s" (:host config) (:port config)))
-                                instance))
+                              (let [{:keys [unix-socket port host handler]} config
+                                    hk-conf                                 (merge {:legacy-return-value? false}
+                                                                                   (if unix-socket
+                                                                                     {:address-finder  (fn []         (UnixDomainSocketAddress/of unix-socket))
+                                                                                      :channel-factory (fn [_address] (ServerSocketChannel/open StandardProtocolFamily/UNIX))}
+                                                                                     {:port port
+                                                                                      :ip   host}))]
+                                (println (format "starting listening at %s" (if unix-socket  unix-socket (str host ":" port))))
+                                (server/run-server handler hk-conf)))
                     :stop   (fn [{server ::ds/instance}]
                               (when server
                                 (server/server-stop! server)))
-                    :config {:handler (ds/local-ref [:handler])
-                             :host    (ds/ref [:env :host])
-                             :port    (ds/ref [:env :port])}}
+                    :config {:handler     (ds/local-ref [:handler])
+                             :unix-socket (ds/ref [:env :unix-socket])
+                             :host        (ds/ref [:env :host])
+                             :port        (ds/ref [:env :port])}}
      :watcher #::ds{:start  (fn [{config ::ds/config}]
                               (when (:dev? config)
                                 (let [watcher (dev/start-watcher config)]

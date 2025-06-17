@@ -13,7 +13,8 @@
 (def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
 
 (defn clean [_]
-  (b/delete {:path "target"}))
+  (b/delete {:path "target"})
+  (b/delete {:path "result"}))
 
 (defn tailwind [_]
   (p/shell "tailwindcss --minify -i ./src/site/input.css -o ./src/public/site.css"))
