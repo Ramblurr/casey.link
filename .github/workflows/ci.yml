@@ -52,4 +52,4 @@ jobs:
       - uses: DeterminateSystems/flakehub-cache-action@main
       - name: Deploy
         run: |
-          nix develop #devShells.x86_64-linux.ci --command -- deploy --ssh-opts "-o 'StrictHostKeyChecking no'"
+          nix develop .#devShells.x86_64-linux.ci --command -- deploy --ssh-opts "-o 'StrictHostKeyChecking no'" .#main
