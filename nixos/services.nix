@@ -6,26 +6,12 @@
   ...
 }:
 {
-  port ? 3000,
   branch ? "main",
-#secretsFolder ? ./secrets,
-#secretsPath ? "/home/site/.config/site/environment",
-#sopsKey ? "/home/site/.config/site/keys.txt",
 }:
 let
   inherit (pkgs.lib) concatStringsSep mapAttrsToList;
 
   serviceSuffix = "-${branch}";
-  secretsSuffix =
-    if
-      builtins.elem branch [
-        "main"
-        "develop"
-      ]
-    then
-      serviceSuffix
-    else
-      "-pr";
 
   nixosSystem = nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
