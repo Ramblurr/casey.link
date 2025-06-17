@@ -52,4 +52,10 @@ jobs:
       - uses: DeterminateSystems/flakehub-cache-action@main
       - name: Deploy
         run: |
-          nix develop .#devShells.x86_64-linux.ci --command -- deploy --ssh-opts "-o 'StrictHostKeyChecking no'" .#main
+          printf '%s' '${{ secrets.LOCAL_KEY }}' > $PWD/sign-key.sec
+          export LOCAL_KEY=$PWD/sign-key.sec
+          nix develop .#devShells.x86_64-linux.ci --command -- deploy --skip-checks .#main
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f $PWD/sign-key.sec

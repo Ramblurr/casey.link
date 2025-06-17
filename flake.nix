@@ -66,6 +66,10 @@
           inherit hostname;
           sshUser = "casey.link";
           user = "casey.link";
+          sshOpts = [
+            "-o"
+            "StrictHostKeyChecking=no"
+          ];
           profiles = {
             "site-${branch}".path = deploy-rs.lib.x86_64-linux.activate.custom (services {
               inherit branch;
