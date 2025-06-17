@@ -65,7 +65,7 @@
         }:
         {
           inherit hostname;
-          sshUser = "root";
+          sshUser = "casey.link";
           user = "casey.link";
           profiles = {
             "site-${branch}".path = deploy-rs.lib.x86_64-linux.activate.custom (services {
@@ -99,6 +99,7 @@
             pkgs.clojure
             pkgs.tailwindcss_4
             pkgs.brotli
+            pkgs.deploy-rs
           ];
         in
         {

@@ -29,22 +29,24 @@ jobs:
         run: nix develop #devShells.x86_64-linux.ci --command -- bb ci
       - name: Build package
         run: nix build .
-  # publish:
-  #   needs: check
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     id-token: write
-  #     contents: read
-  #     packages: write
-  #   if: github.ref == 'ref/heads/main'
-  #   steps:
-  #     - name: Tailscale
-  #       uses: tailscale/github-action@v3
-  #       with:
-  #         use-cache: "true"
-  #         oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-  #         oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-  #         tags: tag:site-caseylink
-  #     - name: Deploy
-  #       run: |
-  #         ssh -o "StrictHostKeyChecking no" james
+  publish:
+    needs: check
+    runs-on: ubuntu-latest
+    environment: james
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+    if: github.ref == 'ref/heads/main'
+    steps:
+      - name: Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          use-cache: "true"
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:site-caseylink
+      - uses: DeterminateSystems/flakehub-cache-action@main
+      - name: Deploy
+        run: |
+          nix develop #devShells.x86_64-linux.ci --command -- deploy --ssh-opts "-o 'StrictHostKeyChecking no'"
