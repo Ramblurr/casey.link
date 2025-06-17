@@ -37,9 +37,7 @@
           :extra-paths ["dev"]
           :jvm-opts    ["-Duser.timezone=UTC"
                         "-XX:+UseZGC"
-                        ;; ZGenerational will be the default in future
-                        ;; so this won't need to be specified
-                        "-XX:+ZGenerational"]}
+                        "--enable-native-access=ALL-UNNAMED"]}
   :test  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
   :run-m {:main-opts ["-m" "site.server"]}
   :build {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.9"
