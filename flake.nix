@@ -61,7 +61,6 @@
           hostname ? "james",
           script ? "activate",
           branch,
-          port,
         }:
         {
           inherit hostname;
@@ -69,7 +68,7 @@
           user = "casey.link";
           profiles = {
             "site-${branch}".path = deploy-rs.lib.x86_64-linux.activate.custom (services {
-              inherit branch port;
+              inherit branch;
             }) "$PROFILE/bin/${script}";
           };
         };
@@ -85,7 +84,6 @@
         nodes = {
           main = mkNode {
             branch = "main";
-            port = 3000;
           };
         };
       };
