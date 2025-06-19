@@ -1,9 +1,16 @@
 (ns site.compression
-  (:require [site.brotli :as br]
-            [clojure.java.io :as io]
-            [clojure.string :as str])
-  (:import (java.io Closeable File InputStream PipedInputStream PipedOutputStream)
-           (java.util.zip GZIPOutputStream)))
+  (:require
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [site.brotli :as br])
+  (:import
+   (java.io
+    Closeable
+    File
+    InputStream
+    PipedInputStream
+    PipedOutputStream)
+   (java.util.zip GZIPOutputStream)))
 
 (defn- accepts-gzip?
   [req]

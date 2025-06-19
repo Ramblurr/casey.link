@@ -1,6 +1,5 @@
 (ns site.server
   (:require
-   [site.compression :as compression]
    [aero.core :as aero]
    [clojure.java.io :as io]
    [donut.system :as ds]
@@ -9,6 +8,7 @@
    [ring.middleware.cookies :as ring.cookies]
    [ring.middleware.params :as ring.params]
    [site.cache :as cache]
+   [site.compression :as compression]
    [site.content :as content]
    [site.db :as db]
    [site.dev :as dev]
@@ -16,9 +16,9 @@
    [site.pages.render :as render]
    [site.sitemap :as sitemap])
   (:import
-   [java.nio.channels SocketChannel ServerSocketChannel]
-   [java.net SocketAddress UnixDomainSocketAddress StandardProtocolFamily]
-   [java.io File])
+   [java.io File]
+   [java.net SocketAddress StandardProtocolFamily UnixDomainSocketAddress]
+   [java.nio.channels ServerSocketChannel SocketChannel])
   (:gen-class))
 
 (defn routes [config]
