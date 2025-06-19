@@ -2,10 +2,10 @@
   (:require
    [clojure.java.io :as io])
   (:import
+   [java.security MessageDigest SecureRandom]
    [java.util Base64 Base64$Encoder]
    [javax.crypto Mac]
-   [javax.crypto.spec SecretKeySpec]
-   [java.security SecureRandom MessageDigest]))
+   [javax.crypto.spec SecretKeySpec]))
 
 (def ^Base64$Encoder base64-encoder
   (.withoutPadding (Base64/getUrlEncoder)))
@@ -44,3 +44,14 @@
              sha384-stream
              ->base64))
     (throw (ex-info "Cannot load resource from classpath" {:path path}))))
+
+(defn digest
+  "Digest function based on Clojure's hash."
+  ;; Copyright © 2025 Anders Murphy
+  ;; https://github.com/andersmurphy/hyperlith/
+  ;; SPDX-License-Identifier: MIT
+  [data]
+  ;; Note: hashCode is not guaranteed consistent between JVM
+  ;; executions except in the case for strings. This is why we
+  ;; convert to a string first.
+  (Integer/toHexString (hash (str data))))
