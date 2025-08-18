@@ -42,6 +42,10 @@
       (merge config)
       (assoc :app/db (d/db conn))))
 
+(defn reload-content [config uri]
+  (content/ingest! config)
+  (db/get-page (d/db (:conn config)) uri))
+
 (defn reload-handler [config]
   (fn  [req]
     (hk-gen/->sse-response req
@@ -51,11 +55,7 @@
                                     page (db/get-page (:app/db req) uri)]
                                 (swap! !connections assoc sse-gen {:uri    uri
                                                                    :render (fn []
-                                                                             (let [page (if (:dev? config) (do
-                                                                                                             (tap> :PAGEDEVWOW)
-                                                                                                             (content/ingest! config)
-                                                                                                             (db/get-page (d/db (:conn config)) uri))
-                                                                                            page)]
+                                                                             (let [page (reload-content config uri)]
                                                                                (when-let [frag (render/render-fragment
                                                                                                 page
                                                                                                 (update-req config req))]
