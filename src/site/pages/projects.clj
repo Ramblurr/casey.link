@@ -42,7 +42,31 @@
                 [:span {:class "ml-2"}
                  (str/join ", " tags)]])))
 
-(def all-projects [{:name        "Probematic",
+(def all-projects [{:name        "ol.client-ip"
+                    :description "A 0-dependency ring middleware for determining a request's real client IP address from HTTP headers."
+                    :href        "https://github.com/outskirtslabs/client-ip"
+                    :label       "outskirtslabs/client-ip"
+                    :icon        icon/github
+                    :tags        ["clojure" "ring" "middleware"]}
+                   {:name        "datahike-sqlite"
+                    :description "A native SQLite storage backend for Datahike, the open datalog database"
+                    :href        "https://github.com/outskirtslabs/datahike-sqlite"
+                    :label       "outskirtslabs/datahike-sqlite"
+                    :icon        icon/github
+                    :tags        ["clojure" "datahike" "sqlite" "datalog"]}
+                   {:name        "datastar-expressions"
+                    :description "A proof-of-concept for writing 🚀 datastar expressions using Clojure without manual string concatenation."
+                    :href        "https://github.com/Ramblurr/datastar-expressions"
+                    :label       "outskirtslabs/datastar-expressions"
+                    :icon        icon/github
+                    :tags        ["clojure" "javascript"]}
+                   {:name        "datomic-pro-flake"
+                    :description "A Nix flake providing a Datomic Pro package and NixOS modules"
+                    :href        "https://github.com/outskirtslabs/datomic-pro-flake"
+                    :label       "outskirtslabs/datomic-pro-flake"
+                    :icon        icon/github
+                    :tags        ["nix" "datomic" "clojure"]}
+                   {:name        "Probematic",
                     :description "A tool to help an anarchist band manage itself. Built with Clojure and HTMX."
                     :href        "https://github.com/Ramblurr/probematic"
                     :label       "Ramblurr/probematic"
@@ -54,18 +78,6 @@
                     :label       "Ramblurr/wayland-java"
                     :icon        icon/github
                     :tags        ["java" "wayland"]}
-                   {:name        "datastar-expressions"
-                    :description "A proof-of-concept for writing 🚀 datastar expressions using Clojure without manual string concatenation."
-                    :href        "https://github.com/Ramblurr/datastar-expressions"
-                    :label       "Ramblurr/datastar-expressions"
-                    :icon        icon/github
-                    :tags        ["javascript"]}
-                   {:name        "datomic-pro-flake"
-                    :description "A Nix flake providing a Datomic Pro package and NixOS modules"
-                    :href        "https://github.com/Ramblurr/datomic-pro-flake"
-                    :label       "Ramblurr/datomic-pro-flake"
-                    :icon        icon/github
-                    :tags        ["nix" "datomic" "clojure"]}
                    {:name        "nixcfg"
                     :description "My nix flake ❄️ for all my servers, workstations, pis, etc."
                     :href        "https://github.com/Ramblurr/nixcfg"
@@ -78,18 +90,18 @@
                     :label       "https://casey.link/articles"
                     :icon        icon/link
                     :tags        ["english"]}
-                   {:name        "hifi-crud"
-                    :description "A small clojure framework for builing immediate-mode web applications with Datastar"
-                    :href        "Ramblurr/hifi-crud"
-                    :label       "github.com/Ramblurr/hifi-crud"
-                    :icon        icon/rocket
-                    :tags        ["clojure" "datastar"]}
-                   {:name        "datahike-sqlite"
-                    :description "Datahike sqlite data storage backend"
-                    :archived?   true
-                    :href        "https://github.com/Ramblurr/datahike-sqlite"
-                    :label       "Ramblurr/datahike-sqlite"
-                    :tags        ["clojure"]}
+                   #_{:name        "hifi-crud"
+                      :description "A small clojure framework for builing immediate-mode web applications with Datastar"
+                      :href        "Ramblurr/hifi-crud"
+                      :label       "github.com/Ramblurr/hifi-crud"
+                      :icon        icon/rocket
+                      :tags        ["clojure" "datastar"]}
+                   {:name        "vinyl"
+                    :description "A small headless audio player for clojure powered by vlc"
+                    :href        "https://github.com/ramblurr/vinyl"
+                    :label       "github.com/Ramblurr/vinyl"
+                    :icon        icon/github
+                    :tags        ["clojure" "vlc" "audio"]}
                    {:name        "fairybox"
                     :description "Screenless RFID Raspberry PI audio player for children"
                     :href        "https://github.com/Ramblurr/fairybox"
@@ -114,6 +126,7 @@
                     :href        "https://github.com/Ramblurr/PietCreator"
                     :label       "Ramblurr/PietCreator"
                     :tags        ["c++" "qt"]
+                    :archived?   true
                     :icon        icon/github}
                    {:name        "MP3Tunes Android"
                     :description "My first Android app (for a now defunct music platform) released just several months after the first Android phone. *sigh* What crazy days those were."
