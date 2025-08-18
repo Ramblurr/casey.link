@@ -6,7 +6,7 @@ COPY . .
 
 RUN cd site && clj -Sdeps '{:mvn/local-repo "./.m2/repository"}' -T:build uber
 
-FROM docker.io/library/eclipse-temurin:21 AS runtime
+FROM docker.io/library/eclipse-temurin:24 AS runtime
 COPY --from=builder /opt/site/target/site-0.0.1-standalone.jar /site.jar
 
 EXPOSE 3000
