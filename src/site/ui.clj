@@ -31,11 +31,8 @@
   (assoc page :page/body
          [html/doctype-html5
           [:html (array-map :lang                  "en"
-                            :class "h-full antialiased"
-                            :data-signals-darkmode "window.matchMedia(\"(prefers-color-scheme: dark)\").matches"
-                            :data-persist          "darkmode"
-                            :data-class-dark       "$darkmode")
-           [:head
+                            :class "h-full antialiased")
+           [:head {}
             [:meta {:http-equiv "content-type" :content "text/html;charset=UTF-8"}]
             [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
             [:meta {:name "author" :content "Casey Link"}]
@@ -66,13 +63,19 @@
             (when-let [title (or (:open-graph/title page) title)]
               [:meta {:property "og:title" :content title}])
             [:meta {:property "og:type" :content (or (:open-graph/type page) "website")}]
-            [:script {:defer true :type "module" :src "/js/datastar@1.0.0-RC.2.js"}]
+            [:script {:defer true :type "module" :src "/js/datastar.js"}]
+            (when (:dev? req)
+              [:script {:defer true :type "module" :src "/js/datastar-inspector.js"}])
             [:script {:defer true :src "/js/prism.js"}]
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             head]
-           [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}
+           [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"
+                   :data-signals-darkmode "localStorage.getItem('theme') == 'dark' ? true : (localStorage.getItem('theme') == 'light' ? false : window.matchMedia(\"(prefers-color-scheme: dark)\").matches)"}
+            [:div {:data-effect "document.documentElement.classList.toggle('dark', $darkmode)"}]
             (when (:dev? req)
-              [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}])
+              (list
+               [:datastar-inspector]
+               [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}]))
             (layout page)
             [:script {:defer true :src "/js/header.js"}]
             [:script {:defer true :type "module" :src "/js/flask.js"}]]]]))

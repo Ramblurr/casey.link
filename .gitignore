@@ -10,3 +10,5 @@ extra/
 src/public/site.css
 target/
 result/
+datastar-inspector.js
+datastar-pro.js

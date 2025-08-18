@@ -70,7 +70,7 @@
   [:button {:type          "button"
             :aria-label    "Toggle theme"
             :class         "cursor-pointer group rounded-full bg-white/90 px-3 py-2 ring-1 shadow-lg shadow-stone-800/5 ring-stone-900/5 backdrop-blur-sm transition dark:bg-stone-800/90 dark:ring-white/10 dark:any-hover:ring-white/20"
-            :data-on-click "$darkmode = !$darkmode"}
+            :data-on-click "$darkmode = !$darkmode; localStorage.setItem('theme', $darkmode ? 'dark' : 'light')"}
    (icon/sun {:class "h-6 w-6 fill-stone-100 stroke-stone-500 transition group-any-hover:fill-stone-200 group-any-hover:stroke-stone-700 dark:hidden [@media(prefers-color-scheme:dark)]:fill-teal-50 [@media(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-any-hover:fill-teal-50 [@media(prefers-color-scheme:dark)]:group-any-hover:stroke-teal-600"})
    (icon/moon-sparkle {:class "hidden h-6 w-6 fill-stone-700 stroke-stone-500 transition dark:block [@media_not_(prefers-color-scheme:dark)]:fill-teal-400/10 [@media_not_(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-any-hover:stroke-stone-400"})])
 
