@@ -66,16 +66,13 @@
             (when-let [title (or (:open-graph/title page) title)]
               [:meta {:property "og:title" :content title}])
             [:meta {:property "og:type" :content (or (:open-graph/type page) "website")}]
-            #_[:script {:type "importmap"}
-               (html/raw
-                (json/write-value-as-string {:imports {"datastar" "/js/datastar@1.0.0-RC.11.js"}}))]
-            [:script {:defer true :type "module" :src "/js/datastar@1.0.0-RC.11.js"}]
+            [:script {:defer true :type "module" :src "/js/datastar@1.0.0-RC.2.js"}]
             [:script {:defer true :src "/js/prism.js"}]
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             head]
            [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"}
-            #_(when (:dev? req)
-                [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}])
+            (when (:dev? req)
+              [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}])
             (layout page)
             [:script {:defer true :src "/js/header.js"}]
             [:script {:defer true :type "module" :src "/js/flask.js"}]]]]))

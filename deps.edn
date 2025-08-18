@@ -4,32 +4,26 @@
          party.donut/system             {:mvn/version "1.0.255"}
          io.github.nextjournal/markdown {:mvn/version "0.7.186"}
          aero/aero                      {:mvn/version "1.1.6"}
-         datastar/sdk                   {:git/url   "https://github.com/starfederation/datastar/"
-                                         :git/sha   "4a9b1e4f15a82fcb366297c9c7da25f62ee980c7"
-                                         :deps/root "sdk/clojure/sdk"}
-         datastar/adapter-http-kit      {:git/url    "https://github.com/starfederation/datastar/"
-                                         :git/sha    "4a9b1e4f15a82fcb366297c9c7da25f62ee980c7"
-                                         :deps/root  "sdk/clojure/adapter-http-kit"
-                                         :exclusions [http-kit/http-kit]}
-
-         http-kit/http-kit                              {:mvn/version "2.9.0-beta1"}
-         metosin/reitit-core                            {:mvn/version "0.9.1"}
-         metosin/reitit-ring                            {:mvn/version "0.9.1"
-                                                         :exclusions  [metosin/muuntaja]}
-         com.cnuernber/charred                          {:mvn/version "1.037"}
-         com.datomic/peer                               {:mvn/version "1.0.7364"
-                                                         :exclusions  [com.amazonaws/aws-java-sdk-core
-                                                                       com.amazonaws/aws-java-sdk-ec2
-                                                                       com.google.guava/guava
-                                                                       commons-io/commons-io
-                                                                       org.slf4j/log4j-over-slf4j
-                                                                       org.slf4j/jcl-over-slf4j
-                                                                       org.slf4j/jul-to-slf4j]}
-         org.slf4j/slf4j-nop                            {:mvn/version "2.0.9"}
-         dev.weavejester/medley                         {:mvn/version "1.8.1"}
-         dev.onionpancakes/chassis                      {:mvn/version "1.0.365"}
-         com.aayushatharva.brotli4j/brotli4j            {:mvn/version "1.18.0"}
-         com.aayushatharva.brotli4j/native-linux-x86_64 {:mvn/version "1.18.0"}}
+         http-kit/http-kit              {:mvn/version "2.9.0-beta1"}
+         metosin/reitit-core            {:mvn/version "0.9.1"}
+         metosin/reitit-ring            {:mvn/version "0.9.1"
+                                         :exclusions  [metosin/muuntaja]}
+         com.cnuernber/charred          {:mvn/version "1.037"}
+         dev.data-star.clojure/sdk      {:mvn/version "1.0.0-RC1"}
+         dev.data-star.clojure/http-kit {:mvn/version "1.0.0-RC1"
+                                         :exclusions  [http-kit/http-kit]}
+         dev.data-star.clojure/brotli   {:mvn/version "1.0.0-RC1"}
+         com.datomic/peer               {:mvn/version "1.0.7364"
+                                         :exclusions  [com.amazonaws/aws-java-sdk-core
+                                                       com.amazonaws/aws-java-sdk-ec2
+                                                       com.google.guava/guava
+                                                       commons-io/commons-io
+                                                       org.slf4j/log4j-over-slf4j
+                                                       org.slf4j/jcl-over-slf4j
+                                                       org.slf4j/jul-to-slf4j]}
+         org.slf4j/slf4j-nop            {:mvn/version "2.0.9"}
+         dev.weavejester/medley         {:mvn/version "1.8.1"}
+         dev.onionpancakes/chassis      {:mvn/version "1.0.365"}}
  :aliases
  {:dev   {:extra-deps  {djblue/portal               {:mvn/version "0.59.1"}
                         io.github.tonsky/clj-reload {:mvn/version "0.9.7"}

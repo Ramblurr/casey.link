@@ -24,9 +24,8 @@
 
          css       (shell "tailwindcss --minify -i ./src/site/input.css -o ./src/public/site.css")
          watch-css (shell "tailwindcss -i ./src/site/input.css -o ./src/public/site.css --watch")
-         repl      {:override-builtin true
-                    :doc              "Run the dev REPL"
-                    :task             (shell "clojure -M:repl/cider:dev")}
+         dev      {:doc              "Run the dev REPL"
+                   :task             (clojure "-M:repl/dev:dev")}
          fmt       (shell "cljfmt check")
          fmt:fix   (shell "cljfmt fix .")
          lint      (shell+ (str "clj-kondo" " --fail-level error"

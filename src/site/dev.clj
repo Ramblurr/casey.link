@@ -12,7 +12,7 @@
 
 (defn broadcast-fragment! [fragment]
   (doseq [c @!connections]
-    (d*/merge-fragment! c fragment)))
+    (d*/patch-elements! c fragment)))
 
 (defn re-render! []
   (doseq [[sse-gen {:keys [render]}] @!connections]
