@@ -147,10 +147,10 @@ It won't revolutionize your application, but it will prevent that awkward moment
 
 You can obtain `ol.client-ip` from [Clojars][clojars-artifact] or via a gitlib dep from the repo at [github.com/outskirtslabs/client-ip][proj].
 
-[proj]: https://github.com/ramblurr/client-ip
+[proj]: https://github.com/outskirtslabs/client-ip
 [golang]: https://github.com/realclientip/realclientip-go
 [clojars-artifact]: https://clojars.org/com.outskirtslabs/client-ip
-[usage]: https://github.com/ramblurr/client-ip/blob/main/doc/usage.md
+[usage]: https://github.com/outskirtslabs/client-ip/blob/main/doc/usage.md
 [http-kit-issue]: https://github.com/http-kit/http-kit/issues/226#issuecomment-2903435082
 [http-kit-pr]: https://github.com/http-kit/http-kit/pull/599
 [http-kit]: https://github.com/http-kit/http-kit/
