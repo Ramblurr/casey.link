@@ -48,6 +48,8 @@
             [:meta {:name "twitter:title" :content "Casey Link"}]
             [:meta {:name "twitter:image" :content (or (:twitter/image page) "https://casey.link/square-flask.png")}]
             [:meta {:property "og:image" :content (or (:open-graph/image page) "https://casey.link/square-flask.png")}]
+            ;; prevent flicker from light to dark
+            [:script "document.documentElement.classList.toggle('dark', localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches), );"]
             [:script {:type "application/ld+json"}
              (charred/write-json-str (or (:ld-json/value page)
                                          default-ld-json))]
