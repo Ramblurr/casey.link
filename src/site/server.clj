@@ -22,20 +22,19 @@
   (:gen-class))
 
 (defn routes [config]
-  [""
-   (content/asset-routes (assoc config
-                                :get-page-kind pages/get-page-kind
-                                :render-page render/render-page))
-   ["" {:middleware [[cache/wrap-cache config]
-                     [db/wrap-datomic config]]}
-    (when (:dev? config)
-      (dev/routes config))
+  (let [config (assoc config
+                      :get-page-kind pages/get-page-kind
+                      :render-page render/render-page)]
+    [""
+     (content/asset-routes config)
+     ["" {:middleware [[cache/wrap-cache config]
+                       [db/wrap-datomic config]]}
+      (when (:dev? config)
+        (dev/routes config))
 
-    ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
-                     :sitemap/exclude? true}]
-    (content/page-routes (assoc config
-                                :get-page-kind pages/get-page-kind
-                                :render-page render/render-page))]])
+      ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
+                       :sitemap/exclude? true}]
+      (content/page-routes config)]]))
 
 (defn not-found-handler [_req]
   {:status 404

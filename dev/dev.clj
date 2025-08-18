@@ -35,7 +35,6 @@
                   :unload-hook 'stop
                   :reload-hook 'start})
 (comment
-
   (set! *warn-on-reflection* true)
   ;; Start your system
   (start)

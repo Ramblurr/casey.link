@@ -1,11 +1,12 @@
 (ns site.dev
   (:require
-   [site.db :as db]
-   [datomic.api :as d]
-   [site.pages.render :as render]
    [clojure.java.io :as io]
-   [starfederation.datastar.clojure.api :as d*]
-   [starfederation.datastar.clojure.adapter.http-kit :as hk-gen]))
+   [datomic.api :as d]
+   [site.content :as content]
+   [site.db :as db]
+   [site.pages.render :as render]
+   [starfederation.datastar.clojure.adapter.http-kit :as hk-gen]
+   [starfederation.datastar.clojure.api :as d*]))
 
 (def !connections (atom {}))
 
@@ -22,7 +23,7 @@
     (d*/execute-script! sse-gen "window.location.reload();")))
 
 (defn on-change [args]
-  (tap> :reload)
+  #_(tap> :reload)
   (re-render!)
   #_(reload!))
 
@@ -50,10 +51,15 @@
                                     page (db/get-page (:app/db req) uri)]
                                 (swap! !connections assoc sse-gen {:uri    uri
                                                                    :render (fn []
-                                                                             (when-let [frag (render/render-fragment
-                                                                                              page
-                                                                                              (update-req config req))]
-                                                                               (d*/merge-fragment! sse-gen frag)))})))
+                                                                             (let [page (if (:dev? config) (do
+                                                                                                             (tap> :PAGEDEVWOW)
+                                                                                                             (content/ingest! config)
+                                                                                                             (db/get-page (d/db (:conn config)) uri))
+                                                                                            page)]
+                                                                               (when-let [frag (render/render-fragment
+                                                                                                page
+                                                                                                (update-req config req))]
+                                                                                 (d*/patch-elements! sse-gen frag))))})))
 
                             hk-gen/on-close
                             (fn [sse-gen _status]
