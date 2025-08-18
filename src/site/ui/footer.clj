@@ -25,7 +25,7 @@
         (nav-link {:href (urls/url-for :url/blog-index)} "Articles")
         (nav-link {:href (urls/url-for :url/project-index)} "Projects")]
        [:p {:class "text-sm text-stone-700 dark:text-stone-400"}
-        "Thank you for visiting this personal website."
+        "Thank you for visiting this personal, hand-made website."
         [:br]
         [:span {:class "text-xs"}
          (str "© 2009–" (.getValue (java.time.Year/now)) " Casey Link")]]])])])
