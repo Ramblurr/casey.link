@@ -38,7 +38,7 @@
     [:nav {:class "mt-6"}
      [:ul {:class "-my-2 divide-y divide-stone-100 text-base text-stone-800 dark:divide-stone-100/5 dark:text-stone-300"}
       (mobile-nav-item {:href (urls/url-for :url/about)} "About")
-      (mobile-nav-item {:href (urls/url-for :url/blog-index)} "blog")
+      (mobile-nav-item {:href (urls/url-for :url/blog-index)} "Blog")
       (mobile-nav-item {:href (urls/url-for :url/project-index)} "Projects")]]]])
 
 (defn nav-item
