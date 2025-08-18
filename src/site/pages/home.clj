@@ -116,7 +116,7 @@ text-stone-400 group-any-hover:text-ol-orange-600 dark:text-stone-400 dark:group
                        :icon    icon/kdab
                        :start   "2010"
                        :end     "2012"}
-                      {:company "wutKDE"
+                      {:company "KDE"
                        :title   "Sponsored FOSS Developer"
                        :icon    icon/kde
                        :start   "2006"
