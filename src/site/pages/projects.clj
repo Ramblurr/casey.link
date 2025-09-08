@@ -48,6 +48,12 @@
                     :label       "outskirtslabs/client-ip"
                     :icon        icon/github
                     :tags        ["clojure" "ring" "middleware"]}
+                   {:name        "ol.sfv"
+                    :description "A clojure library for parsing and generating Structured Field Values for HTTP (RFC 9651/8941)"
+                    :href        "https://github.com/outskirtslabs/sfv"
+                    :label       "outskirtslabs/sfv"
+                    :icon        icon/github
+                    :tags        ["clojure" "http" "rfc"]}
                    {:name        "datahike-sqlite"
                     :description "A native SQLite storage backend for Datahike, the open datalog database"
                     :href        "https://github.com/outskirtslabs/datahike-sqlite"
