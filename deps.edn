@@ -22,7 +22,7 @@
                                                        org.slf4j/jcl-over-slf4j
                                                        org.slf4j/jul-to-slf4j]}
          org.slf4j/slf4j-nop            {:mvn/version "2.0.17"}
-         dev.weavejester/medley         {:mvn/version "1.8.1"}
+         dev.weavejester/medley         {:mvn/version "1.9.0"}
          dev.onionpancakes/chassis      {:mvn/version "1.0.365"}}
  :aliases
  {:dev   {:extra-deps  {djblue/portal               {:mvn/version "0.60.2"}
