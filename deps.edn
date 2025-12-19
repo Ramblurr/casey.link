@@ -1,5 +1,5 @@
 {:paths ["src" "test"]
- :deps  {org.clojure/clojure            {:mvn/version "1.12.3"}
+ :deps  {org.clojure/clojure            {:mvn/version "1.12.4"}
          org.clojure/data.xml           {:mvn/version "0.0.8"}
          party.donut/system             {:mvn/version "1.0.257"}
          io.github.nextjournal/markdown {:mvn/version "0.7.222"}
