@@ -66,6 +66,30 @@
                     :label       "outskirtslabs/datastar-expressions"
                     :icon        icon/github
                     :tags        ["clojure" "javascript"]}
+                   {:name        "nixos-hetzner"
+                    :description "Hetzner Cloud Images with NixOS and DetSys nix"
+                    :href        "https://github.com/outskirtslabs/nixos-hetzner"
+                    :label       "outskirtslabs/nixos-hetzner"
+                    :icon        icon/github
+                    :tags        ["nix" "hetzner" "cloud"]}
+                   {:name        "nixos-hetzner-demo"
+                    :description "Continuous, rapid, NixOS deployments to Hetzner Cloud"
+                    :href        "https://github.com/outskirtslabs/nixos-hetzner-demo"
+                    :label       "outskirtslabs/nixos-hetzner-demo"
+                    :icon        icon/github
+                    :tags        ["nix" "hetzner" "cloud"]}
+                   {:name        "h2o-zig"
+                    :description "libh2o packaged with zig"
+                    :href        "https://github.com/outskirtslabs/h2o-zig"
+                    :label       "outskirtslabs/h2o-zig"
+                    :icon        icon/github
+                    :tags        ["h2o" "zig" "http"]}
+                   {:name        "ol.sops"
+                    :description "An extremely tiny and simple wrapper around the awesome sops (previously known as mozilla/sops)"
+                    :href        "https://github.com/outskirtslabs/ol.sops"
+                    :label       "outskirtslabs/ol.sops"
+                    :icon        icon/github
+                    :tags        ["clojure" "sops" "secrets"]}
                    {:name        "datomic-pro-flake"
                     :description "A Nix flake providing a Datomic Pro package and NixOS modules"
                     :href        "https://github.com/outskirtslabs/datomic-pro-flake"
