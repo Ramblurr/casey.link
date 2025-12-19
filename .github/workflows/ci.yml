@@ -4,9 +4,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref || github.run_id }}
   cancel-in-progress: true
 on:
-  push:
-  pull_request:
   workflow_dispatch:
+  pull_request:
+    from-branches-ignore:
+      - renovate/**
+  merge_group:
+  push:
+    branches: [main]
 
 jobs:
   check:
@@ -15,7 +19,7 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@main
         with:
           determinate: true
@@ -38,7 +42,7 @@ jobs:
       packages: write
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@main
         with:
           determinate: true

@@ -15,7 +15,7 @@
     }@inputs:
     let
       system = "x86_64-linux";
-      javaVersion = 24;
+      javaVersion = 25;
       jdk = "jdk${toString javaVersion}_headless";
       pkgs = import nixpkgs {
         inherit system;
