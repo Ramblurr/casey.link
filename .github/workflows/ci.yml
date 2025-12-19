@@ -40,7 +40,9 @@ jobs:
       id-token: write
       contents: read
       packages: write
-    if: github.ref == 'refs/heads/main'
+    if: |
+      (github.ref == 'refs/heads/main' &&
+      !contains(github.event.head_commit.message , 'no-deploy'))
     steps:
       - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@main
