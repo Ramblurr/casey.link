@@ -26,7 +26,7 @@
          dev.onionpancakes/chassis      {:mvn/version "1.0.365"}}
  :aliases
  {:dev   {:extra-deps  {djblue/portal               {:mvn/version "0.62.0"}
-                        io.github.tonsky/clj-reload {:mvn/version "0.9.8"}
+                        io.github.tonsky/clj-reload {:mvn/version "1.0.0"}
                         juxt/dirwatch               {:mvn/version "0.2.5"}}
           :extra-paths ["dev"]
           :jvm-opts    ["-Duser.timezone=UTC"
