@@ -5,7 +5,8 @@
    [dev.onionpancakes.chassis.core :as h]
    [site.db :as db]
    [site.html :as html]
-   [site.markdown :as md])
+   [site.markdown :as md]
+   [site.pages.blog-post :as blog-post])
   (:import
    (java.time LocalDate ZoneOffset)
    (java.time.format DateTimeFormatter)))
@@ -53,6 +54,14 @@
   [body]
   (html/->str (md/->hiccup body)))
 
+(defn- reply-section-html [post-url]
+  (str "<p style=\"margin-top: 2em; font-size: 0.875em; color: #71717a;\">"
+       "Reply via: "
+       "<a href=\"" (blog-post/mailto-url post-url) "\">Email</a>"
+       " · "
+       "<a href=\"" (blog-post/bluesky-intent-url post-url) "\">Bluesky</a>"
+       "</p>"))
+
 (defn author-element
   "Generate Atom author element."
   [name]
@@ -83,7 +92,7 @@
      (author-element author)
      (when description
        [:summary description])
-     [:content {:type "html"} (h/raw (str "<![CDATA[" content "]]>"))]]))
+     [:content {:type "html"} (h/raw (str "<![CDATA[" content (reply-section-html url) "]]>"))]]))
 
 (defn feed-updated
   "Get the most recent update date from posts."

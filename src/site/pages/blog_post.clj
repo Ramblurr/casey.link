@@ -45,10 +45,14 @@
 (defn- url-encode ^String [^String s]
   (URLEncoder/encode s "UTF-8"))
 
-(defn- mailto-url [post-url]
+(defn mailto-url
+  "Generate mailto URL for replying to a post."
+  [post-url]
   (str "mailto:casey@outskirtslabs.com?subject=" (url-encode (str "Re: " post-url))))
 
-(defn- bluesky-intent-url [post-url]
+(defn bluesky-intent-url
+  "Generate Bluesky intent URL for replying to a post."
+  [post-url]
   (str "https://bsky.app/intent/compose?text=" (url-encode (str "@casey.link " post-url))))
 
 (def ^:private reply-link-class
