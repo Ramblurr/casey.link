@@ -198,7 +198,10 @@ text-stone-400 group-any-hover:text-ol-orange-600 dark:text-stone-400 dark:group
                                               :children "Follow on X"})
                               (social-link {:href       "https://bsky.app/profile/casey.link"
                                             :icon       icon/bluesky-outline
-                                            :aria-label "Follow on Bluesky"})]])
+                                            :aria-label "Follow on Bluesky"})
+                              (social-link {:href       "/atom/articles"
+                                            :icon       icon/rss
+                                            :aria-label "RSS Feed"})]])
        (photos)
        (container/container {:class "mt-24 md:mt-28"}
                             [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}
@@ -218,6 +221,10 @@ text-stone-400 group-any-hover:text-ol-orange-600 dark:text-stone-400 dark:group
                    [:meta {:property "og:url" :content (:base-url req)}]
                    [:meta {:property "profile:username" :content "ramblurr"}]
                    [:meta {:property "profile:first_name" :content "Casey"}]
-                   [:meta {:property "profile:link_name" :content "Link"}]))))
+                   [:meta {:property "profile:link_name" :content "Link"}]
+                   [:link {:rel   "alternate"
+                           :type  "application/atom+xml"
+                           :title "Casey Link's Weblog"
+                           :href  "/atom/articles"}]))))
 
 (dev/re-render!)

@@ -12,6 +12,7 @@
    [site.content :as content]
    [site.db :as db]
    [site.dev :as dev]
+   [site.feed :as feed]
    [site.pages :as pages]
    [site.pages.render :as render]
    [site.sitemap :as sitemap])
@@ -34,6 +35,10 @@
 
       ["/sitemap.xml" {:get              (sitemap/create-sitemap-handler config)
                        :sitemap/exclude? true}]
+      (let [feed-handler (feed/create-feed-handler config)]
+        ["/atom/articles" {:get              feed-handler
+                           :head             feed-handler
+                           :sitemap/exclude? true}])
       (content/page-routes config)]]))
 
 (defn not-found-handler [_req]

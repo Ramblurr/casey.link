@@ -69,7 +69,7 @@
       url)))
 
 (defn polish-img [page [tag attrs children]]
-  (when (and (not (str/blank? (:src attrs))))
+  (when (not (str/blank? (:src attrs)))
     (when-some [file (find-file page (:src attrs))]
       (let [[w h]  (image-dimensions file)
             style' (str "aspect-ratio: " w "/" h "; " (:style attrs))

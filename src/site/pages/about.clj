@@ -77,6 +77,10 @@
                                             :icon       icon/matrix
                                             :class-name "mt-4"
                                             :children   "Chat on Matrix"})
+                              (social-link {:href       "/atom/articles"
+                                            :icon       icon/rss
+                                            :class-name "mt-4"
+                                            :children   "Subscribe via RSS"})
                               (social-link {:href       "mailto:casey@outskirtslabs.com"
                                             :icon       icon/envelope
                                             :class-name "mt-8 border-t border-stone-100 pt-8 dark:border-stone-700/40"

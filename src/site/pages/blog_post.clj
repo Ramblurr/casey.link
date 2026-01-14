@@ -76,6 +76,10 @@
                        "inLanguage"    "en-US"
                        "keywords"      (str/join ", " tags)}
        :page/head (list
+                   [:link {:rel   "alternate"
+                           :type  "application/atom+xml"
+                           :title "Casey Link's Weblog"
+                           :href  "/atom/articles"}]
                    [:meta {:property "article:author" :content (:base-url req)}]
                    [:meta {:property "article:published_time" :content date}]
                    (when modified

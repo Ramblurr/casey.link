@@ -102,6 +102,10 @@
             pkgs.tailwindcss_4
             pkgs.brotli
             pkgs.deploy-rs
+            pkgs.libxml2
+            pkgs.playwright
+            pkgs.playwright-test
+            pkgs.playwright-mcp
           ];
         in
         {
@@ -109,6 +113,7 @@
             packages = base;
           };
           default = pkgs.mkShell {
+            env.PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
             packages = base ++ [
               pkgs.clojure-lsp
               pkgs.vips

@@ -44,4 +44,4 @@
          clean     (clojure "-T:build clean")
          deps-lock (shell "nix run github:jlesquembre/clj-nix#deps-lock -- --alias-exclude test --alias-exclude dev")
          ci        {:doc     "Run all CI time verification tasks"
-                    :depends [fmt sync-clj-kondo lint test]}}}
+                    :depends [fmt lint test]}}}
