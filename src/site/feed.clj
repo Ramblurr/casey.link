@@ -32,8 +32,8 @@
   "Extract domain from base URL."
   [base-url]
   (-> base-url
-      (clojure.string/replace #"^https?://" "")
-      (clojure.string/replace #"/.*$" "")))
+      (str/replace #"^https?://" "")
+      (str/replace #"/.*$" "")))
 
 (defn feed-id
   "Generate tag URI for the feed."
@@ -101,7 +101,7 @@
    (link-element (str base-url "/atom/articles") "self" "application/atom+xml")
    (link-element base-url "alternate" "text/html")
    [:id (feed-id base-url)]
-   [:updated (or (feed-updated posts) (date-str->rfc3339 "2022-01-01"))]
+   [:updated (or (feed-updated posts) (date-str->rfc3339 "2020-01-01"))]
    (author-element feed-author)
    (map #(entry-element base-url %) posts)])
 
@@ -113,7 +113,8 @@
    (h/html (feed-element base-url posts))))
 
 (defn create-feed-handler
-  "Create Ring handler for Atom feed."
+  "Create Ring handler for Atom feed.
+   Caching (ETag, Cache-Control) handled by wrap-cache middleware."
   [{:keys [base-url]}]
   (fn feed-handler [req]
     (let [db    (:app/db req)
@@ -121,6 +122,6 @@
                      (take feed-limit))
           body  (generate-feed base-url posts)]
       {:status  200
-       :headers {"content-type"  "application/xml; charset=utf-8"
-                 "cache-control" "public, max-age=3600, s-maxage=600"}
+       :headers {"content-type"                "application/xml; charset=utf-8"
+                 "access-control-allow-origin" "*"}
        :body    body})))
