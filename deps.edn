@@ -12,7 +12,7 @@
          dev.data-star.clojure/sdk      {:mvn/version "1.0.0-RC1"}
          dev.data-star.clojure/http-kit {:mvn/version "1.0.0-RC1"
                                          :exclusions  [http-kit/http-kit]}
-         dev.data-star.clojure/brotli   {:mvn/version "1.0.0-RC1"}
+         dev.data-star.clojure/brotli   {:mvn/version "1.0.0-RC7"}
          com.datomic/peer               {:mvn/version "1.0.7469"
                                          :exclusions  [com.amazonaws/aws-java-sdk-core
                                                        com.amazonaws/aws-java-sdk-ec2
