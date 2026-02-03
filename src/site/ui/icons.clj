@@ -178,7 +178,9 @@
 
 (deficon chevron-right (ico :caret-right-bold "phosphor-bold"))
 
-(deficon matrix  (ico :matrix-logo))
+(deficon matrix (ico :matrix-logo))
+
+(deficon slack (ico :slack-logo))
 
 (deficon github (ico :github-logo))
 (deficon github-fill (ico :github-logo-fill "phosphor-fill"))

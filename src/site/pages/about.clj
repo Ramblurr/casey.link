@@ -77,6 +77,10 @@
                                             :icon       icon/matrix
                                             :class-name "mt-4"
                                             :children   "Chat on Matrix"})
+                              (social-link {:href       "https://clojurians.slack.com/team/U70QFSCG2"
+                                            :icon       icon/slack
+                                            :class-name "mt-4"
+                                            :children   "Chat on Clojurians Slack"})
                               (social-link {:href       "/atom/articles"
                                             :icon       icon/rss
                                             :class-name "mt-4"
