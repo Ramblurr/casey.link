@@ -55,7 +55,7 @@
                                           (card/description "Check out my articles where I write about software, consultancy, and occasionally the intersection of tech and real life.")
                                           (card/cta "To the articles"))]]]
                             [:div {:class "lg:pl-20"}
-                             [:ul {:role "list"}
+                             [:ul {:role "list" :id "contact"}
                               [:li {:class ""}
                                [:span {:class "group flex text-sm font-medium text-stone-800 dark:text-stone-200"}
                                 (icon/at {:class "h-6 w-6 flex-none fill-stone-500 transition group-any-hover:fill-ol-turquoise-500"}) "Ramblurr"
