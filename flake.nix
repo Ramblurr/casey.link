@@ -82,6 +82,7 @@
               inherit hostname;
               sshUser = "casey.link";
               user = "casey.link";
+              remoteBuild = true;
               sshOpts = [
                 "-o"
                 "StrictHostKeyChecking=no"

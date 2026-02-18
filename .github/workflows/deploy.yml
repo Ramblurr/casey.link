@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
+name: Deploy [post-garnix]
+on:
+  check_suite:
+    types: [completed]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: james
+    concurrency: james
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+    if: |
+      (
+        github.ref == 'refs/heads/main'
+        && !contains(
+          github.event.head_commit.message
+          || github.event.check_suite.head_commit.message
+          || '',
+          'no-deploy'
+        )
+        && (
+          github.event_name == 'workflow_dispatch'
+          || github.event.check_suite.conclusion == 'success'
+        )
+      )
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/determinate-nix-action@v3
+        with:
+          extra-conf: |
+            extra-substituters = https://cache.garnix.io
+            extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+      - uses: DeterminateSystems/flakehub-cache-action@main
+      - uses: tailscale/github-action@v4
+        with:
+          use-cache: "true"
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:site-caseylink
+      - name: Build
+        run: |
+          printf '%s' '${{ secrets.LOCAL_KEY }}' > "$PWD/sign-key.sec"
+          export LOCAL_KEY="$PWD/sign-key.sec"
+          nix develop .#ci --command -- deploy --skip-checks --dry-activate --debug-logs .#main
+      - name: Deploy
+        run: |
+          printf '%s' '${{ secrets.LOCAL_KEY }}' > "$PWD/sign-key.sec"
+          export LOCAL_KEY="$PWD/sign-key.sec"
+          nix develop .#ci --command -- deploy --skip-checks --debug-logs .#main
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f "$PWD/sign-key.sec"
