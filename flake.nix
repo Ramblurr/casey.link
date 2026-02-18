@@ -2,103 +2,108 @@
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1"; # tracks nixpkgs unstable branch
     clj-nix.url = "github:jlesquembre/clj-nix";
+    clj-nix.inputs.nixpkgs.follows = "nixpkgs";
     deploy-rs.url = "github:serokell/deploy-rs";
+    devshell.url = "github:numtide/devshell";
+    devshell.inputs.nixpkgs.follows = "nixpkgs";
+    devenv.url = "https://flakehub.com/f/ramblurr/nix-devenv/*";
+    devenv.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
-    {
+    inputs@{
       self,
       nixpkgs,
       clj-nix,
       deploy-rs,
-      sops-nix,
+      devshell,
+      devenv,
       ...
-    }@inputs:
+    }:
     let
-      system = "x86_64-linux";
       javaVersion = 25;
+      system = "x86_64-linux";
       jdk = "jdk${toString javaVersion}_headless";
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [
-          (final: prev: {
-            jdk = prev.${jdk};
-            clojure = prev.clojure.override { jdk = prev.${jdk}; };
-          })
-        ];
-      };
-      nixosModules = {
-        default = import ./nixos/module.nix inputs;
-      };
-      services = import ./nixos/services.nix {
-        inherit (inputs) nixpkgs;
-        inherit pkgs inputs;
-        modules = [ nixosModules.default ];
-      };
-      site = clj-nix.lib.mkCljApp {
-        inherit pkgs;
-        modules = [
-          {
-            projectSrc = ./.;
-            name = "link.casey/site";
-            main-ns = "site.server";
-            java-opts = [
-              "-Duser.timezone=UTC"
-              "-XX:+UseZGC"
-              "--enable-native-access=ALL-UNNAMED"
-            ];
-            jdk = pkgs."jdk${toString javaVersion}_headless";
-            #customJdk.enable = true;
-            buildCommand = ''
-              export PATH=${pkgs.tailwindcss_4}/bin:$PATH
-              clj -T:build uber
-            '';
-          }
-        ];
-      };
-
-      mkNode =
-        {
-          hostname ? "james",
-          script ? "activate",
-          branch,
-        }:
-        {
-          inherit hostname;
-          sshUser = "casey.link";
-          user = "casey.link";
-          sshOpts = [
-            "-o"
-            "StrictHostKeyChecking=no"
-          ];
-          profiles = {
-            "site-${branch}".path = deploy-rs.lib.x86_64-linux.activate.custom (services {
-              inherit branch;
-            }) "$PROFILE/bin/${script}";
-          };
-        };
+      nixosModule = import ./nixos/module.nix inputs;
     in
-    {
-      inherit nixosModules;
-      packages.x86_64-linux = {
-        default = site;
-      };
-      checks.x86_64-linux = deploy-rs.lib.${system}.deployChecks self.outputs.deploy;
+    devenv.lib.mkFlake ./. {
+      inherit inputs;
+      systems = [ system ];
+      withOverlays = [
+        devshell.overlays.default
+        devenv.overlays.default
+        (final: prev: {
+          jdk = prev.${jdk};
+          clojure = prev.clojure.override { jdk = prev.${jdk}; };
+        })
+      ];
 
-      deploy = {
-        nodes = {
-          main = mkNode {
+      packages.default =
+        pkgs:
+        clj-nix.lib.mkCljApp {
+          inherit pkgs;
+          modules = [
+            {
+              projectSrc = ./.;
+              name = "link.casey/site";
+              main-ns = "site.server";
+              java-opts = [
+                "-Duser.timezone=UTC"
+                "-XX:+UseZGC"
+                "--enable-native-access=ALL-UNNAMED"
+              ];
+              jdk = pkgs.${jdk};
+              buildCommand = ''
+                export PATH=${pkgs.tailwindcss_4}/bin:$PATH
+                clj -T:build uber
+              '';
+            }
+          ];
+        };
+
+      nixosModules.default = nixosModule;
+
+      outputs =
+        { pkgsFor, ... }:
+        let
+          pkgs = pkgsFor.${system};
+          services = import ./nixos/services.nix {
+            inherit (inputs) nixpkgs;
+            inherit pkgs inputs;
+            modules = [ nixosModule ];
+          };
+
+          mkNode =
+            {
+              hostname ? "james",
+              script ? "activate",
+              branch,
+            }:
+            {
+              inherit hostname;
+              sshUser = "casey.link";
+              user = "casey.link";
+              sshOpts = [
+                "-o"
+                "StrictHostKeyChecking=no"
+              ];
+              profiles = {
+                "site-${branch}".path = deploy-rs.lib.${system}.activate.custom (services {
+                  inherit branch;
+                }) "$PROFILE/bin/${script}";
+              };
+            };
+        in
+        {
+          deploy.nodes.main = mkNode {
             branch = "main";
           };
         };
-      };
 
-      devShells.x86_64-linux =
+      checks = pkgs: deploy-rs.lib.${pkgs.stdenv.hostPlatform.system}.deployChecks self.deploy;
+
+      devShells =
         let
-          base = [
-            pkgs.babashka
-            pkgs.cljfmt
-            pkgs.clj-kondo
-            pkgs.clojure
+          base = pkgs: [
             pkgs.tailwindcss_4
             pkgs.brotli
             pkgs.deploy-rs
@@ -109,18 +114,34 @@
           ];
         in
         {
-          ci = pkgs.mkShell {
-            packages = base;
-          };
-          default = pkgs.mkShell {
-            env.PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
-            packages = base ++ [
-              pkgs.clojure-lsp
-              pkgs.vips
-              pkgs.zsh
-            ];
-          };
-        };
+          ci =
+            pkgs:
+            pkgs.devshell.mkShell {
+              imports = [
+                devenv.capsules.base
+                devenv.capsules.clojure
+              ];
+              packages = base pkgs;
+            };
 
+          default =
+            pkgs:
+            pkgs.devshell.mkShell {
+              imports = [
+                devenv.capsules.base
+                devenv.capsules.clojure
+              ];
+              env = [
+                {
+                  name = "PLAYWRIGHT_BROWSERS_PATH";
+                  value = "${pkgs.playwright.browsers}";
+                }
+              ];
+              packages = (base pkgs) ++ [
+                pkgs.vips
+                pkgs.zsh
+              ];
+            };
+        };
     };
 }
