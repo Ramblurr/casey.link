@@ -106,7 +106,7 @@
           base = pkgs: [
             pkgs.tailwindcss_4
             pkgs.brotli
-            pkgs.deploy-rs
+            deploy-rs.packages.${system}.deploy-rs
             pkgs.libxml2
             pkgs.playwright
             pkgs.playwright-test
