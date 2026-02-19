@@ -79,5 +79,6 @@
                [:datastar-inspector]
                [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}]))
             (layout page)
+            [:script {:data-goatcounter "https://count.casey.link/count" :async true :src "//count.casey.link/count.js"}]
             [:script {:defer true :src "/js/header.js"}]
             [:script {:defer true :type "module" :src "/js/flask.js"}]]]]))

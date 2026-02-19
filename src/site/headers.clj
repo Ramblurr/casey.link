@@ -15,10 +15,13 @@
    :form-action     [self]
    :default-src     [none]
    :media-src       [self "https: data:"]
-   :script-src      [self unsafe-eval "'sha256-BP34lJXTeOsH+EiTxSXNkA6VgmcWT5BrcJYrz/5gqtU='" "'sha256-azbXrmMNM3r7AQYITy4uGJ1+wQ3JVANjvyLuLT6N1Sg='"]
-   :img-src         [self "https: data:"]
+   :script-src      [self unsafe-eval
+                     "'sha256-BP34lJXTeOsH+EiTxSXNkA6VgmcWT5BrcJYrz/5gqtU='"
+                     "'sha256-azbXrmMNM3r7AQYITy4uGJ1+wQ3JVANjvyLuLT6N1Sg='"
+                     "https://count.casey.link"]
+   :img-src         [self "https: data:" "https://count.casey.link"]
    :font-src        [self]
-   :connect-src     [self]
+   :connect-src     [self "https://count.casey.link/count"]
    :style-src       [self unsafe-inline]
    :style-src-elem  [self unsafe-inline]
    :frame-ancestors [none]})
