@@ -177,9 +177,9 @@
      (render/with-body page
        (ui/main
         (simple-layout/simple-layout
-         {:title    "Personal Projects"
+         {:title    "Projects"
           :intro    (list [:p description]
-                          [:p {:class "mt-4"} "Below you will find a selection that reflects the range of my technical interests and skillset."])
+                          [:p {:class "prose mt-4"} "Many of these are open-source projects for the wider community, you can find more information about that at " [:a {:href "https://docs.outskirtslabs.com"} "docs.outskirtslabs.com"] "."])
           :children [:div
                      [:ul {:class "grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3" :role "list"}
                       (for [project active]

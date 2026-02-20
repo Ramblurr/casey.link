@@ -23,7 +23,8 @@
                   (icon/house {:class "inline text-inherit size-4 align-text-bottom" :aria-label "Home"}))
         (nav-link {:href (urls/url-for :url/about)} "About")
         (nav-link {:href (urls/url-for :url/blog-index)} "Articles")
-        (nav-link {:href (urls/url-for :url/project-index)} "Projects")]
+        (nav-link {:href (urls/url-for :url/project-index)} "Projects")
+        (nav-link {:href "https://docs.outskirtslabs.com"} "OL Docs")]
        [:p {:class "text-sm text-stone-700 dark:text-stone-400"}
         "Thank you for visiting this personal, hand-made website."
         [:br]
