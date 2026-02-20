@@ -1,15 +1,16 @@
 (ns site.pages.home
-  (:import
-   (java.time Year))
   (:require
    [clojure.string :as str]
-   [site.pages.render :as render]
-   [site.dev :as dev]
-   [site.ui :as ui]
    [site.db :as db]
+   [site.dev :as dev]
+   [site.pages.render :as render]
+   [site.pages.urls :as urls]
+   [site.ui :as ui]
    [site.ui.container :as container]
    [site.ui.home.card :as card]
-   [site.ui.icons :as icon]))
+   [site.ui.icons :as icon])
+  (:import
+   (java.time Year)))
 
 (defn arrow-down-icon
   "Arrow down icon SVG component"
@@ -207,7 +208,10 @@ text-stone-400 group-any-hover:text-ol-orange-600 dark:text-stone-400 dark:group
                             [:div {:class "mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"}
                              [:div {:class "flex flex-col gap-16"}
                               [:h2 {:class "sr-only"} "Recent Articles"]
-                              (map article index-articles)]
+                              (map article index-articles)
+                              [:a {:href  (urls/url-for :url/blog-index)
+                                   :class "mt-4 self-start rounded text-sm font-medium text-ol-orange dark:text-ol-orange transition-colors any-hover:bg-stone-100 dark:any-hover:bg-stone-900/50"}
+                               "Read even more posts"]]
                              [:div {:class "space-y-10 lg:pl-16 xl:pl-24"}
                               #_(newsletter)
                               (resume)]])))))
