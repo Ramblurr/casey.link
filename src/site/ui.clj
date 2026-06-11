@@ -72,12 +72,12 @@
             [:link {:href "/site.css" :rel "stylesheet" :type "text/css"}]
             head]
            [:body {:class "flex h-full bg-stone-200 dark:bg-stone-900"
-                   :data-signals-darkmode "localStorage.getItem('theme') == 'dark' ? true : (localStorage.getItem('theme') == 'light' ? false : window.matchMedia(\"(prefers-color-scheme: dark)\").matches)"}
+                   :data-signals:darkmode "localStorage.getItem('theme') == 'dark' ? true : (localStorage.getItem('theme') == 'light' ? false : window.matchMedia(\"(prefers-color-scheme: dark)\").matches)"}
             [:div {:data-effect "document.documentElement.classList.toggle('dark', $darkmode)"}]
             (when (:dev? req)
               (list
                [:datastar-inspector]
-               [:div {:data-on-load (format "@post('/dev?uri=%s')" uri)}]))
+               [:div {:data-init (format "@post('/dev?uri=%s')" uri)}]))
             (layout page)
             [:script {:data-goatcounter "https://count.casey.link/count" :async true :src "//count.casey.link/count.js"}]
             [:script {:defer true :src "/js/header.js"}]
