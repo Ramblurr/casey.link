@@ -1,8 +1,8 @@
 {
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1"; # tracks nixpkgs unstable branch
-    clj-nix.url = "github:jlesquembre/clj-nix";
-    clj-nix.inputs.nixpkgs.follows = "nixpkgs";
+    clj-helpers.url = "github:outskirtslabs/clojure-nix-locker-helpers";
+    clj-helpers.inputs.nixpkgs.follows = "nixpkgs";
     deploy-rs.url = "github:serokell/deploy-rs";
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
@@ -13,7 +13,7 @@
     inputs@{
       self,
       nixpkgs,
-      clj-nix,
+      clj-helpers,
       deploy-rs,
       devshell,
       devenv,
@@ -24,6 +24,24 @@
       system = "x86_64-linux";
       jdk = "jdk${toString javaVersion}_headless";
       nixosModule = import ./nixos/module.nix inputs;
+      package =
+        pkgs:
+        clj-helpers.lib.mkCljBin {
+          inherit pkgs;
+          name = "site";
+          src = ./.;
+          jdk = pkgs.${jdk};
+          java-opts = [
+            "-Duser.timezone=UTC"
+            "-XX:+UseZGC"
+            "--enable-native-access=ALL-UNNAMED"
+          ];
+          # the PATH export must live in buildCommand so the locker sees it too
+          buildCommand = ''
+            export PATH=${pkgs.tailwindcss_4}/bin:$PATH
+            clojure -Srepro -T:build uber
+          '';
+        };
     in
     devenv.lib.mkFlake ./. {
       inherit inputs;
@@ -37,28 +55,11 @@
         })
       ];
 
-      packages.default =
-        pkgs:
-        clj-nix.lib.mkCljApp {
-          inherit pkgs;
-          modules = [
-            {
-              projectSrc = ./.;
-              name = "link.casey/site";
-              main-ns = "site.server";
-              java-opts = [
-                "-Duser.timezone=UTC"
-                "-XX:+UseZGC"
-                "--enable-native-access=ALL-UNNAMED"
-              ];
-              jdk = pkgs.${jdk};
-              buildCommand = ''
-                export PATH=${pkgs.tailwindcss_4}/bin:$PATH
-                clj -T:build uber
-              '';
-            }
-          ];
-        };
+      packages = {
+        default = package;
+        # regenerates ./deps-lock.json: `nix run .#locker`
+        locker = pkgs: (package pkgs).locker;
+      };
 
       nixosModules.default = nixosModule;
 

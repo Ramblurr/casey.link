@@ -34,8 +34,7 @@
                         "--enable-native-access=ALL-UNNAMED"]}
   :test  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
   :run-m {:main-opts ["-m" "site.server"]}
-  :build {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.12"
-                                                      :git/sha "97c5562"}
+  :build {:deps       {io.github.clojure/tools.build {:mvn/version "0.10.12"}
                        babashka/process              {:mvn/version "0.6.25"}}
           :ns-default build}
   :neil  {:project {:name    "site"
