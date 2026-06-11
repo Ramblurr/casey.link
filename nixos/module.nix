@@ -44,6 +44,10 @@ in
       environment = {
         SITE_UNIX_SOCKET = "%h/.run/site.sock";
       };
+      serviceConfig = {
+        Restart = "on-failure";
+        RestartSec = "5s";
+      };
       script = ''
         rm -f "%h/.run/site.sock"
         ${cfg.package}/bin/site
