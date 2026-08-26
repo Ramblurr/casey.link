@@ -5,7 +5,6 @@
 !.clj-kondo/config.edn
 !.clj-kondo/app/*
 !.env.edn
-*.md
 old-site
 extra/
 src/public/site.css
