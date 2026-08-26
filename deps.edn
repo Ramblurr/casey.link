@@ -4,7 +4,7 @@
          party.donut/system             {:mvn/version "1.0.259"}
          io.github.nextjournal/markdown {:mvn/version "0.7.225"}
          aero/aero                      {:mvn/version "1.1.6"}
-         http-kit/http-kit              {:mvn/version "2.9.0-beta3"}
+         http-kit/http-kit              {:mvn/version "2.9.0-beta4"}
          metosin/reitit-core            {:mvn/version "0.10.1"}
          metosin/reitit-ring            {:mvn/version "0.10.1"
                                          :exclusions  [metosin/muuntaja]}
@@ -13,7 +13,7 @@
          dev.data-star.clojure/http-kit {:mvn/version "1.0.0-RC11"
                                          :exclusions  [http-kit/http-kit]}
          dev.data-star.clojure/brotli   {:mvn/version "1.0.0-RC11"}
-         com.datomic/peer               {:mvn/version "1.0.7622"
+         com.datomic/peer               {:mvn/version "1.0.7705"
                                          :exclusions  [com.amazonaws/aws-java-sdk-core
                                                        com.amazonaws/aws-java-sdk-ec2
                                                        com.google.guava/guava
