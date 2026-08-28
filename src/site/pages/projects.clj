@@ -96,12 +96,54 @@
                     :label       "outskirtslabs/datomic-pro-flake"
                     :icon        icon/github
                     :tags        ["nix" "datomic" "clojure"]}
+                   {:name        "fluent-tooling"
+                    :description "Tree-sitter grammar, linter, and editor tooling for Mozilla Fluent."
+                    :href        "https://github.com/outskirtslabs/fluent-tooling"
+                    :label       "outskirtslabs/fluent-tooling"
+                    :icon        icon/github
+                    :tags        ["rust" "tree-sitter" "fluent"]}
+                   {:name        "ol.busker"
+                    :description "A modern Clojure web server built on libh2o with HTTP/3 and automatic HTTPS."
+                    :href        "https://github.com/outskirtslabs/busker"
+                    :label       "outskirtslabs/busker"
+                    :icon        icon/github
+                    :tags        ["clojure" "http" "web-server"]}
+                   {:name        "ol.clave"
+                    :description "A pure-Clojure ACME client for automatic certificate provisioning and renewal."
+                    :href        "https://github.com/outskirtslabs/clave"
+                    :label       "outskirtslabs/clave"
+                    :icon        icon/github
+                    :tags        ["clojure" "acme" "tls"]}
+                   {:name        "ol.dirs"
+                    :description "A zero-dependency, cross-platform application directory library for Clojure runtimes."
+                    :href        "https://github.com/outskirtslabs/dirs"
+                    :label       "outskirtslabs/dirs"
+                    :icon        icon/github
+                    :tags        ["clojure" "clojurescript" "clojuredart"]}
+                   {:name        "ol.protocol53"
+                    :description "One Clojure API for managing DNS records across providers."
+                    :href        "https://github.com/outskirtslabs/protocol53"
+                    :label       "outskirtslabs/protocol53"
+                    :icon        icon/github
+                    :tags        ["clojure" "dns"]}
+                   {:name        "ol.trixnity"
+                    :description "A Clojure adapter for building Matrix applications and bots with Trixnity."
+                    :href        "https://github.com/outskirtslabs/trixnity-clj"
+                    :label       "outskirtslabs/trixnity-clj"
+                    :icon        icon/github
+                    :tags        ["clojure" "matrix" "kotlin"]}
+                   {:name        "ol.vips"
+                    :description "Clojure bindings and native packages for high-performance libvips image processing."
+                    :href        "https://github.com/outskirtslabs/vips"
+                    :label       "outskirtslabs/vips"
+                    :icon        icon/github
+                    :tags        ["clojure" "libvips" "image-processing"]}
                    {:name        "Probematic",
                     :description "A tool to help an anarchist band manage itself. Built with Clojure and HTMX."
-                    :href        "https://github.com/Ramblurr/probematic"
-                    :label       "Ramblurr/probematic"
+                    :href        "https://github.com/streetnoiseorchestra/probematic"
+                    :label       "streetnoiseorchestra/probematic"
                     :icon        icon/github
-                    :tags        ["clojure" "htmx"]}
+                    :tags        ["clojure" "htmx" "datomic"]}
                    {:name        "wayland-java"
                     :description "Modern (JDK 22+) Java/JVM bindings for libwayland and wayland-protocols"
                     :href        "https://github.com/Ramblurr/wayland-java"
