@@ -42,54 +42,24 @@
                 [:span {:class "ml-2"}
                  (str/join ", " tags)]])))
 
-(def all-projects [{:name        "ol.client-ip"
-                    :description "A 0-dependency ring middleware for determining a request's real client IP address from HTTP headers."
-                    :href        "https://github.com/outskirtslabs/client-ip"
-                    :label       "outskirtslabs/client-ip"
+(def all-projects [{:name        "ol.busker"
+                    :description "A modern Clojure web server built on libh2o with HTTP/3 and automatic HTTPS."
+                    :href        "https://github.com/outskirtslabs/busker"
+                    :label       "outskirtslabs/busker"
                     :icon        icon/github
-                    :tags        ["clojure" "ring" "middleware"]}
-                   {:name        "ol.sfv"
-                    :description "A clojure library for parsing and generating Structured Field Values for HTTP (RFC 9651/8941)"
-                    :href        "https://github.com/outskirtslabs/sfv"
-                    :label       "outskirtslabs/sfv"
+                    :tags        ["clojure" "http" "web-server"]}
+                   {:name        "ol.clave"
+                    :description "A pure-Clojure ACME client for automatic certificate provisioning and renewal."
+                    :href        "https://github.com/outskirtslabs/clave"
+                    :label       "outskirtslabs/clave"
                     :icon        icon/github
-                    :tags        ["clojure" "http" "rfc"]}
-                   {:name        "datahike-sqlite"
-                    :description "A native SQLite storage backend for Datahike, the open datalog database"
-                    :href        "https://github.com/outskirtslabs/datahike-sqlite"
-                    :label       "outskirtslabs/datahike-sqlite"
+                    :tags        ["clojure" "acme" "tls"]}
+                   {:name        "ol.vips"
+                    :description "Clojure bindings and native packages for high-performance libvips image processing."
+                    :href        "https://github.com/outskirtslabs/vips"
+                    :label       "outskirtslabs/vips"
                     :icon        icon/github
-                    :tags        ["clojure" "datahike" "sqlite" "datalog"]}
-                   {:name        "datastar-expressions"
-                    :description "A proof-of-concept for writing 🚀 datastar expressions using Clojure without manual string concatenation."
-                    :href        "https://github.com/Ramblurr/datastar-expressions"
-                    :label       "outskirtslabs/datastar-expressions"
-                    :icon        icon/github
-                    :tags        ["clojure" "javascript"]}
-                   {:name        "nixos-hetzner"
-                    :description "Hetzner Cloud Images with NixOS and DetSys nix"
-                    :href        "https://github.com/outskirtslabs/nixos-hetzner"
-                    :label       "outskirtslabs/nixos-hetzner"
-                    :icon        icon/github
-                    :tags        ["nix" "hetzner" "cloud"]}
-                   {:name        "nixos-hetzner-demo"
-                    :description "Continuous, rapid, NixOS deployments to Hetzner Cloud"
-                    :href        "https://github.com/outskirtslabs/nixos-hetzner-demo"
-                    :label       "outskirtslabs/nixos-hetzner-demo"
-                    :icon        icon/github
-                    :tags        ["nix" "hetzner" "cloud"]}
-                   {:name        "h2o-zig"
-                    :description "libh2o packaged with zig"
-                    :href        "https://github.com/outskirtslabs/h2o-zig"
-                    :label       "outskirtslabs/h2o-zig"
-                    :icon        icon/github
-                    :tags        ["h2o" "zig" "http"]}
-                   {:name        "ol.sops"
-                    :description "An extremely tiny and simple wrapper around the awesome sops (previously known as mozilla/sops)"
-                    :href        "https://github.com/outskirtslabs/ol.sops"
-                    :label       "outskirtslabs/ol.sops"
-                    :icon        icon/github
-                    :tags        ["clojure" "sops" "secrets"]}
+                    :tags        ["clojure" "libvips" "image-processing"]}
                    {:name        "datomic-pro-flake"
                     :description "A Nix flake providing a Datomic Pro package and NixOS modules"
                     :href        "https://github.com/outskirtslabs/datomic-pro-flake"
@@ -102,54 +72,96 @@
                     :label       "outskirtslabs/fluent-tooling"
                     :icon        icon/github
                     :tags        ["rust" "tree-sitter" "fluent"]}
-                   {:name        "ol.busker"
-                    :description "A modern Clojure web server built on libh2o with HTTP/3 and automatic HTTPS."
-                    :href        "https://github.com/outskirtslabs/busker"
-                    :label       "outskirtslabs/busker"
-                    :icon        icon/github
-                    :tags        ["clojure" "http" "web-server"]}
-                   {:name        "ol.clave"
-                    :description "A pure-Clojure ACME client for automatic certificate provisioning and renewal."
-                    :href        "https://github.com/outskirtslabs/clave"
-                    :label       "outskirtslabs/clave"
-                    :icon        icon/github
-                    :tags        ["clojure" "acme" "tls"]}
-                   {:name        "ol.dirs"
-                    :description "A zero-dependency, cross-platform application directory library for Clojure runtimes."
-                    :href        "https://github.com/outskirtslabs/dirs"
-                    :label       "outskirtslabs/dirs"
-                    :icon        icon/github
-                    :tags        ["clojure" "clojurescript" "clojuredart"]}
                    {:name        "ol.protocol53"
                     :description "One Clojure API for managing DNS records across providers."
                     :href        "https://github.com/outskirtslabs/protocol53"
                     :label       "outskirtslabs/protocol53"
                     :icon        icon/github
                     :tags        ["clojure" "dns"]}
-                   {:name        "ol.trixnity"
-                    :description "A Clojure adapter for building Matrix applications and bots with Trixnity."
-                    :href        "https://github.com/outskirtslabs/trixnity-clj"
-                    :label       "outskirtslabs/trixnity-clj"
+                   {:name        "ol.dirs"
+                    :description "A zero-dependency, cross-platform application directory library for Clojure runtimes."
+                    :href        "https://github.com/outskirtslabs/dirs"
+                    :label       "outskirtslabs/dirs"
                     :icon        icon/github
-                    :tags        ["clojure" "matrix" "kotlin"]}
-                   {:name        "ol.vips"
-                    :description "Clojure bindings and native packages for high-performance libvips image processing."
-                    :href        "https://github.com/outskirtslabs/vips"
-                    :label       "outskirtslabs/vips"
-                    :icon        icon/github
-                    :tags        ["clojure" "libvips" "image-processing"]}
+                    :tags        ["clojure" "clojurescript" "clojuredart"]}
                    {:name        "Probematic",
                     :description "A tool to help an anarchist band manage itself. Built with Clojure and HTMX."
                     :href        "https://github.com/streetnoiseorchestra/probematic"
                     :label       "streetnoiseorchestra/probematic"
                     :icon        icon/github
                     :tags        ["clojure" "htmx" "datomic"]}
+                   {:name        "fairybox"
+                    :description "Screenless RFID Raspberry PI audio player for children"
+                    :href        "https://github.com/Ramblurr/fairybox"
+                    :label       "Ramblurr/fairybox"
+                    :icon        icon/github
+                    :tags        ["hardware" "clojure" "raspberry-pi" "maker"]}
+                   {:name        "datastar-expressions"
+                    :description "A proof-of-concept for writing 🚀 datastar expressions using Clojure without manual string concatenation."
+                    :href        "https://github.com/Ramblurr/datastar-expressions"
+                    :label       "outskirtslabs/datastar-expressions"
+                    :icon        icon/github
+                    :tags        ["clojure" "javascript"]}
+                   {:name        "ol.trixnity"
+                    :description "A Clojure adapter for building Matrix applications and bots with Trixnity."
+                    :href        "https://github.com/outskirtslabs/trixnity-clj"
+                    :label       "outskirtslabs/trixnity-clj"
+                    :icon        icon/github
+                    :tags        ["clojure" "matrix" "kotlin"]}
+                   {:name        "h2o-zig"
+                    :description "libh2o packaged with zig"
+                    :href        "https://github.com/outskirtslabs/h2o-zig"
+                    :label       "outskirtslabs/h2o-zig"
+                    :icon        icon/github
+                    :tags        ["zig" "http"]}
+                   {:name        "ol.sfv"
+                    :description "A clojure library for parsing and generating Structured Field Values for HTTP (RFC 9651/8941)"
+                    :href        "https://github.com/outskirtslabs/sfv"
+                    :label       "outskirtslabs/sfv"
+                    :icon        icon/github
+                    :tags        ["clojure" "http" "rfc"]}
+                   {:name        "ol.client-ip"
+                    :description "A 0-dependency ring middleware for determining a request's real client IP address from HTTP headers."
+                    :href        "https://github.com/outskirtslabs/client-ip"
+                    :label       "outskirtslabs/client-ip"
+                    :icon        icon/github
+                    :tags        ["clojure" "ring" "middleware"]}
+                   {:name        "ol.sops"
+                    :description "An extremely tiny and simple wrapper around the awesome sops (previously known as mozilla/sops)"
+                    :href        "https://github.com/outskirtslabs/ol.sops"
+                    :label       "outskirtslabs/ol.sops"
+                    :icon        icon/github
+                    :tags        ["clojure" "sops" "secrets"]}
+                   {:name        "vinyl"
+                    :description "A small headless audio player for clojure powered by vlc"
+                    :href        "https://github.com/ramblurr/vinyl"
+                    :label       "github.com/Ramblurr/vinyl"
+                    :icon        icon/github
+                    :tags        ["clojure" "vlc" "audio"]}
                    {:name        "wayland-java"
                     :description "Modern (JDK 22+) Java/JVM bindings for libwayland and wayland-protocols"
                     :href        "https://github.com/Ramblurr/wayland-java"
                     :label       "Ramblurr/wayland-java"
                     :icon        icon/github
                     :tags        ["java" "wayland"]}
+                   {:name        "datahike-sqlite"
+                    :description "A native SQLite storage backend for Datahike, the open datalog database"
+                    :href        "https://github.com/outskirtslabs/datahike-sqlite"
+                    :label       "outskirtslabs/datahike-sqlite"
+                    :icon        icon/github
+                    :tags        ["clojure" "datahike" "sqlite" "datalog"]}
+                   {:name        "nixos-hetzner"
+                    :description "Hetzner Cloud Images with NixOS and DetSys nix"
+                    :href        "https://github.com/outskirtslabs/nixos-hetzner"
+                    :label       "outskirtslabs/nixos-hetzner"
+                    :icon        icon/github
+                    :tags        ["nix" "hetzner" "cloud"]}
+                   {:name        "nixos-hetzner-demo"
+                    :description "Continuous, rapid, NixOS deployments to Hetzner Cloud"
+                    :href        "https://github.com/outskirtslabs/nixos-hetzner-demo"
+                    :label       "outskirtslabs/nixos-hetzner-demo"
+                    :icon        icon/github
+                    :tags        ["nix" "hetzner" "cloud"]}
                    {:name        "nixcfg"
                     :description "My nix flake ❄️ for all my servers, workstations, pis, etc."
                     :href        "https://github.com/Ramblurr/nixcfg"
@@ -168,18 +180,6 @@
                       :label       "github.com/Ramblurr/hifi-crud"
                       :icon        icon/rocket
                       :tags        ["clojure" "datastar"]}
-                   {:name        "vinyl"
-                    :description "A small headless audio player for clojure powered by vlc"
-                    :href        "https://github.com/ramblurr/vinyl"
-                    :label       "github.com/Ramblurr/vinyl"
-                    :icon        icon/github
-                    :tags        ["clojure" "vlc" "audio"]}
-                   {:name        "fairybox"
-                    :description "Screenless RFID Raspberry PI audio player for children"
-                    :href        "https://github.com/Ramblurr/fairybox"
-                    :label       "Ramblurr/fairybox"
-                    :icon        icon/github
-                    :tags        ["hardware" "clojure" "raspberry-pi" "maker"]}
                    {:name        "AnkiDroid"
                     :description "Anki flashcards on Android. I started this project back in 2009, and handed it off to the community sometime later."
                     :href        "https://github.com/ankidroid/Anki-Android"
