@@ -168,12 +168,12 @@
                     :label       "Ramblurr/nixcfg"
                     :icon        icon/github
                     :tags        ["nix"]}
-                   {:name        "My Blog"
-                    :description "A blog about code, open-source, security, and tech in the social sector."
-                    :href        "https://casey.link/articles"
-                    :label       "https://casey.link/articles"
-                    :icon        icon/link
-                    :tags        ["english"]}
+                   {:name        "casey.link"
+                    :description "This personal, hand-made website website you are on right now"
+                    :href        "https://github.com/Ramblurr/casey.link"
+                    :label       "Ramblurr/casey.link"
+                    :icon        icon/github
+                    :tags        ["clojure" "blog"]}
                    #_{:name        "hifi-crud"
                       :description "A small clojure framework for builing immediate-mode web applications with Datastar"
                       :href        "Ramblurr/hifi-crud"
